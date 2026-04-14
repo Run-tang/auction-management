@@ -12,6 +12,7 @@ import {
   ChevronDown, ChevronRight, Menu,
   LogOut, User, KeyRound, BarChart3
 } from 'lucide-react'
+import { THEME } from '@/lib/theme'
 
 interface NavItem {
   label: string
@@ -39,7 +40,7 @@ function NavItemComp({ item, collapsed }: { item: NavItem; collapsed: boolean })
         <button
           onClick={() => setOpen(!open)}
           className={cn(
-            'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+            'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200',
             'hover:bg-white/10 text-slate-300 hover:text-white',
             isChildActive && 'text-white bg-white/10'
           )}
@@ -68,7 +69,7 @@ function NavItemComp({ item, collapsed }: { item: NavItem; collapsed: boolean })
     <Link
       to={item.path!}
       className={cn(
-        'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all',
+        'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200',
         'hover:bg-white/10 text-slate-300 hover:text-white',
         isActive && 'bg-blue-600 text-white shadow-lg shadow-blue-600/30 hover:bg-blue-500'
       )}
@@ -135,25 +136,39 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <header className="flex-shrink-0 h-14 bg-white border-b border-slate-200 flex items-center justify-between px-6 shadow-sm">
           <div className="flex items-center gap-2 text-sm text-slate-500">
             <span className="text-slate-800 font-medium">二手车发拍管理系统</span>
-            <span>·</span>
-            <span>v2.6.0</span>
+            <span className="text-slate-300">·</span>
+            <span className="text-slate-400">v2.6.0</span>
           </div>
           <div className="flex items-center gap-3">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center gap-2 h-8 px-2">
-                  <Avatar className="h-7 w-7">
-                    <AvatarFallback className="bg-blue-600 text-white text-xs">超</AvatarFallback>
+                <Button 
+                  variant="ghost" 
+                  className="flex items-center gap-2 h-9 px-3 hover:bg-slate-100 transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                >
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback 
+                      className="text-white text-xs font-medium"
+                      style={{ backgroundColor: THEME.primary.DEFAULT }}
+                    >
+                      超
+                    </AvatarFallback>
                   </Avatar>
-                  <span className="text-sm font-medium">超级管理员</span>
+                  <span className="text-sm font-medium text-slate-700">超级管理员</span>
                   <ChevronDown size={14} className="text-slate-400" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-44">
-                <DropdownMenuItem><User size={14} className="mr-2" />个人信息</DropdownMenuItem>
-                <DropdownMenuItem><KeyRound size={14} className="mr-2" />修改密码</DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer hover:bg-slate-50">
+                  <User size={14} className="mr-2 text-slate-500" />个人信息
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer hover:bg-slate-50">
+                  <KeyRound size={14} className="mr-2 text-slate-500" />修改密码
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-red-600"><LogOut size={14} className="mr-2" />退出登录</DropdownMenuItem>
+                <DropdownMenuItem className="text-red-600 cursor-pointer hover:bg-red-50">
+                  <LogOut size={14} className="mr-2" />退出登录
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

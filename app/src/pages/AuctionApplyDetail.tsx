@@ -12,11 +12,12 @@ import {
 import { useState } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Textarea } from '@/components/ui/textarea'
+import { THEME } from '@/lib/theme'
 
 // ===== 状态映射 =====
+// 注意：已移除 'ready'（待发拍）状态
 const STATUS_MAP: Record<string, { label: string; color: string; bgColor: string }> = {
   draft:      { label: '草稿',     color: 'text-slate-600',   bgColor: 'bg-slate-100' },
-  ready:      { label: '待发拍',   color: 'text-blue-600',    bgColor: 'bg-blue-100' },
   scheduled:  { label: '待拍卖',   color: 'text-amber-600',   bgColor: 'bg-amber-100' },
   auctioning: { label: '拍卖中',   color: 'text-orange-600',  bgColor: 'bg-orange-100' },
   sold:       { label: '交易成功', color: 'text-green-600',   bgColor: 'bg-green-100' },
@@ -75,12 +76,21 @@ export default function AuctionApplyDetail() {
       <div className="bg-white border-b border-slate-200 px-6 py-4 sticky top-0 z-50">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" onClick={() => navigate('/applies')} className="gap-1">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => navigate('/applies')} 
+              className="gap-1.5 transition-all duration-200 hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-blue-500"
+            >
               <ArrowLeft size={16} /> 返回
             </Button>
             <div className="h-6 w-px bg-slate-200" />
             <span className="font-mono text-blue-600 font-semibold">{item.applyNo}</span>
-            <button onClick={() => copyToClipboard(item.applyNo)} className="text-slate-400 hover:text-blue-600">
+            <button 
+              onClick={() => copyToClipboard(item.applyNo)} 
+              className="text-slate-400 hover:text-blue-600 transition-colors duration-200 p-1 rounded hover:bg-slate-100"
+              title="复制单号"
+            >
               <Copy size={14} />
             </button>
           </div>
@@ -88,7 +98,12 @@ export default function AuctionApplyDetail() {
           {/* 操作按钮池 */}
           <div className="flex items-center gap-2">
             {(item.status === 'draft') && (
-              <Button size="sm" className="bg-red-600 hover:bg-red-700 text-white gap-1" onClick={() => setOffshelfDialog(true)}>
+              <Button 
+                size="sm" 
+                className="gap-1.5 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-red-500"
+                style={{ backgroundColor: '#ef4444', color: 'white' }}
+                onClick={() => setOffshelfDialog(true)}
+              >
                 <XCircle size={14} /> 强制下架
               </Button>
             )}

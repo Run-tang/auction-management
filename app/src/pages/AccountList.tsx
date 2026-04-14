@@ -8,9 +8,10 @@ import {
 } from '@/components/ui/table'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
-  RotateCcw, Plus, User, Phone, Clock, Calendar,
+  RotateCcw, Plus, User, Phone, Clock, Calendar, Users,
   ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, AlertCircle,
 } from 'lucide-react'
+import { THEME } from '@/lib/theme'
 import type { Account, AccountType, AccountStatus } from '@/types'
 
 // ===== 账号类型映射 =====
@@ -178,7 +179,7 @@ export default function AccountList() {
                 const typeConfig = ACCOUNT_TYPE_MAP[item.accountType]
                 const statusConfig = ACCOUNT_STATUS_MAP[item.status]
                 return (
-                  <TableRow key={item.id} className="hover:bg-slate-50/70">
+                  <TableRow key={item.id} className="hover:bg-slate-50/70 transition-colors duration-150">
                     <TableCell>
                       <span className="font-mono text-sm font-medium text-blue-600">{item.id}</span>
                     </TableCell>
@@ -261,18 +262,42 @@ export default function AccountList() {
             共 {filtered.length} 条，第 {currentPage}/{totalPages} 页
           </span>
           <div className="flex items-center gap-1">
-            <Button variant="outline" size="icon" className="h-7 w-7"
+            <Button 
+              variant="outline" 
+              size="icon" 
+              className="h-8 w-8 transition-all duration-200 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={currentPage <= 1}
-              onClick={() => setCurrentPage(1)}><ChevronsLeft size={13} /></Button>
-            <Button variant="outline" size="icon" className="h-7 w-7"
+              onClick={() => setCurrentPage(1)}
+            >
+              <ChevronsLeft size={14} />
+            </Button>
+            <Button 
+              variant="outline" 
+              size="icon" 
+              className="h-8 w-8 transition-all duration-200 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={currentPage <= 1}
-              onClick={() => setCurrentPage(p => p - 1)}><ChevronLeft size={13} /></Button>
-            <Button variant="outline" size="icon" className="h-7 w-7"
+              onClick={() => setCurrentPage(p => p - 1)}
+            >
+              <ChevronLeft size={14} />
+            </Button>
+            <Button 
+              variant="outline" 
+              size="icon" 
+              className="h-8 w-8 transition-all duration-200 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={currentPage >= totalPages}
-              onClick={() => setCurrentPage(p => p + 1)}><ChevronRight size={13} /></Button>
-            <Button variant="outline" size="icon" className="h-7 w-7"
+              onClick={() => setCurrentPage(p => p + 1)}
+            >
+              <ChevronRight size={14} />
+            </Button>
+            <Button 
+              variant="outline" 
+              size="icon" 
+              className="h-8 w-8 transition-all duration-200 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={currentPage >= totalPages}
-              onClick={() => setCurrentPage(totalPages)}><ChevronsRight size={13} /></Button>
+              onClick={() => setCurrentPage(totalPages)}
+            >
+              <ChevronsRight size={14} />
+            </Button>
           </div>
         </div>
       )}

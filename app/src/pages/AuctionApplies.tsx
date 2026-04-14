@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
-import { PageHeader } from '@/components/shared'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -13,6 +12,7 @@ import { Badge } from '@/components/ui/badge'
 import { Pagination } from '@/components/ui/pagination'
 import { mockAuctionApplies, mockDealers } from '@/data/mockData'
 import type { AuctionApply, AuctionApplyStatus } from '@/types'
+import { THEME } from '@/lib/theme'
 import {
   Search, Plus, Eye, RefreshCcw, Car, Calendar, Tag, AlertCircle, Camera, CheckCircle2,
   RotateCcw, Edit2, Send, ArrowLeft, ArrowRight, Image as ImageIcon, FileText,
@@ -336,13 +336,17 @@ export default function AuctionApplies() {
                     const st = STATUS_MAP[item.status]
                     const seq = (currentPage - 1) * PAGE_SIZE + idx + 1
                     return (
-                      <TableRow key={item.id} className="hover:bg-slate-50/70 group">
+                      <TableRow key={item.id} className="hover:bg-slate-50/70 group transition-colors duration-150">
                         <TableCell className="text-slate-400 text-xs sticky left-0 bg-white z-10">{seq}</TableCell>
                         {/* 发拍单号 */}
                         <TableCell className="sticky left-10 bg-white z-10">
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-1.5">
                             <span className="font-mono text-sm font-medium text-blue-600">{item.applyNo}</span>
-                            <button onClick={() => copyToClipboard(item.applyNo)} className="opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button 
+                              onClick={() => copyToClipboard(item.applyNo)} 
+                              className="opacity-0 group-hover:opacity-100 transition-all duration-200 p-1 rounded hover:bg-slate-100"
+                              title="复制单号"
+                            >
                               <Copy size={12} className="text-slate-400 hover:text-blue-600" />
                             </button>
                           </div>
@@ -392,9 +396,13 @@ export default function AuctionApplies() {
                         </TableCell>
                         {/* VIN */}
                         <TableCell>
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-1.5">
                             <span className="font-mono text-xs text-slate-600">{item.vin.slice(0, 11)}...</span>
-                            <button onClick={() => copyToClipboard(item.vin)} className="opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button 
+                              onClick={() => copyToClipboard(item.vin)} 
+                              className="opacity-0 group-hover:opacity-100 transition-all duration-200 p-1 rounded hover:bg-slate-100"
+                              title="复制VIN"
+                            >
                               <Copy size={11} className="text-slate-400 hover:text-blue-600" />
                             </button>
                           </div>
@@ -415,23 +423,32 @@ export default function AuctionApplies() {
                         </TableCell>
                         {/* 操作 */}
                         <TableCell className="sticky right-0 bg-white z-10">
-                          <div className="flex items-center justify-center gap-2">
-                            <Button variant="ghost" size="sm"
-                              className="h-7 px-3 text-xs text-slate-600 hover:text-blue-600 hover:bg-blue-50"
-                              onClick={() => navigate(`/applies/${item.id}`)}>
+                          <div className="flex items-center justify-center gap-1.5">
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              className="h-8 px-3 text-xs text-slate-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-blue-500"
+                              onClick={() => navigate(`/applies/${item.id}`)}
+                            >
                               查看
                             </Button>
                             {(item.status === 'draft') && (
-                              <Button variant="ghost" size="sm"
-                                className="h-7 px-3 text-xs text-red-600 hover:bg-red-50"
-                                onClick={() => setOffshelfDialog(item)}>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                className="h-8 px-3 text-xs text-red-600 hover:bg-red-50 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-red-500"
+                                onClick={() => setOffshelfDialog(item)}
+                              >
                                 下架
                               </Button>
                             )}
                             {item.status === 'sold' && (
-                              <Button variant="ghost" size="sm"
-                                className="h-7 px-3 text-xs text-green-600 hover:bg-green-50"
-                                onClick={() => navigate(`/orders/${item.id}`)}>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                className="h-8 px-3 text-xs text-green-600 hover:bg-green-50 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-green-500"
+                                onClick={() => navigate(`/orders/${item.id}`)}
+                              >
                                 订单
                               </Button>
                             )}
@@ -448,25 +465,49 @@ export default function AuctionApplies() {
           {/* ===== 分页 ===== */}
           {filtered.length > PAGE_SIZE && (
             <div className="flex items-center justify-between px-4 py-3 border-t border-slate-100 bg-slate-50/50">
-              <span className="text-xs text-slate-400">
+              <span className="text-xs text-slate-500">
                 显示 {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, filtered.length)}，共 {filtered.length} 条
               </span>
               <div className="flex items-center gap-1">
-                <Button variant="outline" size="icon" className="h-7 w-7"
+                <Button 
+                  variant="outline" 
+                  size="icon" 
+                  className="h-8 w-8 transition-all duration-200 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed"
                   disabled={currentPage <= 1}
-                  onClick={() => setPage(1)}><ChevronsLeft size={13} /></Button>
-                <Button variant="outline" size="icon" className="h-7 w-7"
+                  onClick={() => setPage(1)}
+                >
+                  <ChevronsLeft size={14} />
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="icon" 
+                  className="h-8 w-8 transition-all duration-200 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed"
                   disabled={currentPage <= 1}
-                  onClick={() => setPage(p => p - 1)}><ChevronLeft size={13} /></Button>
-                <span className="px-2 text-xs text-slate-600 font-medium">
+                  onClick={() => setPage(p => p - 1)}
+                >
+                  <ChevronLeft size={14} />
+                </Button>
+                <span className="px-3 text-xs text-slate-600 font-medium">
                   {currentPage} / {totalPages}
                 </span>
-                <Button variant="outline" size="icon" className="h-7 w-7"
+                <Button 
+                  variant="outline" 
+                  size="icon" 
+                  className="h-8 w-8 transition-all duration-200 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed"
                   disabled={currentPage >= totalPages}
-                  onClick={() => setPage(p => p + 1)}><ChevronRight size={13} /></Button>
-                <Button variant="outline" size="icon" className="h-7 w-7"
+                  onClick={() => setPage(p => p + 1)}
+                >
+                  <ChevronRight size={14} />
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="icon" 
+                  className="h-8 w-8 transition-all duration-200 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed"
                   disabled={currentPage >= totalPages}
-                  onClick={() => setPage(totalPages)}><ChevronsRight size={13} /></Button>
+                  onClick={() => setPage(totalPages)}
+                >
+                  <ChevronsRight size={14} />
+                </Button>
               </div>
             </div>
           )}
