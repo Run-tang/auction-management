@@ -82,8 +82,9 @@ jobs:
           </html>
           EOF
           # 为 SPA 应用添加 404 重定向（支持前端路由）
-          cp _site/dealer/index.html _site/dealer/404.html
-          cp _site/admin/index.html _site/admin/404.html
+          # 注意：使用 app/public/404.html 而不是直接复制 index.html
+          cp app/public/404.html _site/dealer/404.html
+          cp app/public/404.html _site/admin/404.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

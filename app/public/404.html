@@ -5,11 +5,27 @@
     <title>二手车发拍管理后台</title>
     <script>
       // GitHub Pages SPA 路由兼容方案
-      // 将路径编码后通过 sessionStorage 传给 index.html，再由 index.html 恢复
-      var l = window.location;
-      sessionStorage.redirect = l.pathname + l.search + l.hash;
-      l.replace(l.protocol + '//' + l.host + l.pathname.split('/').slice(0, 1 + 1).join('/') + '/?p=1');
+      // 将路径通过 URL 参数传递给 index.html
+      (function() {
+        var pathname = location.pathname;
+        var search = location.search;
+        var hash = location.hash;
+
+        // 保留原路径（去掉末尾斜杠）
+        var path = pathname.replace(/\/$/, '') || '/';
+
+        // 如果不是直接访问根路径，则重定向到 index.html 并携带路径信息
+        if (path !== '/index.html' && !search.includes('redirected=')) {
+          var redirectPath = path + search + hash;
+          location.replace(location.origin + '/admin/?redirected=1&path=' + encodeURIComponent(redirectPath));
+        }
+      })();
     </script>
   </head>
-  <body></body>
+  <body>
+    <noscript>
+      <p>正在跳转...</p>
+      <meta http-equiv="refresh" content="0;url=/admin/" />
+    </noscript>
+  </body>
 </html>
