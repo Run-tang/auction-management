@@ -208,3 +208,21 @@ export const mockPermissions: Permission[] = [
     { id: 'p4-3', name: '权限管理', code: 'sys:permission', type: 'menu', parentId: 'p4', path: '/sys/permissions', sort: 3 },
   ]},
 ]
+
+// ===== 系统账号 =====
+import type { Account } from '@/types'
+
+export const mockAccounts: Account[] = [
+  { id: 'U20231024001', phone: '13800138001', realName: '张三', accountType: 'system_admin', status: 'active', createTime: '2023-10-24 09:30:00', lastLogin: '2026-04-14 08:00:00' },
+  { id: 'U20231024002', phone: '13800138002', realName: '李四', accountType: 'system_admin', status: 'active', createTime: '2023-10-24 10:15:00', lastLogin: '2026-04-13 17:30:00' },
+  { id: 'U20231115001', phone: '13900139001', realName: '王五', accountType: 'group', status: 'active', createTime: '2023-11-15 14:20:00', lastLogin: '2026-04-14 09:15:00' },
+  { id: 'U20231115002', phone: '13900139002', realName: '赵六', accountType: 'group', status: 'inactive', createTime: '2023-11-15 15:00:00', lastLogin: '2026-03-01 10:00:00' },
+  { id: 'U20231201001', phone: '13700137001', realName: '钱七', accountType: 'store', groupName: '华远汽车集团', status: 'active', createTime: '2023-12-01 11:30:00', lastLogin: '2026-04-14 07:45:00' },
+  { id: 'U20231201002', phone: '13700137002', realName: '孙八', accountType: 'store', groupName: '华远汽车集团', status: 'active', createTime: '2023-12-01 12:00:00', lastLogin: '2026-04-13 16:00:00' },
+  { id: 'U20231215001', phone: '13600136001', realName: '周九', accountType: 'store', groupName: '浙商汽车集团', status: 'active', createTime: '2023-12-15 09:00:00', lastLogin: '2026-04-12 14:30:00' },
+  { id: 'U20231215002', phone: '13600136002', realName: '吴十', accountType: 'store', groupName: '浙商汽车集团', status: 'inactive', createTime: '2023-12-15 10:30:00' },
+  { id: 'U20240110001', phone: '13500135001', realName: '郑十一', accountType: 'store', groupName: '苏宁汽贸集团', status: 'active', createTime: '2024-01-10 13:45:00', lastLogin: '2026-04-11 11:20:00' },
+  { id: 'U20240110002', phone: '13500135002', realName: '冯十二', accountType: 'store', groupName: '苏宁汽贸集团', status: 'active', createTime: '2024-01-10 14:15:00', lastLogin: '2026-04-10 09:00:00' },
+  { id: 'U20240220001', phone: '13400134001', realName: '陈十三', accountType: 'group', status: 'active', createTime: '2024-02-20 16:00:00', lastLogin: '2026-04-09 15:45:00' },
+  { id: 'U20240220002', phone: '13400134002', realName: '褚十四', accountType: 'store', groupName: '广汇汽车集团', status: 'active', createTime: '2024-02-20 17:30:00', lastLogin: '2026-04-08 10:30:00' },
+]

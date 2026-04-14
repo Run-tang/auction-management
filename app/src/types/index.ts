@@ -109,3 +109,29 @@ export interface Role {
   createTime: string
   status: 'active' | 'inactive'
 }
+
+// ===== 系统账号 =====
+export type AccountType = 'system_admin' | 'group' | 'store'
+export type AccountStatus = 'active' | 'inactive'
+
+export const ACCOUNT_TYPE_MAP: Record<AccountType, { label: string; color: string }> = {
+  system_admin: { label: '系统管理员', color: 'text-purple-600 bg-purple-50 border-purple-200' },
+  group: { label: '集团账号', color: 'text-blue-600 bg-blue-50 border-blue-200' },
+  store: { label: '门店账号', color: 'text-green-600 bg-green-50 border-green-200' },
+}
+
+export const ACCOUNT_STATUS_MAP: Record<AccountStatus, { label: string; color: string }> = {
+  active: { label: '正常', color: 'text-green-600 bg-green-50 border-green-200' },
+  inactive: { label: '停用', color: 'text-gray-500 bg-gray-50 border-gray-200' },
+}
+
+export interface Account {
+  id: string                  // 账号ID，如 U20231024001
+  phone: string               // 手机号码（登录账号）
+  realName: string            // 用户姓名
+  accountType: AccountType    // 账号类型
+  groupName?: string          // 所属集团（门店账号时显示）
+  status: AccountStatus       // 账号状态
+  createTime: string          // 创建时间
+  lastLogin?: string          // 最近登录时间
+}

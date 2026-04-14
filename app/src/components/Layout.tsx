@@ -23,15 +23,10 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { label: '发拍管理', path: '/applies', icon: <Car size={18} /> },
-  { label: '经销商管理', icon: <Building2 size={18} />, children: [
-    { label: '经销商列表', path: '/dealers', icon: <Building2 size={16} /> },
-    { label: '经销商账号', path: '/dealer-accounts', icon: <Users size={16} /> },
-  ]},
   { label: '系统管理', icon: <Settings size={18} />, children: [
-    { label: '系统用户', path: '/sys/users', icon: <User size={16} /> },
+    { label: '账号列表', path: '/accounts', icon: <Users size={16} /> },
     { label: '角色管理', path: '/sys/roles', icon: <ShieldCheck size={16} /> },
     { label: '权限管理', path: '/sys/permissions', icon: <KeyRound size={16} /> },
-    { label: '操作日志', path: '/sys/logs', icon: <BarChart3 size={16} /> },
   ]},
 ]
 
