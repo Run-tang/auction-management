@@ -7,6 +7,3 @@ export { StatusBadge } from './StatusBadge'
 
 // 页面头部
 export { PageHeader } from './PageHeader'
-
-// 数据表格
-export { DataTable } from './DataTable'
