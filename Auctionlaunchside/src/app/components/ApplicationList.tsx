@@ -14,10 +14,6 @@ const TABS: { key: VehicleStatus | 'all'; label: string }[] = [
   { key: 'sold', label: '交易成功' },
   { key: 'unsold', label: '流拍' },
   { key: 'offshelf', label: '已下架' },
-]
-  { key: 'sold', label: '交易成功' },
-  { key: 'unsold', label: '流拍' },
-  { key: 'offshelf', label: '已下架' },
 ];
 
 export function ApplicationList() {
