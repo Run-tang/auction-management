@@ -1,5 +1,6 @@
 // ===== 发拍申请状态 =====
-export type AuctionApplyStatus = 'draft' | 'ready' | 'scheduled' | 'auctioning' | 'sold' | 'unsold' | 'offshelf'
+// 注意：已移除 'ready'（待发拍）状态
+export type AuctionApplyStatus = 'draft' | 'scheduled' | 'auctioning' | 'sold' | 'unsold' | 'offshelf'
 
 /** 审核流转记录节点 */
 export interface ApplyAuditNode {

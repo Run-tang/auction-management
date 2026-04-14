@@ -198,11 +198,11 @@ export function NewApplication() {
     }
   };
 
-  // 提交审核 - 提交后直接进入"待发拍"状态
+  // 提交审核 - 提交后直接进入"待拍卖"状态（已移除待发拍状态）
   const handleSubmit = () => {
     if (submitting) return;
     setSubmitting(true);
-    
+
     const applyNo = 'FP' + Date.now().toString().slice(-10);
     const app: any = {
       id: editId || String(Date.now()),
@@ -223,7 +223,7 @@ export function NewApplication() {
       transferCount: form.transferCount,
       vehicleNature: form.vehicleNature,
       reservePrice: parseFloat(form.reservePrice) || null,
-      status: 'ready' as VehicleStatus, // 提交后直接进入"待发拍"状态
+      status: 'scheduled' as VehicleStatus, // 提交后直接进入"待拍卖"状态
       applyTime: new Date().toLocaleString('zh-CN', { hour12: false }),
       images: Object.fromEntries(Object.keys(form.photos).filter(k => form.photos[k]).map(k => [k, k])),
     };

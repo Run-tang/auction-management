@@ -22,9 +22,9 @@ import {
 } from 'lucide-react'
 
 // ===== 状态映射 =====
+// 注意：已移除 'ready'（待发拍）状态
 const STATUS_MAP: Record<AuctionApplyStatus, { label: string; color: string; bgColor: string; borderColor: string }> = {
   draft:      { label: '草稿',     color: 'text-slate-600',   bgColor: 'bg-slate-100',   borderColor: 'border-slate-300' },
-  ready:      { label: '待发拍',   color: 'text-blue-600',    bgColor: 'bg-blue-100',    borderColor: 'border-blue-300' },
   scheduled:  { label: '待拍卖',   color: 'text-amber-600',   bgColor: 'bg-amber-100',   borderColor: 'border-amber-300' },
   auctioning: { label: '拍卖中',   color: 'text-orange-600', bgColor: 'bg-orange-100',  borderColor: 'border-orange-300' },
   sold:       { label: '交易成功', color: 'text-green-600',   bgColor: 'bg-green-100',   borderColor: 'border-green-300' },
@@ -44,10 +44,10 @@ const REQUIRED_PHOTO_LABELS = [
 ]
 
 // ===== Tab配置 =====
+// 注意：已移除 'ready'（待发拍）状态
 const TABS = [
   { key: 'all', label: '全部' },
   { key: 'draft', label: '草稿' },
-  { key: 'ready', label: '待发拍' },
   { key: 'scheduled', label: '待拍卖' },
   { key: 'auctioning', label: '拍卖中' },
   { key: 'sold', label: '交易成功' },
@@ -421,7 +421,7 @@ export default function AuctionApplies() {
                               onClick={() => navigate(`/applies/${item.id}`)}>
                               查看
                             </Button>
-                            {(item.status === 'draft' || item.status === 'ready') && (
+                            {(item.status === 'draft') && (
                               <Button variant="ghost" size="sm"
                                 className="h-7 px-3 text-xs text-red-600 hover:bg-red-50"
                                 onClick={() => setOffshelfDialog(item)}>

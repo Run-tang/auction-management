@@ -87,12 +87,13 @@ export default function AuctionApplyDetail() {
 
           {/* 操作按钮池 */}
           <div className="flex items-center gap-2">
-            {(item.status === 'draft' || item.status === 'ready') && (
+            {(item.status === 'draft') && (
               <Button size="sm" className="bg-red-600 hover:bg-red-700 text-white gap-1" onClick={() => setOffshelfDialog(true)}>
                 <XCircle size={14} /> 强制下架
               </Button>
             )}
-            {/* 交易成功/拍卖中/待拍卖状态：无操作按钮，仅供核账 */}
+            {/* 待拍卖/拍卖中/交易成功状态：无操作按钮，仅供核账 */}
+            {/* 流拍/已下架：仅显示返回按钮 */}
           </div>
         </div>
       </div>
@@ -109,6 +110,13 @@ export default function AuctionApplyDetail() {
 
               {/* 基本信息 */}
               <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-slate-400">发拍单号</span>
+                  <span className="font-mono text-sm text-blue-600 font-medium">{item.applyNo}</span>
+                  <button onClick={() => copyToClipboard(item.applyNo)} className="text-slate-400 hover:text-blue-600">
+                    <Copy size={14} />
+                  </button>
+                </div>
                 <div className="flex items-center gap-4 text-sm">
                   <div className="flex items-center gap-1.5 text-slate-500">
                     <Building2 size={14} />

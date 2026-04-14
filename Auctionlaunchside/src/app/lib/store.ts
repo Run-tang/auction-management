@@ -1,9 +1,9 @@
 // Application data types and store
 
 // 车辆状态枚举（与后台端统一）
+// 注意：已移除 'ready'（待发拍）状态
 export type VehicleStatus = 
   | 'draft'       // 草稿
-  | 'ready'       // 待发拍
   | 'scheduled'   // 待拍卖
   | 'auctioning'  // 拍卖中
   | 'sold'        // 交易成功
@@ -13,7 +13,6 @@ export type VehicleStatus =
 // 状态配置
 export const STATUS_CONFIG: Record<VehicleStatus, { text: string; cls: string; bgCls: string }> = {
   draft: { text: '草稿', cls: 'bg-[#E5E7EB] text-[#6B7280]', bgCls: 'bg-[#E5E7EB]' },
-  ready: { text: '待发拍', cls: 'bg-[#DBEAFE] text-[#2563EB]', bgCls: 'bg-[#DBEAFE]' },
   scheduled: { text: '待拍卖', cls: 'bg-[#E0E7FF] text-[#4338CA]', bgCls: 'bg-[#E0E7FF]' },
   auctioning: { text: '拍卖中', cls: 'bg-[#FEE2E2] text-[#DC2626]', bgCls: 'bg-[#FEE2E2]' },
   sold: { text: '交易成功', cls: 'bg-[#D1FAE5] text-[#059669]', bgCls: 'bg-[#D1FAE5]' },

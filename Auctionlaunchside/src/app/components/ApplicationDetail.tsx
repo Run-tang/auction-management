@@ -48,10 +48,10 @@ export function ApplicationDetail() {
     }
   };
 
-  // 处理重新发拍
+  // 处理重新发拍 - 重新发拍后进入"待拍卖"状态
   const handleResubmit = () => {
-    if (confirm('是否确认重新进行上拍？发拍单将调整为待发拍状态。')) {
-      updateApplication(app.id, { status: 'ready' });
+    if (confirm('是否确认重新进行上拍？发拍单将调整为待拍卖状态。')) {
+      updateApplication(app.id, { status: 'scheduled' });
       toast.success('已重新发拍');
       setTimeout(() => navigate('/'), 1000);
     }
@@ -67,12 +67,6 @@ export function ApplicationDetail() {
           <>
             <button className={`${baseBtn} border-[#E5E5E5] text-[#6B7280] bg-white`} onClick={handleOffshelf}>下架车辆</button>
             <button className={`${baseBtn} bg-[#FF6B00] text-white border-[#FF6B00]`} onClick={() => navigate(`/form?edit=${app.id}`)}>编辑发拍单</button>
-          </>
-        );
-      case 'ready':
-        return (
-          <>
-            <button className={`${baseBtn} border-[#E5E5E5] text-[#6B7280] bg-white`} onClick={handleOffshelf}>下架车辆</button>
           </>
         );
       case 'scheduled':
