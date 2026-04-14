@@ -303,6 +303,8 @@ export default function AuctionApplies() {
                   <TableHead className="text-xs font-semibold text-slate-400 uppercase tracking-wide min-w-[60px]">车系</TableHead>
                   <TableHead className="text-xs font-semibold text-slate-400 uppercase tracking-wide min-w-[60px]">年款</TableHead>
                   <TableHead className="text-xs font-semibold text-slate-400 uppercase tracking-wide min-w-[180px]">车型名称</TableHead>
+                  <TableHead className="text-xs font-semibold text-slate-400 uppercase tracking-wide min-w-[100px]">发拍用户</TableHead>
+                  <TableHead className="text-xs font-semibold text-slate-400 uppercase tracking-wide min-w-[120px]">用户手机</TableHead>
                   <TableHead className="text-xs font-semibold text-slate-400 uppercase tracking-wide min-w-[100px]">车辆所在城市</TableHead>
                   <TableHead className="text-xs font-semibold text-slate-400 uppercase tracking-wide min-w-[90px]">当前状态</TableHead>
                   <TableHead className="text-xs font-semibold text-slate-400 uppercase tracking-wide min-w-[120px]">起拍场次名称</TableHead>
@@ -319,7 +321,7 @@ export default function AuctionApplies() {
               <TableBody>
                 {paged.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={17} className="text-center py-16">
+                    <TableCell colSpan={19} className="text-center py-16">
                       <div className="flex flex-col items-center gap-3">
                         <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center">
                           <FileText size={24} className="text-slate-300" />
@@ -362,6 +364,20 @@ export default function AuctionApplies() {
                           <span className="text-sm text-slate-800 max-w-[180px] truncate block" title={item.carModel}>
                             {item.carModel}
                           </span>
+                        </TableCell>
+                        {/* 发拍用户 */}
+                        <TableCell>
+                          <div className="flex items-center gap-1.5">
+                            <User size={12} className="text-slate-400" />
+                            <span className="text-sm text-slate-700">{item.submitterName || '-'}</span>
+                          </div>
+                        </TableCell>
+                        {/* 用户手机 */}
+                        <TableCell>
+                          <div className="flex items-center gap-1.5">
+                            <Phone size={12} className="text-slate-400" />
+                            <span className="text-sm text-slate-600 font-mono">{item.submitterPhone || '-'}</span>
+                          </div>
                         </TableCell>
                         {/* 城市 */}
                         <TableCell>
