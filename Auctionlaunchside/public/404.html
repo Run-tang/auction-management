@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>二手车发拍管理系统 - 经销商端</title>
+    <script>
+      // GitHub Pages SPA 路由兼容方案
+      // 将路径通过 URL 参数传递给 index.html
+      (function() {
+        var pathname = location.pathname;
+        var search = location.search;
+        var hash = location.hash;
+
+        // 保留原路径（去掉末尾斜杠）
+        var path = pathname.replace(/\/$/, '') || '/';
+
+        // 基础路径（部署时会被替换）
+        var basePath = '{{BASE_PATH}}';
+
+        // 如果不是直接访问根路径，则重定向到 index.html 并携带路径信息
+        if (path !== basePath + '/index.html' && !search.includes('redirected=')) {
+          var redirectPath = path + search + hash;
+          location.replace(location.origin + basePath + '/?redirected=1&path=' + encodeURIComponent(redirectPath));
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <noscript>
+      <p>正在跳转...</p>
+      <meta http-equiv="refresh" content="0;url={{BASE_PATH}}/" />
+    </noscript>
+  </body>
+</html>
