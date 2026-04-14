@@ -25,8 +25,6 @@ const navItems: NavItem[] = [
   { label: '发拍管理', path: '/applies', icon: <Car size={18} /> },
   { label: '系统管理', icon: <Settings size={18} />, children: [
     { label: '账号列表', path: '/accounts', icon: <Users size={16} /> },
-    { label: '角色管理', path: '/sys/roles', icon: <ShieldCheck size={16} /> },
-    { label: '权限管理', path: '/sys/permissions', icon: <KeyRound size={16} /> },
   ]},
 ]
 

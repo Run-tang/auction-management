@@ -4,8 +4,6 @@ import AuctionApplies from '@/pages/AuctionApplies'
 import AuctionApplyDetail from '@/pages/AuctionApplyDetail'
 import OrderDetail from '@/pages/OrderDetail'
 import AccountList from '@/pages/AccountList'
-import SysRoles from '@/pages/SysRoles'
-import SysPermissions from '@/pages/SysPermissions'
 
 export default function App() {
   return (
@@ -17,8 +15,6 @@ export default function App() {
           <Route path="/applies/:id" element={<AuctionApplyDetail />} />
           <Route path="/orders/:id" element={<OrderDetail />} />
           <Route path="/accounts" element={<AccountList />} />
-          <Route path="/sys/roles" element={<SysRoles />} />
-          <Route path="/sys/permissions" element={<SysPermissions />} />
         </Routes>
       </Layout>
     </BrowserRouter>
