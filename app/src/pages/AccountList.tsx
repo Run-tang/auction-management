@@ -28,18 +28,18 @@ const ACCOUNT_STATUS_MAP: Record<AccountStatus, { label: string; color: string; 
 
 // ===== 模拟数据 =====
 const mockAccounts: Account[] = [
-  { id: 'U20260414001', phone: '13800138001', name: '张三', type: 'system_admin', group: null, status: 'active', createTime: '2026-04-01 09:30:00', lastLoginTime: '2026-04-14 18:22:15' },
-  { id: 'U20260414002', phone: '13800138002', name: '李四', type: 'system_admin', group: null, status: 'active', createTime: '2026-04-02 10:15:00', lastLoginTime: '2026-04-14 16:45:30' },
-  { id: 'U20260414003', phone: '13800138003', name: '王五', type: 'group', group: null, status: 'active', createTime: '2026-04-03 14:20:00', lastLoginTime: '2026-04-13 11:30:45' },
-  { id: 'U20260414004', phone: '13800138004', name: '赵六', type: 'group', group: null, status: 'inactive', createTime: '2026-04-04 09:00:00', lastLoginTime: '2026-04-10 09:15:00' },
-  { id: 'U20260414005', phone: '13800138005', name: '钱七', type: 'group', group: null, status: 'active', createTime: '2026-04-05 11:30:00', lastLoginTime: '2026-04-14 10:22:00' },
-  { id: 'U20260414006', phone: '13800138006', name: '孙八', type: 'store', group: '广联二手车集团', status: 'active', createTime: '2026-04-06 15:45:00', lastLoginTime: '2026-04-14 19:01:22' },
-  { id: 'U20260414007', phone: '13800138007', name: '周九', type: 'store', group: '广联二手车集团', status: 'active', createTime: '2026-04-07 08:30:00', lastLoginTime: '2026-04-14 17:55:10' },
-  { id: 'U20260414008', phone: '13800138008', name: '吴十', type: 'store', group: '广联二手车集团', status: 'active', createTime: '2026-04-08 10:00:00', lastLoginTime: '2026-04-12 14:30:00' },
-  { id: 'U20260414009', phone: '13800138009', name: '郑十一', type: 'store', group: '诚信车行', status: 'active', createTime: '2026-04-09 13:15:00', lastLoginTime: '2026-04-14 11:20:45' },
-  { id: 'U20260414010', phone: '13800138010', name: '王十二', type: 'store', group: '诚信车行', status: 'inactive', createTime: '2026-04-10 16:30:00', lastLoginTime: '2026-04-08 09:45:00' },
-  { id: 'U20260414011', phone: '13800138011', name: '李十三', type: 'store', group: '优车天下', status: 'active', createTime: '2026-04-11 09:45:00', lastLoginTime: '2026-04-14 15:10:30' },
-  { id: 'U20260414012', phone: '13800138012', name: '张十四', type: 'store', group: '优车天下', status: 'active', createTime: '2026-04-12 14:00:00', lastLoginTime: '2026-04-13 18:30:15' },
+  { id: 'U20260414001', phone: '13800138001', realName: '张三', accountType: 'system_admin', groupName: undefined, status: 'active', createTime: '2026-04-01 09:30:00', lastLogin: '2026-04-14 18:22:15' },
+  { id: 'U20260414002', phone: '13800138002', realName: '李四', accountType: 'system_admin', groupName: undefined, status: 'active', createTime: '2026-04-02 10:15:00', lastLogin: '2026-04-14 16:45:30' },
+  { id: 'U20260414003', phone: '13800138003', realName: '王五', accountType: 'group', groupName: undefined, status: 'active', createTime: '2026-04-03 14:20:00', lastLogin: '2026-04-13 11:30:45' },
+  { id: 'U20260414004', phone: '13800138004', realName: '赵六', accountType: 'group', groupName: undefined, status: 'inactive', createTime: '2026-04-04 09:00:00', lastLogin: '2026-04-10 09:15:00' },
+  { id: 'U20260414005', phone: '13800138005', realName: '钱七', accountType: 'group', groupName: undefined, status: 'active', createTime: '2026-04-05 11:30:00', lastLogin: '2026-04-14 10:22:00' },
+  { id: 'U20260414006', phone: '13800138006', realName: '孙八', accountType: 'store', groupName: '广联二手车集团', status: 'active', createTime: '2026-04-06 15:45:00', lastLogin: '2026-04-14 19:01:22' },
+  { id: 'U20260414007', phone: '13800138007', realName: '周九', accountType: 'store', groupName: '广联二手车集团', status: 'active', createTime: '2026-04-07 08:30:00', lastLogin: '2026-04-14 17:55:10' },
+  { id: 'U20260414008', phone: '13800138008', realName: '吴十', accountType: 'store', groupName: '广联二手车集团', status: 'active', createTime: '2026-04-08 10:00:00', lastLogin: '2026-04-12 14:30:00' },
+  { id: 'U20260414009', phone: '13800138009', realName: '郑十一', accountType: 'store', groupName: '诚信车行', status: 'active', createTime: '2026-04-09 13:15:00', lastLogin: '2026-04-14 11:20:45' },
+  { id: 'U20260414010', phone: '13800138010', realName: '王十二', accountType: 'store', groupName: '诚信车行', status: 'inactive', createTime: '2026-04-10 16:30:00', lastLogin: '2026-04-08 09:45:00' },
+  { id: 'U20260414011', phone: '13800138011', realName: '李十三', accountType: 'store', groupName: '优车天下', status: 'active', createTime: '2026-04-11 09:45:00', lastLogin: '2026-04-14 15:10:30' },
+  { id: 'U20260414012', phone: '13800138012', realName: '张十四', accountType: 'store', groupName: '优车天下', status: 'active', createTime: '2026-04-12 14:00:00', lastLogin: '2026-04-13 18:30:15' },
 ]
 
 const PAGE_SIZE_OPTIONS = [20, 50, 100]
@@ -58,9 +58,9 @@ export default function AccountList() {
   const filtered = useMemo(() => {
     return mockAccounts.filter(item => {
       if (phone && !item.phone.includes(phone)) return false
-      if (name && !item.name.includes(name)) return false
-      if (type !== 'all' && item.type !== type) return false
-      if (group && (!item.group || !item.group.includes(group))) return false
+      if (name && !item.realName.includes(name)) return false
+      if (type !== 'all' && item.accountType !== type) return false
+      if (group && (!item.groupName || !item.groupName.includes(group))) return false
       return true
     }).sort((a, b) => b.createTime.localeCompare(a.createTime))
   }, [phone, name, type, group])
@@ -175,7 +175,7 @@ export default function AccountList() {
               </TableRow>
             ) : (
               paged.map(item => {
-                const typeConfig = ACCOUNT_TYPE_MAP[item.type]
+                const typeConfig = ACCOUNT_TYPE_MAP[item.accountType]
                 const statusConfig = ACCOUNT_STATUS_MAP[item.status]
                 return (
                   <TableRow key={item.id} className="hover:bg-slate-50/70">
@@ -191,7 +191,7 @@ export default function AccountList() {
                     <TableCell>
                       <div className="flex items-center gap-1">
                         <User size={12} className="text-slate-400" />
-                        <span className="text-sm font-medium">{item.name}</span>
+                        <span className="text-sm font-medium">{item.realName}</span>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -203,13 +203,13 @@ export default function AccountList() {
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <span className={`text-sm ${item.group ? 'text-slate-700' : 'text-slate-300'}`}>
-                              {item.group || '-'}
+                            <span className={`text-sm ${item.groupName ? 'text-slate-700' : 'text-slate-300'}`}>
+                              {item.groupName || '-'}
                             </span>
                           </TooltipTrigger>
-                          {item.group && item.group.length > 10 && (
+                          {item.groupName && item.groupName.length > 10 && (
                             <TooltipContent>
-                              <p>{item.group}</p>
+                              <p>{item.groupName}</p>
                             </TooltipContent>
                           )}
                         </Tooltip>
@@ -229,7 +229,7 @@ export default function AccountList() {
                     <TableCell>
                       <div className="flex items-center gap-1">
                         <Clock size={12} className="text-slate-400" />
-                        <span className="text-xs text-slate-600">{item.lastLoginTime}</span>
+                        <span className="text-xs text-slate-600">{item.lastLogin || '-'}</span>
                       </div>
                     </TableCell>
                   </TableRow>

@@ -99,10 +99,10 @@ export default function OrderDetail() {
           <div className="p-6 flex items-start gap-6">
             {/* 车辆主图 */}
             <div className="w-40 h-28 rounded-lg bg-slate-100 flex-shrink-0 overflow-hidden">
-              {item.images?.frontLeft?.url ? (
-                <img 
-                  src={item.images.frontLeft.url} 
-                  alt="车辆主图" 
+              {item.images?.frontLeft ? (
+                <img
+                  src={item.images.frontLeft}
+                  alt="车辆主图"
                   className="w-full h-full object-cover"
                 />
               ) : (

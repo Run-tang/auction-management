@@ -94,7 +94,7 @@ export const mockAuctionApplies: AuctionApply[] = [
     auctionCount: 0, finalPrice: undefined,
     images: { front: '/mock/pss-f.jpg', frontLeft: '/mock/pss-fl.jpg', rearRight: '/mock/pss-rr.jpg', interior: '/mock/pss-int.jpg', dashboard: '/mock/pss-dash.jpg', engine: '/mock/pss-eng.jpg', trunk: '/mock/pss-trunk.jpg', defectImages: [], modifiedImages: [], otherImages: [] },
     applyTime: '2026-04-11 13:10:00', updateTime: '2026-04-11 13:10:00',
-    status: 'ready',
+    status: 'scheduled',
     submitterName: '赵明达', submitterPhone: '13800138011',
     auditTrail: [{ id: 'a6-1', operator: '赵明达', action: 'submit', actionLabel: '提交发拍', time: '2026-04-11T13:10:00' }]
   },
