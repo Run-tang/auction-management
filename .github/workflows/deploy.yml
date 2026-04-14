@@ -29,7 +29,7 @@ jobs:
       # 构建小程序端（经销商端）
       - name: Install dependencies - Dealer App
         working-directory: ./Auctionlaunchside
-        run: npm ci
+        run: npm install
 
       - name: Build Dealer App
         working-directory: ./Auctionlaunchside
@@ -40,7 +40,7 @@ jobs:
       # 构建后台管理端
       - name: Install dependencies - Admin App
         working-directory: ./app
-        run: npm ci
+        run: npm install
 
       - name: Build Admin App
         working-directory: ./app
