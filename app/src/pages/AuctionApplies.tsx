@@ -421,18 +421,18 @@ export default function AuctionApplies() {
                               onClick={() => navigate(`/applies/${item.id}`)}>
                               查看
                             </Button>
-                            {(item.status === 'draft') && (
-                              <Button variant="ghost" size="sm"
-                                className="h-7 px-3 text-xs text-blue-600 hover:bg-blue-50"
-                                onClick={() => navigate(`/applies/${item.id}`)}>
-                                编辑
-                              </Button>
-                            )}
                             {(item.status === 'draft' || item.status === 'ready') && (
                               <Button variant="ghost" size="sm"
                                 className="h-7 px-3 text-xs text-red-600 hover:bg-red-50"
                                 onClick={() => setOffshelfDialog(item)}>
                                 下架
+                              </Button>
+                            )}
+                            {item.status === 'sold' && (
+                              <Button variant="ghost" size="sm"
+                                className="h-7 px-3 text-xs text-green-600 hover:bg-green-50"
+                                onClick={() => navigate(`/orders/${item.id}`)}>
+                                订单
                               </Button>
                             )}
                           </div>

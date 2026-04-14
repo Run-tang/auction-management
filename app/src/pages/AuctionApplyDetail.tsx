@@ -92,16 +92,7 @@ export default function AuctionApplyDetail() {
                 <XCircle size={14} /> 强制下架
               </Button>
             )}
-            {item.status === 'sold' && (
-              <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white gap-1" onClick={() => navigate(`/orders/${item.id}`)}>
-                <ExternalLink size={14} /> 查看订单
-              </Button>
-            )}
-            {(item.status === 'unsold' || item.status === 'offshelf') && (
-              <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white gap-1">
-                <RefreshCcw size={14} /> 重新发拍
-              </Button>
-            )}
+            {/* 交易成功/拍卖中/待拍卖状态：无操作按钮，仅供核账 */}
           </div>
         </div>
       </div>

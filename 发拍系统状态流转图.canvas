@@ -1,0 +1,278 @@
+{
+  "nodes": [
+    {
+      "id": "group_fapai_miniapp",
+      "type": "group",
+      "x": -100,
+      "y": -100,
+      "width": 450,
+      "height": 600,
+      "label": "📱 发拍端小程序 (经销商端)",
+      "color": "5"
+    },
+    {
+      "id": "group_fapai_admin",
+      "type": "group",
+      "x": 400,
+      "y": -100,
+      "width": 450,
+      "height": 600,
+      "label": "🖥️ 发拍管理后台 (运营端)",
+      "color": "4"
+    },
+    {
+      "id": "group_auction_admin",
+      "type": "group",
+      "x": 900,
+      "y": -100,
+      "width": 450,
+      "height": 600,
+      "label": "🏛️ 拍卖平台后台 (拍卖端)",
+      "color": "3"
+    },
+    {
+      "id": "text_actors",
+      "type": "text",
+      "x": 400,
+      "y": -200,
+      "width": 450,
+      "height": 80,
+      "text": "## 👥 系统角色\n\n- **经销商/车商**: 提交发拍申请\n- **平台运营**: 审核管理发拍单\n- **拍卖管理员**: 管理车辆库存和拍卖"
+    },
+    {
+      "id": "state_draft",
+      "type": "text",
+      "x": -50,
+      "y": 0,
+      "width": 350,
+      "height": 100,
+      "text": "### 📝 草稿状态\n\n**位置**: 发拍端小程序\n- 用户录入车辆信息\n- 保存未提交的表单\n- 可编辑、可删除\n- 数据存储在本地",
+      "color": "6"
+    },
+    {
+      "id": "state_pending",
+      "type": "text",
+      "x": -50,
+      "y": 120,
+      "width": 350,
+      "height": 100,
+      "text": "### ⏳ 待发拍状态\n\n**位置**: 发拍端+发拍后台\n- 用户提交申请\n- 等待审核通过\n- 后台可查看详情\n- 后台可强制下架",
+      "color": "5"
+    },
+    {
+      "id": "state_to_auction",
+      "type": "text",
+      "x": 450,
+      "y": 0,
+      "width": 350,
+      "height": 100,
+      "text": "### 📋 待拍卖状态\n\n**位置**: 拍卖平台后台\n- 审核通过入库存\n- 等待排期上拍\n- 可查看发拍单详情\n- 车辆信息已同步",
+      "color": "4"
+    },
+    {
+      "id": "state_auctioning",
+      "type": "text",
+      "x": 450,
+      "y": 120,
+      "width": 350,
+      "height": 100,
+      "text": "### 🔨 拍卖中状态\n\n**位置**: 拍卖平台后台\n- 车辆进入拍卖场\n- 竞价倒计时进行\n- 状态实时回传\n- 禁止任何修改",
+      "color": "3"
+    },
+    {
+      "id": "state_success",
+      "type": "text",
+      "x": 950,
+      "y": 0,
+      "width": 350,
+      "height": 100,
+      "text": "### ✅ 交易成功状态\n\n**位置**: 全系统同步\n- 买家出价中标\n- 生成拍卖订单\n- 计算成交服务费\n- 财务数据锁定",
+      "color": "4"
+    },
+    {
+      "id": "state_failed",
+      "type": "text",
+      "x": 950,
+      "y": 120,
+      "width": 350,
+      "height": 100,
+      "text": "### ❌ 流拍状态\n\n**位置**: 全系统同步\n- 无人出价或未达保留价\n- 可重新发拍(复制原单)\n- 拍卖次数+1\n- 状态回传发拍端",
+      "color": "1"
+    },
+    {
+      "id": "state_offline",
+      "type": "text",
+      "x": 450,
+      "y": 350,
+      "width": 350,
+      "height": 100,
+      "text": "### 🚫 已下架状态\n\n**位置**: 全系统同步\n- 强制终止拍卖流程\n- 不可逆操作\n- 数据冻结归档\n- 仅可查看历史",
+      "color": "1"
+    },
+    {
+      "id": "data_sync_1",
+      "type": "text",
+      "x": -50,
+      "y": 280,
+      "width": 350,
+      "height": 150,
+      "text": "### 📤 数据同步: 发拍端 → 后台\n\n**同步内容**:\n- VIN车架号\n- 品牌车系车型\n- 保留价\n- 车辆配置\n- 照片资料\n- 申请时间",
+      "color": "5"
+    },
+    {
+      "id": "data_sync_2",
+      "type": "text",
+      "x": 450,
+      "y": 280,
+      "width": 350,
+      "height": 150,
+      "text": "### 📥 数据同步: 后台 → 拍卖平台\n\n**同步内容**:\n- 审核通过车辆信息\n- 排期场次信息\n- 车辆库存建档\n- 查博士数据补充\n- 状态更新推送",
+      "color": "4"
+    },
+    {
+      "id": "status_callback",
+      "type": "text",
+      "x": 950,
+      "y": 280,
+      "width": 350,
+      "height": 150,
+      "text": "### 🔄 状态回传: 拍卖平台 → 发拍端\n\n**回传时机**:\n- 进入拍卖场\n- 拍卖成交/流拍\n- 订单生成\n- 支付完成\n\n**实时同步发拍单状态**",
+      "color": "3"
+    },
+    {
+      "id": "account_mgmt",
+      "type": "text",
+      "x": -50,
+      "y": 450,
+      "width": 350,
+      "height": 100,
+      "text": "### 🔐 账号权限管理\n\n**发拍后台控制**:\n- 创建经销商账号\n- 设置白名单\n- Token有效期管理\n- 账号拉黑/注销",
+      "color": "6"
+    },
+    {
+      "id": "operation_perms",
+      "type": "text",
+      "x": 450,
+      "y": 450,
+      "width": 350,
+      "height": 100,
+      "text": "### 🎯 操作权限矩阵\n\n**状态控制**:\n- 草稿: 编辑/删除\n- 拍卖中: 仅查看\n- 流拍/下架: 重新发拍\n- 交易成功: 查看订单",
+      "color": "4"
+    },
+    {
+      "id": "notification_flow",
+      "type": "text",
+      "x": 950,
+      "y": 450,
+      "width": 350,
+      "height": 100,
+      "text": "### 📢 通知机制\n\n**企微机器人推送**:\n- 新增发拍审核提醒\n- 包含业务员信息\n- VIN码识别\n- 提交时间",
+      "color": "3"
+    }
+  ],
+  "edges": [
+    {
+      "id": "flow_1",
+      "fromNode": "state_draft",
+      "fromSide": "right",
+      "toNode": "state_pending",
+      "toSide": "left",
+      "label": "提交申请",
+      "color": "5"
+    },
+    {
+      "id": "flow_2",
+      "fromNode": "state_pending",
+      "fromSide": "right",
+      "toNode": "state_to_auction",
+      "toSide": "left",
+      "label": "审核通过",
+      "color": "4"
+    },
+    {
+      "id": "flow_3",
+      "fromNode": "state_to_auction",
+      "fromSide": "bottom",
+      "toNode": "state_auctioning",
+      "toSide": "top",
+      "label": "排期上拍",
+      "color": "3"
+    },
+    {
+      "id": "flow_4",
+      "fromNode": "state_auctioning",
+      "fromSide": "right",
+      "toNode": "state_success",
+      "toSide": "left",
+      "label": "竞价成功",
+      "color": "4"
+    },
+    {
+      "id": "flow_5",
+      "fromNode": "state_auctioning",
+      "fromSide": "right",
+      "toNode": "state_failed",
+      "toSide": "left",
+      "label": "无人出价/未达保留价",
+      "color": "1"
+    },
+    {
+      "id": "flow_6",
+      "fromNode": "state_failed",
+      "fromSide": "left",
+      "fromEnd": "arrow",
+      "toNode": "state_pending",
+      "toSide": "right",
+      "toEnd": "arrow",
+      "label": "重新发拍(复制数据)",
+      "color": "6"
+    },
+    {
+      "id": "flow_7",
+      "fromNode": "state_pending",
+      "fromSide": "bottom",
+      "toNode": "state_offline",
+      "toSide": "left",
+      "label": "强制下架",
+      "color": "1"
+    },
+    {
+      "id": "flow_8",
+      "fromNode": "state_to_auction",
+      "fromSide": "bottom",
+      "toNode": "state_offline",
+      "toSide": "top",
+      "label": "车辆问题中止",
+      "color": "1"
+    },
+    {
+      "id": "sync_1",
+      "fromNode": "data_sync_1",
+      "fromSide": "right",
+      "toNode": "data_sync_2",
+      "toSide": "left",
+      "label": "发拍数据流",
+      "color": "5"
+    },
+    {
+      "id": "sync_2",
+      "fromNode": "data_sync_2",
+      "fromSide": "right",
+      "toNode": "status_callback",
+      "toSide": "left",
+      "label": "库存同步流",
+      "color": "4"
+    },
+    {
+      "id": "sync_3",
+      "fromNode": "status_callback",
+      "fromSide": "left",
+      "fromEnd": "none",
+      "toNode": "data_sync_1",
+      "toSide": "right",
+      "toEnd": "arrow",
+      "label": "状态回传流",
+      "color": "3"
+    }
+  ]
+}

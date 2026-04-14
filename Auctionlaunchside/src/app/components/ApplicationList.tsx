@@ -9,9 +9,12 @@ import { toast } from 'sonner';
 const TABS: { key: VehicleStatus | 'all'; label: string }[] = [
   { key: 'all', label: '全部' },
   { key: 'draft', label: '草稿' },
-  { key: 'ready', label: '待发拍' },
   { key: 'scheduled', label: '待拍卖' },
   { key: 'auctioning', label: '拍卖中' },
+  { key: 'sold', label: '交易成功' },
+  { key: 'unsold', label: '流拍' },
+  { key: 'offshelf', label: '已下架' },
+]
   { key: 'sold', label: '交易成功' },
   { key: 'unsold', label: '流拍' },
   { key: 'offshelf', label: '已下架' },
