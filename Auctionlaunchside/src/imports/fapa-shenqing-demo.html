@@ -1,0 +1,2937 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>广联二手车 - 卖家端</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-color: #FF6B00;
+            --primary-light: #FFF3E6;
+            --primary-dark: #E55A00;
+            --success-color: #10B981;
+            --success-light: #D1FAE5;
+            --warning-color: #F59E0B;
+            --warning-light: #FEF3C7;
+            --danger-color: #EF4444;
+            --danger-light: #FEE2E2;
+            --gray-color: #6B7280;
+            --gray-light: #9CA3AF;
+            --bg-color: #F5F5F5;
+            --card-bg: #FFFFFF;
+            --border-color: #E5E5E5;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --text-light: #9CA3AF;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #E5E5E5;
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+        
+        .mobile-container {
+            max-width: 390px;
+            margin: 0 auto;
+            background: var(--bg-color);
+            min-height: 100vh;
+            position: relative;
+            padding-bottom: 70px;
+        }
+        
+        /* 顶部导航 */
+        .header {
+            background: var(--card-bg);
+            padding: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .header-back {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            color: var(--text-primary);
+        }
+        
+        .header-action {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: var(--primary-color);
+            cursor: pointer;
+        }
+        
+        /* 页面切换 */
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        /* =============== 发拍申请列表 =============== */
+        .filter-tabs {
+            display: flex;
+            background: var(--card-bg);
+            padding: 0 8px;
+            border-bottom: 1px solid var(--border-color);
+            overflow-x: auto;
+        }
+        
+        .filter-tab {
+            padding: 12px 12px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .filter-tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .filter-tab .badge {
+            position: absolute;
+            top: 6px;
+            right: 0;
+            background: var(--danger-color);
+            color: white;
+            font-size: 10px;
+            min-width: 16px;
+            height: 16px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+        }
+        
+        .search-bar {
+            padding: 12px 16px;
+            background: var(--card-bg);
+        }
+        
+        .search-input-wrapper {
+            display: flex;
+            align-items: center;
+            background: var(--bg-color);
+            border-radius: 8px;
+            padding: 10px 12px;
+        }
+        
+        .search-icon {
+            color: var(--gray-color);
+            margin-right: 8px;
+        }
+        
+        .search-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            outline: none;
+        }
+        
+        .application-list {
+            padding: 12px 16px;
+        }
+        
+        .application-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .application-card:active {
+            transform: scale(0.98);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        
+        .car-info {
+            flex: 1;
+        }
+        
+        .car-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .car-detail {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+        
+        .status-pending { background: var(--warning-light); color: #D97706; }
+        .status-approved { background: var(--success-light); color: #059669; }
+        .status-rejected { background: var(--danger-light); color: #DC2626; }
+        .status-draft { background: #E5E7EB; color: #6B7280; }
+        .status-preview { background: #DBEAFE; color: #2563EB; }
+        
+        .card-body {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .info-item {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .info-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        
+        .info-value {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .info-value.price {
+            color: var(--primary-color);
+        }
+        
+        .info-value.empty {
+            color: var(--gray-light);
+        }
+        
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+        }
+        
+        .apply-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .reject-reason {
+            font-size: 12px;
+            color: var(--danger-color);
+        }
+        
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn {
+            padding: 6px 16px;
+            border-radius: 16px;
+            font-size: 13px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:active {
+            background: var(--primary-dark);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        .btn-danger {
+            background: transparent;
+            border: 1px solid var(--danger-color);
+            color: var(--danger-color);
+        }
+        
+        .btn-small {
+            padding: 4px 12px;
+            font-size: 12px;
+        }
+        
+        /* =============== 新建发拍申请表单 =============== */
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .step-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .step-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--border-color);
+            color: var(--gray-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .step-item.active .step-dot {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .step-item.completed .step-dot {
+            background: var(--success-color);
+            color: white;
+        }
+        
+        .step-line {
+            width: 40px;
+            height: 2px;
+            background: var(--border-color);
+            margin: 0 4px;
+            margin-top: -14px;
+            transition: all 0.3s;
+        }
+        
+        .step-line.completed {
+            background: var(--success-color);
+        }
+        
+        .step-label {
+            font-size: 10px;
+            color: var(--gray-color);
+            margin-top: 6px;
+            transition: all 0.3s;
+        }
+        
+        .step-item.active .step-label {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .form-step {
+            padding-bottom: 100px;
+        }
+        
+        .form-section {
+            background: var(--card-bg);
+            margin-bottom: 12px;
+        }
+        
+        .section-title-bar {
+            font-size: 14px;
+            font-weight: 600;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .section-title-bar::before {
+            content: '';
+            width: 3px;
+            height: 14px;
+            background: var(--primary-color);
+            margin-right: 8px;
+        }
+        
+        .section-title-bar .title-text {
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title-bar .section-tip {
+            font-size: 12px;
+            color: var(--gray-color);
+            font-weight: 400;
+        }
+        
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+            min-height: 52px;
+        }
+        
+        .form-row:last-child {
+            border-bottom: none;
+        }
+        
+        .form-row.clickable {
+            cursor: pointer;
+        }
+        
+        .form-row.clickable:active {
+            background: var(--bg-color);
+        }
+        
+        .form-label {
+            font-size: 14px;
+            color: var(--text-primary);
+            flex-shrink: 0;
+        }
+        
+        .form-label.required::after {
+            content: '*';
+            color: var(--danger-color);
+            margin-left: 4px;
+        }
+        
+        .form-right {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            justify-content: flex-end;
+        }
+        
+        .form-input {
+            flex: 1;
+            text-align: right;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            color: var(--text-primary);
+            outline: none;
+            max-width: 200px;
+        }
+        
+        .form-input::placeholder {
+            color: var(--gray-light);
+        }
+        
+        .form-input:disabled {
+            color: var(--gray-color);
+        }
+        
+        .form-select {
+            appearance: none;
+            background: transparent;
+            border: none;
+            font-size: 14px;
+            color: var(--text-primary);
+            text-align: right;
+            cursor: pointer;
+            padding-right: 4px;
+        }
+        
+        .form-select:invalid {
+            color: var(--gray-light);
+        }
+        
+        .form-arrow {
+            color: var(--gray-light);
+            font-size: 14px;
+            margin-left: 4px;
+        }
+        
+        .form-tip {
+            font-size: 12px;
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            background: var(--bg-color);
+        }
+        
+        .form-tip.warning {
+            color: var(--warning-color);
+            background: var(--warning-light);
+        }
+        
+        .vin-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            background: var(--primary-light);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        
+        .icon-btn:active {
+            background: #FFE8CC;
+        }
+        
+        .price-unit {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-left: 4px;
+            flex-shrink: 0;
+        }
+        
+        .price-suggestion {
+            background: var(--primary-light);
+            margin: 0 16px 16px;
+            border-radius: 8px;
+            padding: 12px;
+        }
+        
+        .suggestion-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .suggestion-title {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .suggestion-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .suggestion-tip {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        
+        /* 照片上传 */
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            padding: 16px;
+        }
+        
+        .photo-item {
+            aspect-ratio: 1;
+            background: var(--bg-color);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            border: 1px dashed var(--border-color);
+            overflow: hidden;
+        }
+        
+        .photo-item:active {
+            background: #EEEEEE;
+        }
+        
+        .photo-item.uploaded {
+            border: none;
+            background: #333;
+        }
+        
+        .photo-item.uploaded img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .photo-icon {
+            width: 24px;
+            height: 24px;
+            color: var(--gray-color);
+            margin-bottom: 4px;
+        }
+        
+        .photo-label {
+            font-size: 11px;
+            color: var(--gray-color);
+        }
+        
+        .photo-check {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 20px;
+            height: 20px;
+            background: var(--success-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .photo-delete {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 20px;
+            height: 20px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .photo-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-light);
+        }
+        
+        .photo-progress-bar {
+            height: 100%;
+            background: var(--primary-color);
+            transition: width 0.3s;
+        }
+        
+        /* 底部按钮 */
+        .form-footer {
+            position: fixed;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 390px;
+            background: var(--card-bg);
+            padding: 12px 16px;
+            display: flex;
+            gap: 12px;
+            border-top: 1px solid var(--border-color);
+            z-index: 100;
+        }
+        
+        .btn-block {
+            flex: 1;
+            padding: 12px;
+            border-radius: 24px;
+            font-size: 15px;
+            font-weight: 500;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        
+        .btn-save {
+            background: var(--bg-color);
+            color: var(--text-primary);
+        }
+        
+        .btn-save:active {
+            background: #E5E5E5;
+        }
+        
+        .btn-submit {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-submit:active {
+            background: var(--primary-dark);
+        }
+        
+        .btn-submit:disabled {
+            background: var(--gray-light);
+            cursor: not-allowed;
+        }
+        
+        /* =============== 申请详情 =============== */
+        .detail-card {
+            background: var(--card-bg);
+            margin-bottom: 12px;
+        }
+        
+        .detail-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .detail-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .detail-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .detail-value {
+            font-size: 14px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        
+        .detail-value.highlight {
+            color: var(--primary-color);
+        }
+        
+        .tab-container {
+            display: flex;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .tab-item {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .tab-item.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        /* 时间线 */
+        .timeline {
+            padding: 16px;
+        }
+        
+        .timeline-item {
+            display: flex;
+            padding-bottom: 16px;
+            position: relative;
+        }
+        
+        .timeline-item:not(:last-child)::before {
+            content: '';
+            position: absolute;
+            left: 11px;
+            top: 24px;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-color);
+        }
+        
+        .timeline-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            margin-right: 12px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+        
+        .timeline-dot.success {
+            background: var(--success-color);
+        }
+        
+        .timeline-dot.pending {
+            background: var(--warning-color);
+        }
+        
+        .timeline-dot.fail {
+            background: var(--danger-color);
+        }
+        
+        .timeline-dot.gray {
+            background: var(--gray-color);
+        }
+        
+        .timeline-content {
+            flex: 1;
+        }
+        
+        .timeline-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+        
+        .timeline-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .timeline-time {
+            font-size: 12px;
+            color: var(--gray-light);
+            margin-top: 4px;
+        }
+        
+        /* =============== 个人中心 =============== */
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #FF8A3D 100%);
+            color: white;
+            padding: 40px 16px 70px;
+        }
+        
+        .profile-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .profile-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+        }
+        
+        .profile-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .profile-id {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+        
+        .profile-stats {
+            display: flex;
+            background: var(--card-bg);
+            margin: -40px 16px 16px;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .profile-stat {
+            flex: 1;
+            text-align: center;
+            border-right: 1px solid var(--border-color);
+        }
+        
+        .profile-stat:last-child {
+            border-right: none;
+        }
+        
+        .profile-stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .profile-stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        
+        .menu-section {
+            background: var(--card-bg);
+            margin-bottom: 12px;
+        }
+        
+        .menu-title {
+            font-size: 13px;
+            color: var(--text-secondary);
+            padding: 12px 16px 8px;
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+        
+        .menu-item:active {
+            background: var(--bg-color);
+        }
+        
+        .menu-icon {
+            width: 20px;
+            height: 20px;
+            color: var(--gray-color);
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        .menu-text {
+            flex: 1;
+            font-size: 14px;
+        }
+        
+        .menu-arrow {
+            color: var(--gray-light);
+            font-size: 14px;
+        }
+        
+        .menu-badge {
+            background: var(--danger-color);
+            color: white;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-right: 8px;
+        }
+        
+        .menu-desc {
+            font-size: 12px;
+            color: var(--gray-color);
+            margin-right: 8px;
+        }
+        
+        /* =============== 弹窗 =============== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-overlay.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            width: 320px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .modal-header {
+            padding: 16px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .modal-body {
+            padding: 20px 16px;
+            text-align: center;
+        }
+        
+        .modal-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .modal-footer {
+            display: flex;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .modal-btn {
+            flex: 1;
+            padding: 14px;
+            text-align: center;
+            font-size: 15px;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+        }
+        
+        .modal-btn.cancel {
+            color: var(--gray-color);
+            border-right: 1px solid var(--border-color);
+        }
+        
+        .modal-btn.confirm {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .modal-btn.danger {
+            color: var(--danger-color);
+            font-weight: 500;
+        }
+        
+        /* Toast 提示 */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 300;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        
+        .toast.show {
+            opacity: 1;
+        }
+        
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 40px;
+        }
+        
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            color: var(--gray-light);
+            margin-bottom: 16px;
+        }
+        
+        .empty-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+        
+        .empty-btn {
+            display: inline-block;
+            padding: 10px 24px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 390px;
+            background: var(--card-bg);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0 24px;
+            border-top: 1px solid var(--border-color);
+            z-index: 100;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 4px 32px;
+            cursor: pointer;
+        }
+        
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            color: var(--gray-color);
+            margin-bottom: 2px;
+        }
+        
+        .nav-item.active .nav-icon {
+            color: var(--primary-color);
+        }
+        
+        .nav-text {
+            font-size: 11px;
+            color: var(--gray-color);
+        }
+        
+        .nav-item.active .nav-text {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .nav-badge {
+            position: relative;
+        }
+        
+        .nav-badge::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            right: -6px;
+            width: 8px;
+            height: 8px;
+            background: var(--danger-color);
+            border-radius: 50%;
+        }
+        
+        /* 悬浮按钮 */
+        .float-btn {
+            position: fixed;
+            bottom: 90px;
+            right: calc(50% - 195px + 16px);
+            width: 56px;
+            height: 56px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(255, 107, 0, 0.4);
+            cursor: pointer;
+            z-index: 50;
+            color: white;
+            transition: transform 0.2s;
+        }
+        
+        .float-btn:active {
+            transform: scale(0.95);
+        }
+        
+        /* 加载状态 */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--gray-color);
+            font-size: 14px;
+        }
+        
+        /* 表单验证提示 */
+        .form-error {
+            color: var(--danger-color);
+            font-size: 12px;
+            padding: 4px 16px 8px;
+        }
+        
+        .form-row.error {
+            background: var(--danger-light);
+        }
+        
+        /* 车辆预览卡片 */
+        .car-preview-card {
+            background: var(--bg-color);
+            border-radius: 8px;
+            padding: 12px;
+            margin: 12px 16px;
+        }
+        
+        .car-preview-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .car-preview-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .car-preview-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .car-preview-value {
+            font-size: 13px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-container">
+        
+        <!-- ==================== 发拍申请列表页 ==================== -->
+        <div id="page-application" class="page active">
+            <div class="header">
+                <div class="header-title">发拍申请</div>
+                <div class="header-action" onclick="showPage('page-form')">+ 新建</div>
+            </div>
+            
+            <div class="filter-tabs">
+                <div class="filter-tab active" data-status="all">全部</div>
+                <div class="filter-tab" data-status="draft">草稿</div>
+                <div class="filter-tab" data-status="pending">
+                    待审核
+                    <span class="badge">3</span>
+                </div>
+                <div class="filter-tab" data-status="approved">已通过</div>
+                <div class="filter-tab" data-status="rejected">已驳回</div>
+            </div>
+            
+            <div class="search-bar">
+                <div class="search-input-wrapper">
+                    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <input type="text" class="search-input" placeholder="搜索车辆品牌/车牌号/申请单号" id="searchInput">
+                </div>
+            </div>
+            
+            <div class="application-list" id="applicationList">
+                <!-- 申请卡片由JS动态生成 -->
+            </div>
+            
+            <div class="float-btn" onclick="showPage('page-form')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+            </div>
+        </div>
+        
+        <!-- ==================== 新建发拍申请表单页 ==================== -->
+        <div id="page-form" class="page">
+            <div class="header">
+                <div class="header-back" onclick="confirmExitForm()">←</div>
+                <div class="header-title" id="formTitle">新建发拍申请</div>
+            </div>
+            
+            <div class="step-indicator">
+                <div class="step-item active" data-step="1">
+                    <div class="step-dot">1</div>
+                    <div class="step-label">基本信息</div>
+                </div>
+                <div class="step-line"></div>
+                <div class="step-item" data-step="2">
+                    <div class="step-dot">2</div>
+                    <div class="step-label">车辆详情</div>
+                </div>
+                <div class="step-line"></div>
+                <div class="step-item" data-step="3">
+                    <div class="step-dot">3</div>
+                    <div class="step-label">价格设置</div>
+                </div>
+                <div class="step-line"></div>
+                <div class="step-item" data-step="4">
+                    <div class="step-dot">4</div>
+                    <div class="step-label">照片上传</div>
+                </div>
+            </div>
+            
+            <!-- 步骤1: 基本信息 -->
+            <div id="step-1" class="form-step">
+                <div class="form-section">
+                    <div class="section-title-bar">
+                        <span class="title-text">车辆识别</span>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-label required">VIN码</div>
+                        <div class="form-right">
+                            <input type="text" class="form-input" id="vinCode" placeholder="请输入17位VIN码" maxlength="17" oninput="onVinInput(this)">
+                            <div class="icon-btn" onclick="scanVin()">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                    <circle cx="12" cy="13" r="4"></circle>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-label">车牌号</div>
+                        <div class="form-right">
+                            <input type="text" class="form-input" id="plateNumber" placeholder="如：沪A12345" maxlength="10">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <div class="section-title-bar">
+                        <span class="title-text">品牌车型</span>
+                    </div>
+                    <div class="form-row clickable" onclick="showBrandPicker()">
+                        <div class="form-label required">品牌</div>
+                        <div class="form-right">
+                            <span id="brandText" style="color: var(--gray-light);">请选择</span>
+                            <span class="form-arrow">›</span>
+                        </div>
+                    </div>
+                    <div class="form-row clickable" onclick="showSeriesPicker()">
+                        <div class="form-label required">车系</div>
+                        <div class="form-right">
+                            <span id="seriesText" style="color: var(--gray-light);">请先选择品牌</span>
+                            <span class="form-arrow">›</span>
+                        </div>
+                    </div>
+                    <div class="form-row clickable" onclick="showModelPicker()">
+                        <div class="form-label required">车型</div>
+                        <div class="form-right">
+                            <span id="modelText" style="color: var(--gray-light);">请先选择车系</span>
+                            <span class="form-arrow">›</span>
+                        </div>
+                    </div>
+                    <div class="form-row clickable" onclick="showYearPicker()">
+                        <div class="form-label required">年款</div>
+                        <div class="form-right">
+                            <span id="yearText" style="color: var(--gray-light);">请选择</span>
+                            <span class="form-arrow">›</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <div class="section-title-bar">
+                        <span class="title-text">车辆配置</span>
+                        <span class="section-tip">选择车型后自动填充</span>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-label">排量</div>
+                        <div class="form-right">
+                            <input type="text" class="form-input" id="displacement" placeholder="自动填充" disabled>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-label">变速箱</div>
+                        <div class="form-right">
+                            <input type="text" class="form-input" id="gearbox" placeholder="自动填充" disabled>
+                        </div>
+                    </div>
+                    <div class="form-row clickable" onclick="showFuelPicker()">
+                        <div class="form-label">燃料类型</div>
+                        <div class="form-right">
+                            <span id="fuelText">汽油</span>
+                            <span class="form-arrow">›</span>
+                        </div>
+                    </div>
+                    <div class="form-row clickable" onclick="showColorPicker('exterior')">
+                        <div class="form-label">车身颜色</div>
+                        <div class="form-right">
+                            <span id="exteriorColorText" style="color: var(--gray-light);">请选择</span>
+                            <span class="form-arrow">›</span>
+                        </div>
+                    </div>
+                    <div class="form-row clickable" onclick="showColorPicker('interior')">
+                        <div class="form-label">内饰颜色</div>
+                        <div class="form-right">
+                            <span id="interiorColorText" style="color: var(--gray-light);">请选择</span>
+                            <span class="form-arrow">›</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 步骤2: 车辆详情 -->
+            <div id="step-2" class="form-step" style="display:none;">
+                <div class="form-section">
+                    <div class="section-title-bar">
+                        <span class="title-text">登记信息</span>
+                    </div>
+                    <div class="form-row clickable" onclick="showDatePicker('registerDate')">
+                        <div class="form-label required">上牌日期</div>
+                        <div class="form-right">
+                            <span id="registerDateText" style="color: var(--gray-light);">请选择</span>
+                            <span class="form-arrow">›</span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-label required">表显里程</div>
+                        <div class="form-right">
+                            <input type="number" class="form-input" id="mileage" placeholder="请输入" style="text-align:right" oninput="validateMileage(this)">
+                            <span class="price-unit">万km</span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-label">过户次数</div>
+                        <div class="form-right">
+                            <input type="number" class="form-input" id="transferCount" placeholder="0" value="0" style="text-align:right">
+                            <span class="price-unit">次</span>
+                        </div>
+                    </div>
+                    <div class="form-row clickable" onclick="showNaturePicker()">
+                        <div class="form-label">车辆性质</div>
+                        <div class="form-right">
+                            <span id="natureText">非营运</span>
+                            <span class="form-arrow">›</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <div class="section-title-bar">
+                        <span class="title-text">车况说明</span>
+                    </div>
+                    <div class="form-row clickable" onclick="showConditionPicker()">
+                        <div class="form-label">车况等级</div>
+                        <div class="form-right">
+                            <span id="conditionText" style="color: var(--gray-light);">请选择</span>
+                            <span class="form-arrow">›</span>
+                        </div>
+                    </div>
+                    <div class="form-row clickable" onclick="showAccidentPicker()">
+                        <div class="form-label">事故记录</div>
+                        <div class="form-right">
+                            <span id="accidentText">无事故</span>
+                            <span class="form-arrow">›</span>
+                        </div>
+                    </div>
+                    <div class="form-row clickable" onclick="showMaintenancePicker()">
+                        <div class="form-label">维修保养</div>
+                        <div class="form-right">
+                            <span id="maintenanceText" style="color: var(--gray-light);">请选择</span>
+                            <span class="form-arrow">›</span>
+                        </div>
+                    </div>
+                    <div class="form-row clickable" onclick="showModifyPicker()">
+                        <div class="form-label">改装情况</div>
+                        <div class="form-right">
+                            <span id="modifyText">无改装</span>
+                            <span class="form-arrow">›</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <div class="section-title-bar">
+                        <span class="title-text">检测报告</span>
+                        <span class="section-tip">可选，上传可加速审核</span>
+                    </div>
+                    <div class="form-row clickable" onclick="uploadReport()">
+                        <div class="form-label">上传报告</div>
+                        <div class="form-right">
+                            <span id="reportText" style="color: var(--gray-light);">支持PDF/图片</span>
+                            <div class="icon-btn" style="margin-left: 8px;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="17 8 12 3 7 8"></polyline>
+                                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="mileageWarning" class="form-tip warning" style="display:none;">
+                    ⚠️ 里程数较高，可能影响估值和成交周期
+                </div>
+            </div>
+            
+            <!-- 步骤3: 价格设置 -->
+            <div id="step-3" class="form-step" style="display:none;">
+                <div class="form-section">
+                    <div class="section-title-bar">
+                        <span class="title-text">期望价格</span>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-label required">期望成交价</div>
+                        <div class="form-right">
+                            <input type="number" class="form-input" id="expectedPrice" placeholder="请输入" style="text-align:right" oninput="updatePriceCalc()">
+                            <span class="price-unit">万元</span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-label">心理底价</div>
+                        <div class="form-right">
+                            <input type="number" class="form-input" id="minPrice" placeholder="可不填" style="text-align:right">
+                            <span class="price-unit">万元</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="price-suggestion" id="priceSuggestion" style="display:none;">
+                    <div class="suggestion-row">
+                        <div class="suggestion-title">平台估值参考</div>
+                        <div class="suggestion-value" id="valuationRange">--</div>
+                    </div>
+                    <div class="suggestion-tip">基于车况、里程、市场行情综合评估</div>
+                </div>
+                
+                <div class="form-section">
+                    <div class="section-title-bar">
+                        <span class="title-text">拍卖参数</span>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-label required">起拍价</div>
+                        <div class="form-right">
+                            <input type="number" class="form-input" id="startPrice" placeholder="请输入" style="text-align:right" oninput="validatePrices()">
+                            <span class="price-unit">万元</span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-label required">保留价</div>
+                        <div class="form-right">
+                            <input type="number" class="form-input" id="reservePrice" placeholder="≥起拍价" style="text-align:right" oninput="validatePrices()">
+                            <span class="price-unit">万元</span>
+                        </div>
+                    </div>
+                    <div class="form-tip">💡 保留价对买家不可见，低于保留价不成交</div>
+                    <div class="form-row clickable" onclick="showIncrementPicker()">
+                        <div class="form-label required">加价幅度</div>
+                        <div class="form-right">
+                            <span id="incrementText">500元</span>
+                            <span class="form-arrow">›</span>
+                        </div>
+                    </div>
+                    <div class="form-row clickable" onclick="showDurationPicker()">
+                        <div class="form-label required">拍卖时长</div>
+                        <div class="form-right">
+                            <span id="durationText">24小时</span>
+                            <span class="form-arrow">›</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <div class="section-title-bar">
+                        <span class="title-text">增值服务</span>
+                        <span class="section-tip">可选</span>
+                    </div>
+                    <div class="form-row clickable" onclick="toggleService('prep')">
+                        <div class="form-label">平台整备</div>
+                        <div class="form-right">
+                            <span id="prepText">不需要</span>
+                            <span class="form-arrow">›</span>
+                        </div>
+                    </div>
+                    <div class="form-row clickable" onclick="toggleService('transfer')">
+                        <div class="form-label">代办过户</div>
+                        <div class="form-right">
+                            <span id="transferText">不需要</span>
+                            <span class="form-arrow">›</span>
+                        </div>
+                    </div>
+                    <div class="form-row clickable" onclick="toggleService('logistics')">
+                        <div class="form-label">物流服务</div>
+                        <div class="form-right">
+                            <span id="logisticsText">不需要</span>
+                            <span class="form-arrow">›</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="priceError" class="form-error" style="display:none;"></div>
+            </div>
+            
+            <!-- 步骤4: 照片上传 -->
+            <div id="step-4" class="form-step" style="display:none;">
+                <div class="form-section">
+                    <div class="section-title-bar">
+                        <span class="title-text">必拍位置</span>
+                        <span class="section-tip">至少上传6张</span>
+                    </div>
+                    <div class="photo-grid" id="requiredPhotos">
+                        <div class="photo-item" data-photo="front" onclick="takePhoto('front')">
+                            <svg class="photo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                <circle cx="12" cy="13" r="4"></circle>
+                            </svg>
+                            <span class="photo-label">前脸</span>
+                        </div>
+                        <div class="photo-item" data-photo="frontLeft" onclick="takePhoto('frontLeft')">
+                            <svg class="photo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                <circle cx="12" cy="13" r="4"></circle>
+                            </svg>
+                            <span class="photo-label">左前45°</span>
+                        </div>
+                        <div class="photo-item" data-photo="rearRight" onclick="takePhoto('rearRight')">
+                            <svg class="photo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                <circle cx="12" cy="13" r="4"></circle>
+                            </svg>
+                            <span class="photo-label">右后45°</span>
+                        </div>
+                        <div class="photo-item" data-photo="interior" onclick="takePhoto('interior')">
+                            <svg class="photo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                <circle cx="12" cy="13" r="4"></circle>
+                            </svg>
+                            <span class="photo-label">内饰</span>
+                        </div>
+                        <div class="photo-item" data-photo="dashboard" onclick="takePhoto('dashboard')">
+                            <svg class="photo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                <circle cx="12" cy="13" r="4"></circle>
+                            </svg>
+                            <span class="photo-label">仪表盘</span>
+                        </div>
+                        <div class="photo-item" data-photo="engine" onclick="takePhoto('engine')">
+                            <svg class="photo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                <circle cx="12" cy="13" r="4"></circle>
+                            </svg>
+                            <span class="photo-label">发动机舱</span>
+                        </div>
+                        <div class="photo-item" data-photo="trunk" onclick="takePhoto('trunk')">
+                            <svg class="photo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                <circle cx="12" cy="13" r="4"></circle>
+                            </svg>
+                            <span class="photo-label">后备箱</span>
+                        </div>
+                    </div>
+                    <div class="form-tip" id="photoCount">已上传 <span id="uploadedCount">0</span>/6 张必拍照片</div>
+                </div>
+                
+                <div class="form-section">
+                    <div class="section-title-bar">
+                        <span class="title-text">补充照片</span>
+                        <span class="section-tip">可选</span>
+                    </div>
+                    <div class="photo-grid" id="optionalPhotos">
+                        <div class="photo-item" data-photo="defect" onclick="takePhoto('defect')">
+                            <svg class="photo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                <circle cx="12" cy="13" r="4"></circle>
+                            </svg>
+                            <span class="photo-label">瑕疵照片</span>
+                        </div>
+                        <div class="photo-item" data-photo="modify" onclick="takePhoto('modify')">
+                            <svg class="photo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                <circle cx="12" cy="13" r="4"></circle>
+                            </svg>
+                            <span class="photo-label">改装照片</span>
+                        </div>
+                        <div class="photo-item" data-photo="other" onclick="takePhoto('other')">
+                            <svg class="photo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                <circle cx="12" cy="13" r="4"></circle>
+                            </svg>
+                            <span class="photo-label">其他</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <div class="section-title-bar">
+                        <span class="title-text">车辆视频</span>
+                        <span class="section-tip">可选，增加买家信任</span>
+                    </div>
+                    <div class="form-row clickable" onclick="recordVideo()">
+                        <div class="form-label">介绍视频</div>
+                        <div class="form-right">
+                            <span id="videoText" style="color: var(--gray-light);">30秒-3分钟</span>
+                            <div class="icon-btn" style="margin-left: 8px;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-footer">
+                <button class="btn-block btn-save" onclick="saveDraft()">保存草稿</button>
+                <button class="btn-block btn-submit" id="submitBtn" onclick="nextStep()">下一步</button>
+            </div>
+        </div>
+        
+        <!-- ==================== 申请详情页 ==================== -->
+        <div id="page-detail" class="page">
+            <div class="header">
+                <div class="header-back" onclick="showPage('page-application')">←</div>
+                <div class="header-title">申请详情</div>
+                <div class="header-action" id="detailEditBtn" onclick="editApplication()">编辑</div>
+            </div>
+            
+            <div class="detail-card" id="detailCard">
+                <!-- 详情内容由JS动态生成 -->
+            </div>
+            
+            <div class="form-footer" id="detailFooter">
+                <!-- 按钮由JS动态生成 -->
+            </div>
+        </div>
+        
+        <!-- ==================== 个人中心 ==================== -->
+        <div id="page-profile" class="page">
+            <div class="profile-header">
+                <div class="profile-info">
+                    <div class="profile-avatar">张</div>
+                    <div>
+                        <div class="profile-name">张三</div>
+                        <div class="profile-id">ID: 10086888</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="profile-stats">
+                <div class="profile-stat">
+                    <div class="profile-stat-value" id="totalCount">156</div>
+                    <div class="profile-stat-label">发拍总数</div>
+                </div>
+                <div class="profile-stat">
+                    <div class="profile-stat-value" id="successCount">128</div>
+                    <div class="profile-stat-label">成交数量</div>
+                </div>
+                <div class="profile-stat">
+                    <div class="profile-stat-value" id="successRate">82%</div>
+                    <div class="profile-stat-label">成交率</div>
+                </div>
+            </div>
+            
+            <div class="menu-section">
+                <div class="menu-title">交易管理</div>
+                <div class="menu-item" onclick="showPage('page-application')">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                    </svg>
+                    <span class="menu-text">发拍申请</span>
+                    <span class="menu-badge" id="pendingBadge">3</span>
+                    <span class="menu-arrow">›</span>
+                </div>
+                <div class="menu-item">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                        <line x1="1" y1="10" x2="23" y2="10"></line>
+                    </svg>
+                    <span class="menu-text">财务结算</span>
+                    <span class="menu-desc">待结算 ¥12.5万</span>
+                    <span class="menu-arrow">›</span>
+                </div>
+                <div class="menu-item">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    <span class="menu-text">消息通知</span>
+                    <span class="menu-badge">5</span>
+                    <span class="menu-arrow">›</span>
+                </div>
+            </div>
+            
+            <div class="menu-section">
+                <div class="menu-title">账号设置</div>
+                <div class="menu-item">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span class="menu-text">个人资料</span>
+                    <span class="menu-arrow">›</span>
+                </div>
+                <div class="menu-item">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    <span class="menu-text">账号安全</span>
+                    <span class="menu-arrow">›</span>
+                </div>
+                <div class="menu-item">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    <span class="menu-text">通知设置</span>
+                    <span class="menu-arrow">›</span>
+                </div>
+            </div>
+            
+            <div class="menu-section">
+                <div class="menu-title">其他</div>
+                <div class="menu-item">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    <span class="menu-text">帮助中心</span>
+                    <span class="menu-arrow">›</span>
+                </div>
+                <div class="menu-item">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                    </svg>
+                    <span class="menu-text">联系客服</span>
+                    <span class="menu-arrow">›</span>
+                </div>
+                <div class="menu-item">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    <span class="menu-text">设置</span>
+                    <span class="menu-arrow">›</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ==================== 底部导航 ==================== -->
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="switchTab('page-application')">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+                <span class="nav-text">发拍申请</span>
+            </div>
+            <div class="nav-item nav-badge" onclick="switchTab('page-profile')">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span class="nav-text">我的</span>
+            </div>
+        </div>
+        
+        <!-- ==================== 弹窗 ==================== -->
+        <div class="modal-overlay" id="modalOverlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title" id="modalTitle">提示</div>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-text" id="modalText">确定要执行此操作吗？</div>
+                </div>
+                <div class="modal-footer" id="modalFooter">
+                    <div class="modal-btn cancel" onclick="closeModal()">取消</div>
+                    <div class="modal-btn confirm" id="modalConfirm" onclick="closeModal()">确定</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Toast 提示 -->
+        <div class="toast" id="toast"></div>
+        
+    </div>
+    
+    <script>
+        // ==================== 数据管理 ====================
+        let applications = [
+            {
+                id: 'FP20260331001',
+                brand: '宝马',
+                series: '5系',
+                model: '2022款 530Li 领先型',
+                plateNumber: '沪A·12345',
+                displacement: '2.0T',
+                gearbox: '自动',
+                mileage: 3.2,
+                registerDate: '2022-06',
+                expectedPrice: 38.5,
+                startPrice: 35.0,
+                reservePrice: 36.0,
+                increment: 500,
+                status: 'pending',
+                createTime: '2026-03-31 14:30',
+                photos: ['front', 'frontLeft', 'dashboard'],
+                rejectReason: ''
+            },
+            {
+                id: 'FP20260330002',
+                brand: '奔驰',
+                series: 'E级',
+                model: '2023款 E300L 豪华型',
+                plateNumber: '沪B·67890',
+                displacement: '2.0T',
+                gearbox: '自动',
+                mileage: 1.8,
+                registerDate: '2023-03',
+                expectedPrice: 42.0,
+                startPrice: 38.0,
+                reservePrice: 40.0,
+                increment: 1000,
+                status: 'approved',
+                createTime: '2026-03-30 10:15',
+                photos: ['front', 'frontLeft', 'rearRight', 'interior', 'dashboard', 'engine'],
+                rejectReason: ''
+            },
+            {
+                id: 'FP20260329003',
+                brand: '奥迪',
+                series: 'A6L',
+                model: '2021款 45TFSI',
+                plateNumber: '沪C·11111',
+                displacement: '2.0T',
+                gearbox: '自动',
+                mileage: 5.6,
+                registerDate: '2021-09',
+                expectedPrice: 32.0,
+                startPrice: 28.0,
+                reservePrice: 30.0,
+                increment: 500,
+                status: 'rejected',
+                createTime: '2026-03-29 16:45',
+                photos: ['front', 'interior'],
+                rejectReason: '车辆照片不清晰，请补充左前45°、右后45°、发动机舱照片'
+            },
+            {
+                id: 'FP20260328004',
+                brand: '保时捷',
+                series: 'Macan',
+                model: '2022款',
+                plateNumber: '沪D·22222',
+                displacement: '2.0T',
+                gearbox: '自动',
+                mileage: 2.1,
+                registerDate: '2022-01',
+                expectedPrice: null,
+                startPrice: null,
+                reservePrice: null,
+                increment: 500,
+                status: 'draft',
+                createTime: '2026-03-28 09:20',
+                photos: [],
+                rejectReason: ''
+            }
+        ];
+        
+        let currentStep = 1;
+        let editingId = null;
+        let formData = {
+            vinCode: '',
+            plateNumber: '',
+            brand: '',
+            series: '',
+            model: '',
+            year: '',
+            displacement: '',
+            gearbox: '',
+            fuel: '汽油',
+            exteriorColor: '',
+            interiorColor: '',
+            registerDate: '',
+            mileage: '',
+            transferCount: 0,
+            nature: '非营运',
+            condition: '',
+            accident: '无事故',
+            maintenance: '',
+            modify: '无改装',
+            expectedPrice: '',
+            minPrice: '',
+            startPrice: '',
+            reservePrice: '',
+            increment: 500,
+            duration: 24,
+            prep: false,
+            transferService: false,
+            logistics: false,
+            photos: {},
+            video: null
+        };
+        
+        // ==================== 页面切换 ====================
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            updateNavState(pageId);
+            
+            // 刷新列表
+            if (pageId === 'page-application') {
+                renderApplicationList();
+            }
+        }
+        
+        function switchTab(pageId) {
+            showPage(pageId);
+        }
+        
+        function updateNavState(pageId) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            
+            const navMap = {
+                'page-application': 0,
+                'page-profile': 1
+            };
+            
+            let navIndex = navMap[pageId];
+            if (navIndex === undefined) {
+                if (pageId === 'page-form' || pageId === 'page-detail') {
+                    navIndex = 0;
+                }
+            }
+            
+            if (navIndex !== undefined) {
+                document.querySelectorAll('.nav-item')[navIndex].classList.add('active');
+            }
+        }
+        
+        // ==================== 申请列表渲染 ====================
+        function renderApplicationList(filter = 'all', keyword = '') {
+            const list = document.getElementById('applicationList');
+            
+            let filtered = applications;
+            
+            // 状态筛选
+            if (filter !== 'all') {
+                filtered = filtered.filter(app => app.status === filter);
+            }
+            
+            // 关键词搜索
+            if (keyword) {
+                const kw = keyword.toLowerCase();
+                filtered = filtered.filter(app => 
+                    app.brand.toLowerCase().includes(kw) ||
+                    app.series.toLowerCase().includes(kw) ||
+                    app.plateNumber.toLowerCase().includes(kw) ||
+                    app.id.toLowerCase().includes(kw)
+                );
+            }
+            
+            if (filtered.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                        <div class="empty-text">暂无相关申请</div>
+                        <div class="empty-btn" onclick="showPage('page-form')">+ 新建申请</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            list.innerHTML = filtered.map(app => {
+                const statusMap = {
+                    'draft': { text: '草稿', class: 'status-draft' },
+                    'pending': { text: '待审核', class: 'status-pending' },
+                    'approved': { text: '已通过', class: 'status-approved' },
+                    'rejected': { text: '已驳回', class: 'status-rejected' }
+                };
+                const status = statusMap[app.status];
+                
+                const actions = getActions(app);
+                
+                return `
+                    <div class="application-card" onclick="viewDetail('${app.id}')">
+                        <div class="card-header">
+                            <div class="car-info">
+                                <div class="car-name">${app.brand} ${app.series} ${app.model}</div>
+                                <div class="car-detail">${app.plateNumber} · ${app.displacement}${app.gearbox}</div>
+                            </div>
+                            <span class="status-badge ${status.class}">${status.text}</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="info-item">
+                                <div class="info-label">期望价</div>
+                                <div class="info-value ${app.expectedPrice ? 'price' : 'empty'}">${app.expectedPrice ? app.expectedPrice + '万' : '待填写'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">起拍价</div>
+                                <div class="info-value ${app.startPrice ? '' : 'empty'}">${app.startPrice ? app.startPrice + '万' : '待填写'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">里程</div>
+                                <div class="info-value">${app.mileage}万km</div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="${app.status === 'rejected' ? 'reject-reason' : 'apply-time'}">
+                                ${app.status === 'rejected' ? '原因：' + app.rejectReason : '申请时间：' + app.createTime}
+                            </div>
+                            <div class="action-btns" onclick="event.stopPropagation()">
+                                ${actions}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function getActions(app) {
+            switch(app.status) {
+                case 'draft':
+                    return `
+                        <button class="btn btn-danger btn-small" onclick="deleteApplication('${app.id}')">删除</button>
+                        <button class="btn btn-primary btn-small" onclick="editApplication('${app.id}')">继续填写</button>
+                    `;
+                case 'pending':
+                    return `
+                        <button class="btn btn-outline btn-small" onclick="withdrawApplication('${app.id}')">撤回</button>
+                        <button class="btn btn-primary btn-small" onclick="editApplication('${app.id}')">编辑</button>
+                    `;
+                case 'approved':
+                    return `<button class="btn btn-primary btn-small" onclick="viewDetail('${app.id}')">查看详情</button>`;
+                case 'rejected':
+                    return `<button class="btn btn-primary btn-small" onclick="editApplication('${app.id}')">重新提交</button>`;
+                default:
+                    return '';
+            }
+        }
+        
+        // ==================== 表单逻辑 ====================
+        function nextStep() {
+            if (!validateCurrentStep()) return;
+            
+            if (currentStep < 4) {
+                document.getElementById(`step-${currentStep}`).style.display = 'none';
+                currentStep++;
+                document.getElementById(`step-${currentStep}`).style.display = 'block';
+                updateStepIndicator();
+                updateSubmitButton();
+                window.scrollTo(0, 0);
+            } else {
+                submitApplication();
+            }
+        }
+        
+        function prevStep() {
+            if (currentStep > 1) {
+                document.getElementById(`step-${currentStep}`).style.display = 'none';
+                currentStep--;
+                document.getElementById(`step-${currentStep}`).style.display = 'block';
+                updateStepIndicator();
+                updateSubmitButton();
+            }
+        }
+        
+        function updateStepIndicator() {
+            document.querySelectorAll('.step-item').forEach((item, index) => {
+                item.classList.remove('active', 'completed');
+                if (index + 1 < currentStep) {
+                    item.classList.add('completed');
+                } else if (index + 1 === currentStep) {
+                    item.classList.add('active');
+                }
+            });
+            
+            document.querySelectorAll('.step-line').forEach((line, index) => {
+                line.classList.toggle('completed', index < currentStep - 1);
+            });
+        }
+        
+        function updateSubmitButton() {
+            const btn = document.getElementById('submitBtn');
+            if (currentStep === 4) {
+                btn.textContent = '提交审核';
+            } else {
+                btn.textContent = '下一步';
+            }
+        }
+        
+        function validateCurrentStep() {
+            switch(currentStep) {
+                case 1:
+                    if (!document.getElementById('vinCode').value) {
+                        showToast('请输入VIN码');
+                        return false;
+                    }
+                    if (!formData.brand || !formData.series || !formData.model) {
+                        showToast('请选择品牌、车系、车型');
+                        return false;
+                    }
+                    return true;
+                case 2:
+                    if (!formData.registerDate) {
+                        showToast('请选择上牌日期');
+                        return false;
+                    }
+                    if (!document.getElementById('mileage').value) {
+                        showToast('请输入表显里程');
+                        return false;
+                    }
+                    return true;
+                case 3:
+                    if (!document.getElementById('startPrice').value) {
+                        showToast('请输入起拍价');
+                        return false;
+                    }
+                    if (!document.getElementById('reservePrice').value) {
+                        showToast('请输入保留价');
+                        return false;
+                    }
+                    const start = parseFloat(document.getElementById('startPrice').value);
+                    const reserve = parseFloat(document.getElementById('reservePrice').value);
+                    if (reserve < start) {
+                        showToast('保留价不能低于起拍价');
+                        return false;
+                    }
+                    return true;
+                case 4:
+                    const uploadedCount = Object.keys(formData.photos).filter(k => 
+                        ['front', 'frontLeft', 'rearRight', 'interior', 'dashboard', 'engine', 'trunk'].includes(k)
+                    ).length;
+                    if (uploadedCount < 6) {
+                        showToast('请至少上传6张必拍照片');
+                        return false;
+                    }
+                    return true;
+            }
+            return true;
+        }
+        
+        function saveDraft() {
+            collectFormData();
+            
+            const draft = {
+                id: editingId || 'FP' + Date.now(),
+                ...formData,
+                status: 'draft',
+                createTime: new Date().toLocaleString('zh-CN', { hour12: false }).replace(/\//g, '-')
+            };
+            
+            if (editingId) {
+                const index = applications.findIndex(a => a.id === editingId);
+                if (index > -1) {
+                    applications[index] = { ...applications[index], ...draft };
+                }
+            } else {
+                applications.unshift(draft);
+            }
+            
+            showToast('草稿已保存');
+            setTimeout(() => {
+                showPage('page-application');
+                resetForm();
+            }, 1000);
+        }
+        
+        function submitApplication() {
+            collectFormData();
+            
+            const application = {
+                id: editingId || 'FP' + Date.now(),
+                brand: formData.brand,
+                series: formData.series,
+                model: formData.model,
+                plateNumber: formData.plateNumber || '未填写',
+                displacement: formData.displacement || '未知',
+                gearbox: formData.gearbox || '未知',
+                mileage: parseFloat(formData.mileage) || 0,
+                registerDate: formData.registerDate,
+                expectedPrice: parseFloat(formData.expectedPrice) || null,
+                startPrice: parseFloat(formData.startPrice) || null,
+                reservePrice: parseFloat(formData.reservePrice) || null,
+                increment: formData.increment,
+                status: 'pending',
+                createTime: new Date().toLocaleString('zh-CN', { hour12: false }).replace(/\//g, '-'),
+                photos: Object.keys(formData.photos),
+                rejectReason: ''
+            };
+            
+            if (editingId) {
+                const index = applications.findIndex(a => a.id === editingId);
+                if (index > -1) {
+                    applications[index] = application;
+                }
+            } else {
+                applications.unshift(application);
+            }
+            
+            showToast('申请已提交，等待审核');
+            setTimeout(() => {
+                showPage('page-application');
+                resetForm();
+            }, 1000);
+        }
+        
+        function collectFormData() {
+            formData.vinCode = document.getElementById('vinCode').value;
+            formData.plateNumber = document.getElementById('plateNumber').value;
+            formData.mileage = document.getElementById('mileage').value;
+            formData.expectedPrice = document.getElementById('expectedPrice').value;
+            formData.minPrice = document.getElementById('minPrice').value;
+            formData.startPrice = document.getElementById('startPrice').value;
+            formData.reservePrice = document.getElementById('reservePrice').value;
+        }
+        
+        function resetForm() {
+            currentStep = 1;
+            editingId = null;
+            formData = {
+                vinCode: '',
+                plateNumber: '',
+                brand: '',
+                series: '',
+                model: '',
+                year: '',
+                displacement: '',
+                gearbox: '',
+                fuel: '汽油',
+                exteriorColor: '',
+                interiorColor: '',
+                registerDate: '',
+                mileage: '',
+                transferCount: 0,
+                nature: '非营运',
+                condition: '',
+                accident: '无事故',
+                maintenance: '',
+                modify: '无改装',
+                expectedPrice: '',
+                minPrice: '',
+                startPrice: '',
+                reservePrice: '',
+                increment: 500,
+                duration: 24,
+                prep: false,
+                transferService: false,
+                logistics: false,
+                photos: {},
+                video: null
+            };
+            
+            // 重置UI
+            document.querySelectorAll('.form-step').forEach((s, i) => {
+                s.style.display = i === 0 ? 'block' : 'none';
+            });
+            document.querySelectorAll('.form-input').forEach(input => {
+                if (input.type !== 'number' || input.id !== 'transferCount') {
+                    input.value = '';
+                }
+            });
+            document.getElementById('formTitle').textContent = '新建发拍申请';
+            updateStepIndicator();
+            updateSubmitButton();
+            
+            // 重置照片
+            document.querySelectorAll('.photo-item').forEach(item => {
+                item.classList.remove('uploaded');
+                item.innerHTML = `
+                    <svg class="photo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                        <circle cx="12" cy="13" r="4"></circle>
+                    </svg>
+                    <span class="photo-label">${item.querySelector('.photo-label')?.textContent || '拍照'}</span>
+                `;
+            });
+            updatePhotoCount();
+        }
+        
+        function confirmExitForm() {
+            showModal('确定离开？', '当前填写的内容将保存为草稿', () => {
+                saveDraft();
+            }, true);
+        }
+        
+        // ==================== 编辑和查看 ====================
+        function editApplication(id) {
+            const app = applications.find(a => a.id === id);
+            if (!app) return;
+            
+            editingId = id;
+            document.getElementById('formTitle').textContent = '编辑申请';
+            
+            // 填充表单数据
+            document.getElementById('vinCode').value = app.vinCode || '';
+            document.getElementById('plateNumber').value = app.plateNumber || '';
+            formData.brand = app.brand || '';
+            formData.series = app.series || '';
+            formData.model = app.model || '';
+            formData.mileage = app.mileage || '';
+            formData.registerDate = app.registerDate || '';
+            formData.expectedPrice = app.expectedPrice || '';
+            formData.startPrice = app.startPrice || '';
+            formData.reservePrice = app.reservePrice || '';
+            
+            // 更新UI显示
+            document.getElementById('brandText').textContent = app.brand || '请选择';
+            document.getElementById('brandText').style.color = app.brand ? 'var(--text-primary)' : 'var(--gray-light)';
+            document.getElementById('seriesText').textContent = app.series || '请先选择品牌';
+            document.getElementById('seriesText').style.color = app.series ? 'var(--text-primary)' : 'var(--gray-light)';
+            document.getElementById('modelText').textContent = app.model || '请先选择车系';
+            document.getElementById('modelText').style.color = app.model ? 'var(--text-primary)' : 'var(--gray-light)';
+            
+            if (app.expectedPrice) document.getElementById('expectedPrice').value = app.expectedPrice;
+            if (app.startPrice) document.getElementById('startPrice').value = app.startPrice;
+            if (app.reservePrice) document.getElementById('reservePrice').value = app.reservePrice;
+            
+            showPage('page-form');
+        }
+        
+        function viewDetail(id) {
+            const app = applications.find(a => a.id === id);
+            if (!app) return;
+            
+            const statusMap = {
+                'draft': { text: '草稿', class: 'status-draft' },
+                'pending': { text: '待审核', class: 'status-pending' },
+                'approved': { text: '已通过', class: 'status-approved' },
+                'rejected': { text: '已驳回', class: 'status-rejected' }
+            };
+            const status = statusMap[app.status];
+            
+            const detailCard = document.getElementById('detailCard');
+            detailCard.innerHTML = `
+                <div class="detail-header">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <div class="detail-title">${app.brand} ${app.series} ${app.model}</div>
+                            <div class="detail-subtitle">${app.plateNumber} · ${app.displacement}${app.gearbox}</div>
+                        </div>
+                        <span class="status-badge ${status.class}">${status.text}</span>
+                    </div>
+                </div>
+                
+                <div class="tab-container">
+                    <div class="tab-item active" onclick="showDetailTab('basic', this)">基本信息</div>
+                    <div class="tab-item" onclick="showDetailTab('price', this)">价格设置</div>
+                    <div class="tab-item" onclick="showDetailTab('photos', this)">照片</div>
+                    <div class="tab-item" onclick="showDetailTab('timeline', this)">记录</div>
+                </div>
+                
+                <div id="detailTabContent">
+                    <div class="detail-row">
+                        <div class="detail-label">申请单号</div>
+                        <div class="detail-value">${app.id}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">VIN码</div>
+                        <div class="detail-value">${app.vinCode || '--'}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">品牌</div>
+                        <div class="detail-value">${app.brand}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">车系</div>
+                        <div class="detail-value">${app.series}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">车型</div>
+                        <div class="detail-value">${app.model}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">上牌日期</div>
+                        <div class="detail-value">${app.registerDate || '--'}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">表显里程</div>
+                        <div class="detail-value">${app.mileage}万km</div>
+                    </div>
+                </div>
+            `;
+            
+            // 底部按钮
+            const detailFooter = document.getElementById('detailFooter');
+            const editBtn = document.getElementById('detailEditBtn');
+            
+            switch(app.status) {
+                case 'draft':
+                    editBtn.style.display = 'block';
+                    detailFooter.innerHTML = `
+                        <button class="btn-block btn-save" onclick="deleteApplication('${app.id}')">删除</button>
+                        <button class="btn-block btn-submit" onclick="editApplication('${app.id}')">继续填写</button>
+                    `;
+                    break;
+                case 'pending':
+                    editBtn.style.display = 'block';
+                    detailFooter.innerHTML = `
+                        <button class="btn-block btn-save" onclick="withdrawApplication('${app.id}')">撤回申请</button>
+                        <button class="btn-block btn-submit" onclick="editApplication('${app.id}')">编辑申请</button>
+                    `;
+                    break;
+                case 'approved':
+                    editBtn.style.display = 'none';
+                    detailFooter.innerHTML = `
+                        <button class="btn-block btn-submit" onclick="showPage('page-application')">返回列表</button>
+                    `;
+                    break;
+                case 'rejected':
+                    editBtn.style.display = 'block';
+                    detailFooter.innerHTML = `
+                        <button class="btn-block btn-save" onclick="showPage('page-application')">返回列表</button>
+                        <button class="btn-block btn-submit" onclick="editApplication('${app.id}')">重新提交</button>
+                    `;
+                    break;
+            }
+            
+            showPage('page-detail');
+        }
+        
+        function showDetailTab(tab, element) {
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            element.classList.add('active');
+            
+            const app = applications.find(a => a.id === editingId) || applications[0];
+            
+            // 这里可以根据tab切换显示不同内容
+            // 简化实现，实际项目中需要完整实现
+        }
+        
+        function deleteApplication(id) {
+            showModal('确定删除？', '删除后将无法恢复', () => {
+                applications = applications.filter(a => a.id !== id);
+                showToast('已删除');
+                showPage('page-application');
+            }, false, true);
+        }
+        
+        function withdrawApplication(id) {
+            showModal('确定撤回？', '撤回后可重新编辑提交', () => {
+                const app = applications.find(a => a.id === id);
+                if (app) {
+                    app.status = 'draft';
+                }
+                showToast('已撤回');
+                showPage('page-application');
+            });
+        }
+        
+        // ==================== 表单交互 ====================
+        function onVinInput(input) {
+            const vin = input.value.toUpperCase();
+            input.value = vin;
+            
+            if (vin.length === 17) {
+                // 模拟VIN解析
+                setTimeout(() => {
+                    formData.brand = '宝马';
+                    formData.series = '5系';
+                    formData.model = '2022款 530Li 领先型';
+                    formData.displacement = '2.0T';
+                    formData.gearbox = '自动';
+                    
+                    document.getElementById('brandText').textContent = '宝马';
+                    document.getElementById('brandText').style.color = 'var(--text-primary)';
+                    document.getElementById('seriesText').textContent = '5系';
+                    document.getElementById('seriesText').style.color = 'var(--text-primary)';
+                    document.getElementById('modelText').textContent = '2022款 530Li 领先型';
+                    document.getElementById('modelText').style.color = 'var(--text-primary)';
+                    document.getElementById('displacement').value = '2.0T';
+                    document.getElementById('gearbox').value = '自动';
+                    
+                    showToast('VIN解析成功');
+                }, 500);
+            }
+        }
+        
+        function scanVin() {
+            showToast('正在调用相机扫描VIN...');
+            // 模拟扫描结果
+            setTimeout(() => {
+                document.getElementById('vinCode').value = 'LBV5S3102KSZ12345';
+                onVinInput(document.getElementById('vinCode'));
+            }, 1000);
+        }
+        
+        function showBrandPicker() {
+            const brands = ['宝马', '奔驰', '奥迪', '保时捷', '大众', '丰田', '本田'];
+            const brand = prompt('选择品牌：\n' + brands.map((b, i) => `${i+1}. ${b}`).join('\n'));
+            if (brand && brands[parseInt(brand)-1]) {
+                formData.brand = brands[parseInt(brand)-1];
+                document.getElementById('brandText').textContent = formData.brand;
+                document.getElementById('brandText').style.color = 'var(--text-primary)';
+                document.getElementById('seriesText').textContent = '请选择';
+                document.getElementById('seriesText').style.color = 'var(--gray-light)';
+            }
+        }
+        
+        function showSeriesPicker() {
+            if (!formData.brand) {
+                showToast('请先选择品牌');
+                return;
+            }
+            const seriesMap = {
+                '宝马': ['5系', '3系', 'X5', 'X3'],
+                '奔驰': ['E级', 'C级', 'GLC', 'GLE'],
+                '奥迪': ['A6L', 'A4L', 'Q5', 'Q7']
+            };
+            const series = seriesMap[formData.brand] || ['车系1', '车系2'];
+            const selected = prompt('选择车系：\n' + series.map((s, i) => `${i+1}. ${s}`).join('\n'));
+            if (selected && series[parseInt(selected)-1]) {
+                formData.series = series[parseInt(selected)-1];
+                document.getElementById('seriesText').textContent = formData.series;
+                document.getElementById('seriesText').style.color = 'var(--text-primary)';
+            }
+        }
+        
+        function showModelPicker() {
+            if (!formData.series) {
+                showToast('请先选择车系');
+                return;
+            }
+            const model = prompt('选择车型：\n1. 2022款 领先型\n2. 2022款 豪华型\n3. 2023款 运动型');
+            if (model) {
+                const models = ['2022款 领先型', '2022款 豪华型', '2023款 运动型'];
+                formData.model = models[parseInt(model)-1] || formData.series + ' 标准型';
+                document.getElementById('modelText').textContent = formData.model;
+                document.getElementById('modelText').style.color = 'var(--text-primary)';
+                
+                formData.displacement = '2.0T';
+                formData.gearbox = '自动';
+                document.getElementById('displacement').value = '2.0T';
+                document.getElementById('gearbox').value = '自动';
+            }
+        }
+        
+        function showYearPicker() {
+            const years = [];
+            for (let y = 2024; y >= 2015; y--) years.push(y);
+            const selected = prompt('选择年款：\n' + years.slice(0, 5).map((y, i) => `${i+1}. ${y}`).join('\n'));
+            if (selected) {
+                formData.year = years[parseInt(selected)-1] || 2022;
+                document.getElementById('yearText').textContent = formData.year;
+                document.getElementById('yearText').style.color = 'var(--text-primary)';
+            }
+        }
+        
+        function showFuelPicker() {
+            const fuels = ['汽油', '柴油', '电动', '混动'];
+            const selected = prompt('选择燃料类型：\n1. 汽油\n2. 柴油\n3. 电动\n4. 混动');
+            if (selected) {
+                formData.fuel = fuels[parseInt(selected)-1] || '汽油';
+                document.getElementById('fuelText').textContent = formData.fuel;
+            }
+        }
+        
+        function showColorPicker(type) {
+            const colors = type === 'exterior' 
+                ? ['白色', '黑色', '银色', '蓝色', '红色', '灰色']
+                : ['黑色', '米色', '棕色', '红色'];
+            const selected = prompt('选择颜色：\n' + colors.map((c, i) => `${i+1}. ${c}`).join('\n'));
+            if (selected && colors[parseInt(selected)-1]) {
+                const color = colors[parseInt(selected)-1];
+                if (type === 'exterior') {
+                    formData.exteriorColor = color;
+                    document.getElementById('exteriorColorText').textContent = color;
+                    document.getElementById('exteriorColorText').style.color = 'var(--text-primary)';
+                } else {
+                    formData.interiorColor = color;
+                    document.getElementById('interiorColorText').textContent = color;
+                    document.getElementById('interiorColorText').style.color = 'var(--text-primary)';
+                }
+            }
+        }
+        
+        function showDatePicker(field) {
+            const date = prompt('输入日期（格式：YYYY-MM）：', '2022-06');
+            if (date) {
+                formData.registerDate = date;
+                document.getElementById('registerDateText').textContent = date;
+                document.getElementById('registerDateText').style.color = 'var(--text-primary)';
+            }
+        }
+        
+        function validateMileage(input) {
+            const value = parseFloat(input.value);
+            const warning = document.getElementById('mileageWarning');
+            if (value > 10) {
+                warning.style.display = 'block';
+            } else {
+                warning.style.display = 'none';
+            }
+        }
+        
+        function showConditionPicker() {
+            const conditions = ['S级（准新车）', 'A级（优秀）', 'B级（良好）', 'C级（一般）'];
+            const selected = prompt('选择车况等级：\n' + conditions.map((c, i) => `${i+1}. ${c}`).join('\n'));
+            if (selected) {
+                formData.condition = conditions[parseInt(selected)-1];
+                document.getElementById('conditionText').textContent = formData.condition;
+                document.getElementById('conditionText').style.color = 'var(--text-primary)';
+            }
+        }
+        
+        function showAccidentPicker() {
+            const selected = prompt('事故记录：\n1. 无事故\n2. 有事故');
+            if (selected === '2') {
+                formData.accident = '有事故';
+                document.getElementById('accidentText').textContent = '有事故';
+            } else {
+                formData.accident = '无事故';
+                document.getElementById('accidentText').textContent = '无事故';
+            }
+        }
+        
+        function showMaintenancePicker() {
+            const options = ['4S店保养', '非4S店保养', '无保养记录'];
+            const selected = prompt('维修保养：\n' + options.map((o, i) => `${i+1}. ${o}`).join('\n'));
+            if (selected) {
+                formData.maintenance = options[parseInt(selected)-1];
+                document.getElementById('maintenanceText').textContent = formData.maintenance;
+                document.getElementById('maintenanceText').style.color = 'var(--text-primary)';
+            }
+        }
+        
+        function showModifyPicker() {
+            const selected = prompt('改装情况：\n1. 无改装\n2. 有改装');
+            formData.modify = selected === '2' ? '有改装' : '无改装';
+            document.getElementById('modifyText').textContent = formData.modify;
+        }
+        
+        function uploadReport() {
+            showToast('正在选择文件...');
+            setTimeout(() => {
+                document.getElementById('reportText').textContent = '已上传1个文件';
+                document.getElementById('reportText').style.color = 'var(--success-color)';
+            }, 500);
+        }
+        
+        function updatePriceCalc() {
+            const price = parseFloat(document.getElementById('expectedPrice').value);
+            const suggestion = document.getElementById('priceSuggestion');
+            
+            if (price) {
+                suggestion.style.display = 'block';
+                const low = (price * 0.95).toFixed(2);
+                const high = (price * 1.05).toFixed(2);
+                document.getElementById('valuationRange').textContent = `${low} - ${high} 万`;
+            } else {
+                suggestion.style.display = 'none';
+            }
+        }
+        
+        function validatePrices() {
+            const start = parseFloat(document.getElementById('startPrice').value);
+            const reserve = parseFloat(document.getElementById('reservePrice').value);
+            const error = document.getElementById('priceError');
+            
+            if (start && reserve && reserve < start) {
+                error.textContent = '保留价不能低于起拍价';
+                error.style.display = 'block';
+            } else {
+                error.style.display = 'none';
+            }
+        }
+        
+        function showIncrementPicker() {
+            const options = [100, 200, 500, 1000, 2000, 5000];
+            const selected = prompt('选择加价幅度：\n' + options.map((o, i) => `${i+1}. ${o}元`).join('\n'));
+            if (selected) {
+                formData.increment = options[parseInt(selected)-1];
+                document.getElementById('incrementText').textContent = formData.increment + '元';
+            }
+        }
+        
+        function showDurationPicker() {
+            const options = [12, 24, 48, 72];
+            const selected = prompt('选择拍卖时长：\n1. 12小时\n2. 24小时\n3. 48小时\n4. 72小时');
+            if (selected) {
+                formData.duration = options[parseInt(selected)-1];
+                document.getElementById('durationText').textContent = formData.duration + '小时';
+            }
+        }
+        
+        function toggleService(service) {
+            const texts = { prep: 'prepText', transfer: 'transferText', logistics: 'logisticsText' };
+            const keys = { prep: 'prep', transfer: 'transferService', logistics: 'logistics' };
+            
+            formData[keys[service]] = !formData[keys[service]];
+            document.getElementById(texts[service]).textContent = formData[keys[service]] ? '需要' : '不需要';
+        }
+        
+        function takePhoto(type) {
+            showToast('正在调用相机...');
+            
+            setTimeout(() => {
+                formData.photos[type] = true;
+                
+                const item = document.querySelector(`.photo-item[data-photo="${type}"]`);
+                if (item) {
+                    item.classList.add('uploaded');
+                    item.innerHTML = `
+                        <div class="photo-check">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                        <div class="photo-delete" onclick="event.stopPropagation(); deletePhoto('${type}')">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </div>
+                    `;
+                }
+                
+                updatePhotoCount();
+            }, 500);
+        }
+        
+        function deletePhoto(type) {
+            delete formData.photos[type];
+            
+            const item = document.querySelector(`.photo-item[data-photo="${type}"]`);
+            if (item) {
+                item.classList.remove('uploaded');
+                const labels = {
+                    front: '前脸', frontLeft: '左前45°', rearRight: '右后45°',
+                    interior: '内饰', dashboard: '仪表盘', engine: '发动机舱', trunk: '后备箱',
+                    defect: '瑕疵照片', modify: '改装照片', other: '其他'
+                };
+                item.innerHTML = `
+                    <svg class="photo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                        <circle cx="12" cy="13" r="4"></circle>
+                    </svg>
+                    <span class="photo-label">${labels[type] || '拍照'}</span>
+                `;
+            }
+            
+            updatePhotoCount();
+        }
+        
+        function updatePhotoCount() {
+            const requiredPhotos = ['front', 'frontLeft', 'rearRight', 'interior', 'dashboard', 'engine', 'trunk'];
+            const count = requiredPhotos.filter(p => formData.photos[p]).length;
+            document.getElementById('uploadedCount').textContent = count;
+            
+            const countEl = document.getElementById('photoCount');
+            if (count >= 6) {
+                countEl.style.color = 'var(--success-color)';
+            } else {
+                countEl.style.color = 'var(--text-secondary)';
+            }
+        }
+        
+        function recordVideo() {
+            showToast('正在调用相机录制视频...');
+            setTimeout(() => {
+                formData.video = true;
+                document.getElementById('videoText').textContent = '已录制';
+                document.getElementById('videoText').style.color = 'var(--success-color)';
+            }, 500);
+        }
+        
+        // ==================== 弹窗和提示 ====================
+        function showModal(title, text, callback, showCancel = true, isDanger = false) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalText').textContent = text;
+            
+            const confirmBtn = document.getElementById('modalConfirm');
+            confirmBtn.textContent = isDanger ? '删除' : '确定';
+            confirmBtn.className = 'modal-btn ' + (isDanger ? 'danger' : 'confirm');
+            
+            const footer = document.getElementById('modalFooter');
+            if (showCancel) {
+                footer.innerHTML = `
+                    <div class="modal-btn cancel" onclick="closeModal()">取消</div>
+                    <div class="modal-btn ${isDanger ? 'danger' : 'confirm'}" onclick="confirmModal()">${isDanger ? '删除' : '确定'}</div>
+                `;
+            } else {
+                footer.innerHTML = `
+                    <div class="modal-btn confirm" onclick="confirmModal()">确定</div>
+                `;
+            }
+            
+            window._modalCallback = callback;
+            document.getElementById('modalOverlay').classList.add('show');
+        }
+        
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('show');
+            window._modalCallback = null;
+        }
+        
+        function confirmModal() {
+            if (window._modalCallback) {
+                window._modalCallback();
+            }
+            closeModal();
+        }
+        
+        function showToast(text) {
+            const toast = document.getElementById('toast');
+            toast.textContent = text;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+        
+        // ==================== 搜索和筛选 ====================
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                renderApplicationList(this.dataset.status, document.getElementById('searchInput').value);
+            });
+        });
+        
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const activeFilter = document.querySelector('.filter-tab.active').dataset.status;
+            renderApplicationList(activeFilter, this.value);
+        });
+        
+        // ==================== 初始化 ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            renderApplicationList();
+        });
+    </script>
+</body>
+</html>
