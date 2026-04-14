@@ -186,7 +186,7 @@ let applications: Application[] = [
     reservePrice: 32.0,
     images: {},
     province: '北京', city: '北京', storeName: 'XYZ车行总店',
-    status: 'ready', applyTime: '2026-04-08 09:00',
+    status: 'scheduled', applyTime: '2026-04-08 09:00',
     submitterName: '李四', submitterPhone: '139****9000'
   },
 ];
