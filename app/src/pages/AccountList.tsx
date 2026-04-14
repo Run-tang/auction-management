@@ -6,10 +6,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import {
   Table, TableHeader, TableBody, TableHead, TableRow, TableCell,
 } from '@/components/ui/table'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
-  Search, RotateCcw, Plus, User, Phone, Building2, Clock, Calendar,
+  RotateCcw, Plus, User, Phone, Clock, Calendar,
   ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, AlertCircle,
-  FileText, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
 } from 'lucide-react'
 import type { Account, AccountType, AccountStatus } from '@/types'
 
