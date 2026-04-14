@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 
 // GitHub Pages 部署路径，本地开发使用 '/'
-const base = process.env.GITHUB_PAGES ? '/dealer/' : '/'
+const base = process.env.GITHUB_PAGES ? '/auction-management/dealer/' : '/'
 
 export default defineConfig({
   base,

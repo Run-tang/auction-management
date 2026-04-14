@@ -75,12 +75,15 @@ jobs:
           <body>
             <h1>🚗 广联二手车发拍管理系统</h1>
             <div class="links">
-              <a href="/dealer/">经销商端</a>
-              <a href="/admin/" class="admin">后台管理端</a>
+              <a href="./dealer/">经销商端</a>
+              <a href="./admin/" class="admin">后台管理端</a>
             </div>
           </body>
           </html>
           EOF
+          # 为 SPA 应用添加 404 重定向（支持前端路由）
+          cp _site/dealer/index.html _site/dealer/404.html
+          cp _site/admin/index.html _site/admin/404.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

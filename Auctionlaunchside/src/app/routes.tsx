@@ -7,13 +7,16 @@ import { Profile } from './components/Profile';
 import { Login } from './components/Login';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
+// GitHub Pages 部署时使用 base path
+const basename = import.meta.env.BASE_URL;
+
 function NotFound() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center text-center px-8">
       <div className="text-[48px] mb-4">🔍</div>
       <div className="text-[16px] font-medium text-[#1F2937] mb-2">页面不存在</div>
       <div className="text-[14px] text-[#6B7280] mb-6">请检查链接是否正确</div>
-      <a href="/" className="px-6 py-2.5 bg-[#FF6B00] text-white rounded-full text-[14px] no-underline">返回首页</a>
+      <a href={basename} className="px-6 py-2.5 bg-[#FF6B00] text-white rounded-full text-[14px] no-underline">返回首页</a>
     </div>
   );
 }
@@ -38,4 +41,4 @@ export const router = createBrowserRouter([
       { path: '*', Component: NotFound },
     ],
   },
-]);
+], { basename });
