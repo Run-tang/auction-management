@@ -14,7 +14,7 @@ export interface AuctionOrder {
   dealerName: string
   carBrand: string
   carModel: string
-  carYear: number
+
   vin: string
   startPrice: number
   finalPrice?: number

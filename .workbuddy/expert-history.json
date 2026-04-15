@@ -3,6 +3,24 @@
   "sessions": {
     "c6451ca0e42442ce9629e2c836b2cf14": [
       {
+        "expertId": "SoftwareArchitect",
+        "name": "Yara",
+        "profession": "软件架构师",
+        "avatarUrl": "https://acc-1258344699.cos.accelerate.myqcloud.com/workbuddy/experts/avatars/02-Engineering/SoftwareArchitect/SoftwareArchitect.png",
+        "promptUrl": "https://acc-1258344699.cos.accelerate.myqcloud.com/workbuddy/experts/experts/02-Engineering/SoftwareArchitect/SoftwareArchitect_zh.md",
+        "usedAt": 1776171444209,
+        "industryId": "02-Engineering"
+      },
+      {
+        "expertId": "SeniorDeveloper",
+        "name": "Will",
+        "profession": "高级开发工程师",
+        "avatarUrl": "https://acc-1258344699.cos.accelerate.myqcloud.com/workbuddy/experts/avatars/02-Engineering/SeniorDeveloper/SeniorDeveloper.png",
+        "promptUrl": "https://acc-1258344699.cos.accelerate.myqcloud.com/workbuddy/experts/experts/02-Engineering/SeniorDeveloper/SeniorDeveloper_zh.md",
+        "usedAt": 1776170117999,
+        "industryId": "all"
+      },
+      {
         "expertId": "FrontendDeveloper",
         "name": "Paul",
         "profession": "前端开发工程师",
@@ -10,26 +28,8 @@
         "promptUrl": "https://acc-1258344699.cos.accelerate.myqcloud.com/workbuddy/experts/experts/02-Engineering/FrontendDeveloper/FrontendDeveloper_zh.md",
         "usedAt": 1776167768470,
         "industryId": "02-Engineering"
-      },
-      {
-        "expertId": "SoftwareArchitect",
-        "name": "Yara",
-        "profession": "软件架构师",
-        "avatarUrl": "https://acc-1258344699.cos.accelerate.myqcloud.com/workbuddy/experts/avatars/02-Engineering/SoftwareArchitect/SoftwareArchitect.png",
-        "promptUrl": "https://acc-1258344699.cos.accelerate.myqcloud.com/workbuddy/experts/experts/02-Engineering/SoftwareArchitect/SoftwareArchitect_zh.md",
-        "usedAt": 1776165867220,
-        "industryId": "02-Engineering"
-      },
-      {
-        "expertId": "TestResultsAnalyst",
-        "name": "Lyra",
-        "profession": "测试结果分析师",
-        "avatarUrl": "https://acc-1258344699.cos.accelerate.myqcloud.com/workbuddy/experts/avatars/08-QualityAssurance/TestResultsAnalyst/TestResultsAnalyst.png",
-        "promptUrl": "https://acc-1258344699.cos.accelerate.myqcloud.com/workbuddy/experts/experts/08-QualityAssurance/TestResultsAnalyst/TestResultsAnalyst_zh.md",
-        "usedAt": 1776158412400,
-        "industryId": "08-QualityAssurance"
       }
     ]
   },
-  "lastUpdated": 1776167771401
+  "lastUpdated": 1776171445774
 }

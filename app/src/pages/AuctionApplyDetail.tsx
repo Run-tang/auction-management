@@ -162,7 +162,7 @@ export default function AuctionApplyDetail() {
             <div className="text-right">
               <div className="text-lg font-bold text-slate-800">{item.carBrand} {item.carSeries}</div>
               <div className="text-sm text-slate-500">{item.carModel}</div>
-              <div className="text-sm text-slate-400 mt-1">{item.carYear}款 · {item.licensePlate || '未上牌'}</div>
+              <div className="text-sm text-slate-400 mt-1">{item.licensePlate || '未上牌'}</div>
             </div>
           </div>
         </div>
@@ -220,9 +220,6 @@ export default function AuctionApplyDetail() {
               <div>
                 <span className="text-xs text-slate-400">车型名称</span>
                 <div className="text-sm font-medium text-slate-800 mt-0.5">{item.carModel}</div>
-              </div>
-              <div>
-                <div className="text-sm font-medium text-slate-800 mt-0.5">{item.carYear}款</div>
               </div>
             </div>
           </div>

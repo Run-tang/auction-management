@@ -49,7 +49,7 @@ interface FormData {
   carBrand: string;
   carSeries: string;
   carModel: string;
-  carYear: string;
+
   // 车辆配置
   engineCapacity: string;
   transmission: string;
@@ -73,7 +73,7 @@ const defaultForm: FormData = {
   carBrand: '', 
   carSeries: '', 
   carModel: '', 
-  carYear: '',
+
   engineCapacity: '', 
   transmission: '自动', 
   fuelType: '汽油', 
@@ -109,7 +109,7 @@ export function NewApplication() {
           carBrand: app.carBrand, 
           carSeries: app.carSeries, 
           carModel: app.carModel, 
-          carYear: app.carYear ? String(app.carYear) : '',
+
           engineCapacity: app.engineCapacity, 
           transmission: app.transmission,
           fuelType: app.fuelType || '汽油',
@@ -150,7 +150,7 @@ export function NewApplication() {
           carBrand: '宝马', 
           carSeries: '5系', 
           carModel: '2022款 530Li', 
-          carYear: '2022', 
+ 
           engineCapacity: '2.0T', 
           transmission: '自动' 
         }));
@@ -203,9 +203,8 @@ export function NewApplication() {
       vin: form.vin,
       licensePlate: form.licensePlate || undefined,
       carBrand: form.carBrand, 
-      carSeries: form.carSeries, 
+      carSeries: form.carSeries,
       carModel: form.carModel,
-      carYear: form.carYear ? parseInt(form.carYear) : undefined,
       engineCapacity: form.engineCapacity || '未知',
       transmission: form.transmission || '自动', 
       fuelType: form.fuelType,
@@ -245,7 +244,6 @@ export function NewApplication() {
       carBrand: form.carBrand || '未填写', 
       carSeries: form.carSeries || '', 
       carModel: form.carModel || '',
-      carYear: form.carYear ? parseInt(form.carYear) : undefined,
       engineCapacity: form.engineCapacity || '',
       transmission: form.transmission || '自动', 
       fuelType: form.fuelType,
@@ -403,12 +401,6 @@ export function NewApplication() {
                 if (!form.carSeries) { toast.warning('请先选择车系'); return; }
                 setShowPicker({ type: '车型', options: [`${new Date().getFullYear()}款 ${form.carSeries}`, `${new Date().getFullYear() - 1}款 ${form.carSeries}`, `${new Date().getFullYear() - 2}款 ${form.carSeries}`], field: 'carModel' });
               }} 
-            />
-            <PickerRow 
-              required 
-              value={form.carYear || '请选择'} 
-              placeholder={!form.carYear} 
-              last
             />
           </Section>
 

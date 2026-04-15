@@ -126,7 +126,7 @@ export default function OrderDetail() {
                 {item.carBrand} {item.carSeries} {item.carModel}
               </h2>
               <p className="text-sm text-slate-500">
-                {item.carYear} | {item.engineCapacity} | {item.transmission}
+                {item.engineCapacity} | {item.transmission}
               </p>
             </div>
           </div>

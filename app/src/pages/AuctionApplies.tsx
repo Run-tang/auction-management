@@ -320,7 +320,7 @@ export default function AuctionApplies() {
               <TableBody>
                 {paged.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={19} className="text-center py-16">
+                    <TableCell colSpan={18} className="text-center py-16">
                       <div className="flex flex-col items-center gap-3">
                         <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center">
                           <FileText size={24} className="text-slate-300" />
@@ -356,7 +356,6 @@ export default function AuctionApplies() {
                         <TableCell><span className="text-sm text-slate-700">{item.carBrand}</span></TableCell>
                         {/* 车系 */}
                         <TableCell><span className="text-sm text-slate-700">{item.carSeries}</span></TableCell>
-                        {/* 年款 */}
                         {/* 车型名称 */}
                         <TableCell>
                           <span className="text-sm text-slate-800 max-w-[180px] truncate block" title={item.carModel}>
