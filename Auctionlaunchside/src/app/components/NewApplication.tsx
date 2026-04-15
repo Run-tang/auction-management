@@ -30,6 +30,43 @@ const COLORS = ['黑色', '白色', '银色', '灰色', '红色', '蓝色', '绿
 const GEARBOX = ['手动', '自动'];
 const NATURE_OPTIONS = ['营运', '非营运'];
 
+// 省份城市数据
+const PROVINCES = ['北京市', '上海市', '天津市', '重庆市', '广东省', '浙江省', '江苏省', '四川省', '湖北省', '湖南省', '河南省', '河北省', '山东省', '山西省', '辽宁省', '吉林省', '黑龙江省', '安徽省', '福建省', '江西省', '陕西省', '甘肃省', '青海省', '内蒙古', '广西省', '海南省', '贵州省', '云南省', '西藏区', '宁夏区', '新疆区'];
+
+const CITIES_MAP: Record<string, string[]> = {
+  '北京市': ['北京市'],
+  '上海市': ['上海市'],
+  '天津市': ['天津市'],
+  '重庆市': ['重庆市'],
+  '广东省': ['广州市', '深圳市', '佛山市', '东莞市', '珠海市', '中山市', '惠州市', '江门市', '湛江市', '茂名市', '肇庆市', '汕头市', '韶关市', '梅州市', '汕尾市', '河源市', '阳江市', '清远市', '潮州市', '揭阳市', '云浮市'],
+  '浙江省': ['杭州市', '宁波市', '温州市', '嘉兴市', '湖州市', '绍兴市', '金华市', '衢州市', '舟山市', '台州市', '丽水市'],
+  '江苏省': ['南京市', '苏州市', '无锡市', '常州市', '南通市', '徐州市', '连云港市', '淮安市', '盐城市', '扬州市', '镇江市', '泰州市', '宿迁市'],
+  '四川省': ['成都市', '绵阳市', '德阳市', '南充市', '宜宾市', '自贡市', '攀枝花市', '泸州市', '广元市', '遂宁市', '内江市', '乐山市', '资阳市', '眉山市', '达州市', '雅安市', '广安市', '巴中市', '眉山市'],
+  '湖北省': ['武汉市', '黄石市', '十堰市', '宜昌市', '襄阳市', '鄂州市', '荆州市', '孝感市', '黄冈市', '咸宁市', '随州市', '恩施州', '仙桃市', '潜江市', '天门市'],
+  '湖南省': ['长沙市', '株洲市', '湘潭市', '衡阳市', '岳阳市', '常德市', '张家界市', '益阳市', '郴州市', '永州市', '怀化市', '娄底市', '湘西州'],
+  '河南省': ['郑州市', '开封市', '洛阳市', '平顶山市', '安阳市', '鹤壁市', '新乡市', '焦作市', '濮阳市', '许昌市', '漯河市', '三门峡市', '南阳市', '商丘市', '信阳市', '周口市', '驻马店市'],
+  '河北省': ['石家庄市', '唐山市', '秦皇岛市', '邯郸市', '邢台市', '保定市', '张家口市', '承德市', '沧州市', '廊坊市', '衡水市'],
+  '山东省': ['济南市', '青岛市', '淄博市', '枣庄市', '东营市', '烟台市', '潍坊市', '济宁市', '泰安市', '威海市', '日照市', '临沂市', '德州市', '聊城市', '滨州市', '菏泽市'],
+  '山西省': ['太原市', '大同市', '阳泉市', '长治市', '晋城市', '朔州市', '晋中市', '运城市', '忻州市', '临汾市', '吕梁市'],
+  '辽宁省': ['沈阳市', '大连市', '鞍山市', '抚顺市', '本溪市', '丹东市', '锦州市', '营口市', '阜新市', '辽阳市', '盘锦市', '铁岭市', '朝阳市', '葫芦岛市'],
+  '吉林省': ['长春市', '吉林市', '四平市', '辽源市', '通化市', '白山市', '松原市', '白城市', '延边州'],
+  '黑龙江省': ['哈尔滨市', '齐齐哈尔市', '鸡西市', '鹤岗市', '双鸭山市', '大庆市', '伊春市', '佳木斯市', '七台河市', '牡丹江市', '黑河市', '绥化市', '大兴安岭地区'],
+  '安徽省': ['合肥市', '芜湖市', '蚌埠市', '淮南市', '马鞍山市', '淮北市', '铜陵市', '安庆市', '黄山市', '滁州市', '阜阳市', '宿州市', '六安市', '亳州市', '池州市', '宣城市'],
+  '福建省': ['福州市', '厦门市', '莆田市', '三明市', '泉州市', '漳州市', '南平市', '龙岩市', '宁德市'],
+  '江西省': ['南昌市', '景德镇市', '萍乡市', '九江市', '新余市', '鹰潭市', '赣州市', '吉安市', '宜春市', '抚州市', '上饶市'],
+  '陕西省': ['西安市', '铜川市', '宝鸡市', '咸阳市', '渭南市', '延安市', '汉中市', '榆林市', '安康市', '商洛市'],
+  '甘肃省': ['兰州市', '嘉峪关市', '金昌市', '白银市', '天水市', '武威市', '张掖市', '平凉市', '酒泉市', '庆阳市', '定西市', '陇南市', '临夏州', '甘南州'],
+  '青海省': ['西宁市', '海东市', '海北州', '黄南州', '海南州', '果洛州', '玉树州', '海西州'],
+  '内蒙古': ['呼和浩特市', '包头市', '乌海市', '赤峰市', '通辽市', '鄂尔多斯市', '呼伦贝尔市', '巴彦淖尔市', '乌兰察布市', '兴安盟', '锡林郭勒盟', '阿拉善盟'],
+  '广西省': ['南宁市', '柳州市', '桂林市', '梧州市', '北海市', '防城港市', '钦州市', '贵港市', '玉林市', '百色市', '贺州市', '河池市', '来宾市', '崇左市'],
+  '海南省': ['海口市', '三亚市', '三沙市', '儋州市'],
+  '贵州省': ['贵阳市', '六盘水市', '遵义市', '安顺市', '毕节市', '铜仁市', '黔西南州', '黔东南州', '黔南州'],
+  '云南省': ['昆明市', '曲靖市', '玉溪市', '保山市', '昭通市', '丽江市', '普洱市', '临沧市', '楚雄州', '红河州', '文山州', '西双版纳州', '大理州', '德宏州', '怒江州', '迪庆州'],
+  '西藏区': ['拉萨市', '日喀则市', '昌都市', '林芝市', '山南市', '那曲市', '阿里地区'],
+  '宁夏区': ['银川市', '石嘴山市', '吴忠市', '固原市', '中卫市'],
+  '新疆区': ['乌鲁木齐市', '克拉玛依市', '吐鲁番市', '哈密市', '阿克苏地区', '喀什地区', '和田地区', '伊犁州', '塔城地区', '阿勒泰地区', '石河子市', '阿拉尔市', '图木舒克市', '五家渠市', '北屯市', '铁门关市', '双河市', '可克达拉市', '昆玉市']
+};
+
 // 必拍位置
 const REQUIRED_PHOTOS = [
   { key: 'front', label: '前脸' }, 
@@ -45,6 +82,9 @@ interface FormData {
   // 车辆识别
   vin: string;
   licensePlate: string;
+  // 车辆所在城市
+  province: string;
+  city: string;
   // 品牌车型
   carBrand: string;
   carSeries: string;
@@ -68,11 +108,13 @@ interface FormData {
 }
 
 const defaultForm: FormData = {
-  vin: '', 
-  licensePlate: '', 
-  carBrand: '', 
-  carSeries: '', 
-  carModel: '', 
+  vin: '',
+  licensePlate: '',
+  province: '',
+  city: '',
+  carBrand: '',
+  carSeries: '',
+  carModel: '',
 
   engineCapacity: '', 
   transmission: '自动', 
@@ -106,9 +148,11 @@ export function NewApplication() {
           ...defaultForm,
           vin: app.vin,
           licensePlate: app.licensePlate || '',
-          carBrand: app.carBrand, 
-          carSeries: app.carSeries, 
-          carModel: app.carModel, 
+          province: app.province || '',
+          city: app.city || '',
+          carBrand: app.carBrand,
+          carSeries: app.carSeries,
+          carModel: app.carModel,
 
           engineCapacity: app.engineCapacity, 
           transmission: app.transmission,
@@ -165,6 +209,7 @@ export function NewApplication() {
       case 1:
         if (!form.vin) { toast.error('请输入VIN码'); return false; }
         if (form.vin.length !== 17) { toast.error('VIN码必须为17位'); return false; }
+        if (!form.province || !form.city) { toast.error('请选择车辆所在省份和城市'); return false; }
         if (!form.carBrand || !form.carSeries || !form.carModel) { toast.error('请选择品牌、车系、车型'); return false; }
         return true;
       case 2:
@@ -202,7 +247,9 @@ export function NewApplication() {
       applyNo: editId ? undefined : applyNo,
       vin: form.vin,
       licensePlate: form.licensePlate || undefined,
-      carBrand: form.carBrand, 
+      province: form.province,
+      city: form.city,
+      carBrand: form.carBrand,
       carSeries: form.carSeries,
       carModel: form.carModel,
       engineCapacity: form.engineCapacity || '未知',
@@ -241,8 +288,10 @@ export function NewApplication() {
       applyNo: editId ? undefined : 'FP' + Date.now().toString().slice(-10),
       vin: form.vin,
       licensePlate: form.licensePlate || undefined,
-      carBrand: form.carBrand || '未填写', 
-      carSeries: form.carSeries || '', 
+      province: form.province,
+      city: form.city,
+      carBrand: form.carBrand || '未填写',
+      carSeries: form.carSeries || '',
       carModel: form.carModel || '',
       engineCapacity: form.engineCapacity || '',
       transmission: form.transmission || '自动', 
@@ -374,13 +423,34 @@ export function NewApplication() {
             </FormRow>
           </Section>
 
+          <Section title="车辆所在城市">
+            <PickerRow
+              label="省份"
+              required
+              value={form.province || '请选择'}
+              placeholder={!form.province}
+              onClick={() => setShowPicker({ type: '省份', options: PROVINCES, field: 'province' })}
+            />
+            <PickerRow
+              label="城市"
+              required
+              value={form.city || (form.province ? '请选择' : '请先选择省份')}
+              placeholder={!form.city}
+              onClick={() => {
+                if (!form.province) { toast.warning('请先选择省份'); return; }
+                setShowPicker({ type: '城市', options: CITIES_MAP[form.province] || [], field: 'city' });
+              }}
+              last
+            />
+          </Section>
+
           <Section title="品牌车型">
-            <PickerRow 
-              label="品牌" 
-              required 
+            <PickerRow
+              label="品牌"
+              required
               value={form.carBrand || '请选择'}
-              placeholder={!form.carBrand} 
-              onClick={() => setShowPicker({ type: '品牌', options: BRANDS, field: 'carBrand' })} 
+              placeholder={!form.carBrand}
+              onClick={() => setShowPicker({ type: '品牌', options: BRANDS, field: 'carBrand' })}
             />
             <PickerRow 
               label="车系" 

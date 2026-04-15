@@ -142,6 +142,7 @@ export function ApplicationDetail() {
             <DetailRow label="申请单号" value={app.applyNo} />
             <DetailRow label="车牌号" value={app.licensePlate || '-'} />
             <DetailRow label="VIN码" value={app.vin || '-'} />
+            <DetailRow label="车辆所在城市" value={app.province && app.city ? `${app.province} ${app.city}` : '-'} />
             <DetailRow label="品牌" value={app.carBrand} />
             <DetailRow label="车系" value={app.carSeries} />
             <DetailRow label="车型" value={app.carModel} />

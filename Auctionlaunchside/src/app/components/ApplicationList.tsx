@@ -179,8 +179,14 @@ export function ApplicationList() {
                 {/* Card Header */}
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex-1 min-w-0 mr-3">
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
                       <span className="text-[12px] text-[#6B7280] font-mono">{app.applyNo}</span>
+                      {app.province && app.city && (
+                        <>
+                          <span className="text-[#E5E5E5]">·</span>
+                          <span className="text-[12px] text-[#9CA3AF]">{app.province} {app.city}</span>
+                        </>
+                      )}
                     </div>
                     <div className="text-[15px] font-semibold text-[#1F2937] mb-1 truncate">
                       {app.carBrand} {app.carSeries}
