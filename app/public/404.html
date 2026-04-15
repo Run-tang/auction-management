@@ -2,33 +2,19 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>二手车发拍管理系统</title>
+    <title>广联二手车发拍管理系统</title>
     <script>
-      // GitHub Pages SPA 路由兼容方案
-      // 将路径通过 URL 参数传递给 index.html
-      (function() {
-        var pathname = location.pathname;
-        var search = location.search;
-        var hash = location.hash;
-
-        // 保留原路径（去掉末尾斜杠）
-        var path = pathname.replace(/\/$/, '') || '/';
-
-        // 基础路径（部署时会被替换）
-        var basePath = '{{BASE_PATH}}';
-
-        // 如果不是直接访问根路径，则重定向到 index.html 并携带路径信息
-        if (path !== basePath + '/index.html' && !search.includes('redirected=')) {
-          var redirectPath = path + search + hash;
-          location.replace(location.origin + basePath + '/?redirected=1&path=' + encodeURIComponent(redirectPath));
-        }
-      })();
+      // GitHub Pages SPA 路由兼容方案（最稳定版）
+      // 原理：将当前 URL 的路径信息存入 sessionStorage，然后跳转到 index.html
+      // index.html 加载后从 sessionStorage 读取并用 history.replaceState 恢复路径
+      sessionStorage.setItem('spa_redirect', JSON.stringify({
+        pathname: location.pathname,
+        search: location.search,
+        hash: location.hash
+      }));
+      // 跳到 /auction-management/admin/
+      location.replace('/auction-management/admin/');
     </script>
   </head>
-  <body>
-    <noscript>
-      <p>正在跳转...</p>
-      <meta http-equiv="refresh" content="0;url={{BASE_PATH}}/" />
-    </noscript>
-  </body>
+  <body></body>
 </html>

@@ -85,16 +85,12 @@ jobs:
           </html>
           EOF
 
-      # 为 SPA 应用添加 404 重定向
+      # 为 SPA 应用添加 404 重定向（直接复制，路径已硬编码在文件中）
       - name: Create 404.html files
         run: |
-          # 为小程序端生成 404.html
-          sed 's|{{BASE_PATH}}|/auction-management/dealer|g' Auctionlaunchside/public/404.html > _site/dealer/404.html
+          cp Auctionlaunchside/public/404.html _site/dealer/404.html
+          cp app/public/404.html _site/admin/404.html
 
-          # 为后台端生成 404.html
-          sed 's|{{BASE_PATH}}|/auction-management/admin|g' app/public/404.html > _site/admin/404.html
-
-          # 创建根目录的 404.html
           cat > _site/404.html << 'EOF'
           <!DOCTYPE html>
           <html>

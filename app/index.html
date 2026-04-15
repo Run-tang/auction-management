@@ -3,24 +3,31 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="二手车发拍管理后台 - 发拍申请、拍卖订单、经销商账号体系管理" />
     <link rel="icon" type="image/svg+xml" href="./favicon.ico" />
-    <title>二手车发拍管理后台</title>
-    <!-- GitHub Pages SPA 路由兼容：恢复 404.html 中保存的路径 -->
+    <title>广联二手车发拍管理系统</title>
     <script>
-      (function(){
-        var params = new URLSearchParams(location.search);
-        if (params.get('redirected') === '1') {
-          var path = params.get('path');
-          if (path) {
-            history.replaceState(null, '', path);
-          }
+      // GitHub Pages SPA 路由恢复：从 sessionStorage 中读取 404.html 存入的路径，并用 history.replaceState 恢复
+      (function () {
+        var redirect = sessionStorage.getItem('spa_redirect');
+        if (redirect) {
+          sessionStorage.removeItem('spa_redirect');
+          try {
+            var info = JSON.parse(redirect);
+            // 只恢复 /auction-management/admin/ 之后的子路径
+            var base = '/auction-management/admin';
+            var target = info.pathname;
+            // 提取 base 路径之后的部分
+            var sub = target.startsWith(base) ? target.slice(base.length) : target;
+            if (sub && sub !== '/') {
+              history.replaceState(null, '', sub + (info.search || '') + (info.hash || ''));
+            }
+          } catch (e) {}
         }
       })();
     </script>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="./src/main.tsx"></script>
   </body>
 </html>
