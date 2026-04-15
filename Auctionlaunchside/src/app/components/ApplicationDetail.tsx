@@ -145,7 +145,6 @@ export function ApplicationDetail() {
             <DetailRow label="品牌" value={app.carBrand} />
             <DetailRow label="车系" value={app.carSeries} />
             <DetailRow label="车型" value={app.carModel} />
-            <DetailRow label="年款" value={app.carYear ? `${app.carYear}款` : '-'} />
             <DetailRow label="排量" value={app.engineCapacity} />
             <DetailRow label="变速箱" value={app.transmission} />
             <DetailRow label="燃料类型" value={app.fuelType || '-'} />

@@ -301,7 +301,6 @@ export default function AuctionApplies() {
                   <TableHead className="text-xs font-semibold text-slate-400 uppercase tracking-wide sticky left-10 bg-slate-50 z-10 min-w-[140px]">发拍单号</TableHead>
                   <TableHead className="text-xs font-semibold text-slate-400 uppercase tracking-wide min-w-[60px]">品牌</TableHead>
                   <TableHead className="text-xs font-semibold text-slate-400 uppercase tracking-wide min-w-[60px]">车系</TableHead>
-                  <TableHead className="text-xs font-semibold text-slate-400 uppercase tracking-wide min-w-[60px]">年款</TableHead>
                   <TableHead className="text-xs font-semibold text-slate-400 uppercase tracking-wide min-w-[180px]">车型名称</TableHead>
                   <TableHead className="text-xs font-semibold text-slate-400 uppercase tracking-wide min-w-[100px]">发拍用户</TableHead>
                   <TableHead className="text-xs font-semibold text-slate-400 uppercase tracking-wide min-w-[120px]">用户手机</TableHead>
@@ -358,7 +357,6 @@ export default function AuctionApplies() {
                         {/* 车系 */}
                         <TableCell><span className="text-sm text-slate-700">{item.carSeries}</span></TableCell>
                         {/* 年款 */}
-                        <TableCell><span className="text-sm text-slate-500">{item.carYear}款</span></TableCell>
                         {/* 车型名称 */}
                         <TableCell>
                           <span className="text-sm text-slate-800 max-w-[180px] truncate block" title={item.carModel}>

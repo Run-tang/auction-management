@@ -222,7 +222,6 @@ export default function AuctionApplyDetail() {
                 <div className="text-sm font-medium text-slate-800 mt-0.5">{item.carModel}</div>
               </div>
               <div>
-                <span className="text-xs text-slate-400">年款</span>
                 <div className="text-sm font-medium text-slate-800 mt-0.5">{item.carYear}款</div>
               </div>
             </div>

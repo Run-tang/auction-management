@@ -5,7 +5,7 @@ export const mockAuctionApplies: AuctionApply[] = [
   {
     id: '1', applyNo: 'FP20260414001', dealerName: '北京华远汽车', dealerId: 'd1',
     vin: 'LFV2A21K9M3456789', licensePlate: '京A88888',
-    carBrand: '奔驰', carSeries: 'C级', carModel: 'C300L 运动版', carYear: 2022,
+    carBrand: '奔驰', carSeries: 'C级', carModel: 'C300L 运动版',
     engineCapacity: '1.5T', transmission: '自动', fuelType: '汽油', exteriorColor: '石墨灰', interiorColor: '黑色',
     registrationDate: '2022-03', mileage: 2.8, transferCount: 1, vehicleNature: '非营运',
     reservePrice: 28.5,
@@ -21,7 +21,7 @@ export const mockAuctionApplies: AuctionApply[] = [
   {
     id: '2', applyNo: 'FP20260414002', dealerName: '上海骏马汽贸', dealerId: 'd2',
     vin: 'WBAFR41020C123456', licensePlate: '沪B99999',
-    carBrand: '宝马', carSeries: '5系', carModel: '525Li 豪华套装', carYear: 2021,
+    carBrand: '宝马', carSeries: '5系', carModel: '525Li 豪华套装',
     engineCapacity: '2.0T', transmission: '自动', fuelType: '汽油', exteriorColor: '矿石白', interiorColor: '棕色',
     registrationDate: '2021-06', mileage: 4.5, transferCount: 0, vehicleNature: '非营运',
     reservePrice: 26.0,
@@ -37,7 +37,7 @@ export const mockAuctionApplies: AuctionApply[] = [
   {
     id: '3', applyNo: 'FP20260413001', dealerName: '广州粤宝汽车', dealerId: 'd3',
     vin: 'WAUZZZ4G3MN023456', licensePlate: undefined,
-    carBrand: '奥迪', carSeries: 'A6L', carModel: 'A6L 40TFSI 豪华动感型', carYear: 2020,
+    carBrand: '奥迪', carSeries: 'A6L', carModel: 'A6L 40TFSI 豪华动感型',
     engineCapacity: '2.0T', transmission: '自动', fuelType: '汽油', exteriorColor: '天云灰', interiorColor: '黑色',
     registrationDate: '2020-11', mileage: 6.2, transferCount: 2, vehicleNature: '非营运',
     reservePrice: 22.5,
@@ -53,7 +53,7 @@ export const mockAuctionApplies: AuctionApply[] = [
   {
     id: '4', applyNo: 'FP20260413002', dealerName: '深圳鹏程二手车', dealerId: 'd4',
     vin: 'JTDBZ3EH7J3456789', licensePlate: '粤B12345',
-    carBrand: '丰田', carSeries: '凯美瑞', carModel: '凯美瑞 2.0S 锋尚版', carYear: 2023,
+    carBrand: '丰田', carSeries: '凯美瑞', carModel: '凯美瑞 2.0S 锋尚版',
     engineCapacity: '2.0L', transmission: '自动', fuelType: '汽油', exteriorColor: '珍珠白', interiorColor: '米色',
     registrationDate: '2023-01', mileage: 1.2, transferCount: 0, vehicleNature: '非营运',
     reservePrice: 17.0,
@@ -69,7 +69,7 @@ export const mockAuctionApplies: AuctionApply[] = [
   {
     id: '5', applyNo: 'FP20260412001', dealerName: '成都蓉城优车', dealerId: 'd5',
     vin: 'JHMCM56557C123890', licensePlate: '川A77777',
-    carBrand: '本田', carSeries: '雅阁', carModel: '雅阁 260TURBO 旗舰版', carYear: 2021,
+    carBrand: '本田', carSeries: '雅阁', carModel: '雅阁 260TURBO 旗舰版',
     engineCapacity: '1.5T', transmission: '自动', fuelType: '汽油', exteriorColor: '极夜流影', interiorColor: '黑色',
     registrationDate: '2021-09', mileage: 3.8, transferCount: 1, vehicleNature: '非营运',
     reservePrice: 15.5,
@@ -85,7 +85,7 @@ export const mockAuctionApplies: AuctionApply[] = [
   {
     id: '6', applyNo: 'FP20260411001', dealerName: '北京华远汽车', dealerId: 'd1',
     vin: 'LGBV2AE10N3456012', licensePlate: '京A55555',
-    carBrand: '大众', carSeries: '帕萨特', carModel: '帕萨特 330TSI 星空精英版', carYear: 2022,
+    carBrand: '大众', carSeries: '帕萨特', carModel: '帕萨特 330TSI 星空精英版',
     engineCapacity: '1.4T', transmission: '自动', fuelType: '汽油', exteriorColor: '玄武灰', interiorColor: '米色',
     registrationDate: '2022-07', mileage: 3.1, transferCount: 0, vehicleNature: '非营运',
     reservePrice: 14.8,
@@ -101,7 +101,7 @@ export const mockAuctionApplies: AuctionApply[] = [
   {
     id: '7', applyNo: 'FP20260410001', dealerName: '杭州浙商汽车', dealerId: 'd7',
     vin: '5YJ3E1EB7LF012345', licensePlate: '浙A66666',
-    carBrand: '特斯拉', carSeries: 'Model 3', carModel: 'Model 3 标准续航后驱升级版', carYear: 2022,
+    carBrand: '特斯拉', carSeries: 'Model 3', carModel: 'Model 3 标准续航后驱升级版',
     engineCapacity: '纯电动', transmission: '自动', fuelType: '纯电动', exteriorColor: '纯黑', interiorColor: '黑色',
     registrationDate: '2022-04', mileage: 5.5, transferCount: 1, vehicleNature: '非营运',
     reservePrice: 18.5,
@@ -117,7 +117,7 @@ export const mockAuctionApplies: AuctionApply[] = [
   {
     id: '8', applyNo: 'FP20260409001', dealerName: '南京苏宁汽贸', dealerId: 'd8',
     vin: 'LSGMA25E4LF123456', licensePlate: '苏A33333',
-    carBrand: '别克', carSeries: 'GL8', carModel: 'GL8 ES陆尊 653T 智慧旗舰型', carYear: 2021,
+    carBrand: '别克', carSeries: 'GL8', carModel: 'GL8 ES陆尊 653T 智慧旗舰型',
     engineCapacity: '2.0T', transmission: '自动', fuelType: '汽油', exteriorColor: '珍珠白', interiorColor: '干邑棕',
     registrationDate: '2021-12', mileage: 4.8, transferCount: 0, vehicleNature: '非营运',
     reservePrice: 24.0,
@@ -134,12 +134,12 @@ export const mockAuctionApplies: AuctionApply[] = [
 
 // ===== 拍卖订单数据 =====
 export const mockAuctionOrders: AuctionOrder[] = [
-  { id: '1', orderNo: 'AO2026041301', applyNo: 'AP2026041302', dealerName: '上海骏马汽贸', carBrand: '宝马', carModel: '5系525Li', carYear: 2021, vin: 'WBAFR41020C123456', startPrice: 250000, finalPrice: 292000, reservePrice: 260000, auctionStart: '2026-04-14 10:00:00', auctionEnd: '2026-04-14 12:00:00', status: 'sold', buyerName: '北京优驾科技', bidCount: 18, commission: 8760 },
-  { id: '2', orderNo: 'AO2026041302', applyNo: 'AP2026041305', dealerName: '成都蓉城优车', carBrand: '本田', carModel: '雅阁2.0T', carYear: 2021, vin: 'JHMCM56557C123890', startPrice: 140000, reservePrice: 150000, auctionStart: '2026-04-15 14:00:00', auctionEnd: '2026-04-15 16:00:00', status: 'scheduled', bidCount: 0, commission: 0 },
-  { id: '3', orderNo: 'AO2026041303', applyNo: 'AP2026041307', dealerName: '杭州浙商汽车', carBrand: '特斯拉', carModel: 'Model 3', carYear: 2022, vin: '5YJ3E1EB7LF012345', startPrice: 195000, finalPrice: 228000, reservePrice: 200000, auctionStart: '2026-04-13 09:00:00', auctionEnd: '2026-04-13 11:00:00', status: 'ongoing', buyerName: undefined, bidCount: 12, commission: 0 },
-  { id: '4', orderNo: 'AO2026041304', applyNo: 'AP2026041001', dealerName: '北京华远汽车', carBrand: '奔驰', carModel: 'E300L', carYear: 2020, vin: 'W1KZF8HB2MA123456', startPrice: 320000, reservePrice: 340000, auctionStart: '2026-04-08 10:00:00', auctionEnd: '2026-04-08 12:00:00', status: 'unsold', bidCount: 5, commission: 0 },
-  { id: '5', orderNo: 'AO2026041305', applyNo: 'AP2026040901', dealerName: '广州粤宝汽车', carBrand: '奥迪', carModel: 'Q5L 2.0T', carYear: 2021, vin: 'WAUZZZ80XMD123456', startPrice: 260000, finalPrice: 275000, reservePrice: 250000, auctionStart: '2026-04-09 14:00:00', auctionEnd: '2026-04-09 16:00:00', status: 'sold', buyerName: '上海卓越汽车', bidCount: 9, commission: 8250 },
-  { id: '6', orderNo: 'AO2026041306', applyNo: 'AP2026041004', dealerName: '深圳鹏程二手车', carBrand: '丰田', carModel: '汉兰达2.0T', carYear: 2022, vin: 'LGTKB8EH4N3456789', startPrice: 240000, reservePrice: 250000, auctionStart: '2026-04-16 10:00:00', auctionEnd: '2026-04-16 12:00:00', status: 'scheduled', bidCount: 0, commission: 0 },
+  { id: '1', orderNo: 'AO2026041301', applyNo: 'AP2026041302', dealerName: '上海骏马汽贸', carBrand: '宝马', carModel: '5系525Li', vin: 'WBAFR41020C123456', startPrice: 250000, finalPrice: 292000, reservePrice: 260000, auctionStart: '2026-04-14 10:00:00', auctionEnd: '2026-04-14 12:00:00', status: 'sold', buyerName: '北京优驾科技', bidCount: 18, commission: 8760 },
+  { id: '2', orderNo: 'AO2026041302', applyNo: 'AP2026041305', dealerName: '成都蓉城优车', carBrand: '本田', carModel: '雅阁2.0T', vin: 'JHMCM56557C123890', startPrice: 140000, reservePrice: 150000, auctionStart: '2026-04-15 14:00:00', auctionEnd: '2026-04-15 16:00:00', status: 'scheduled', bidCount: 0, commission: 0 },
+  { id: '3', orderNo: 'AO2026041303', applyNo: 'AP2026041307', dealerName: '杭州浙商汽车', carBrand: '特斯拉', carModel: 'Model 3', vin: '5YJ3E1EB7LF012345', startPrice: 195000, finalPrice: 228000, reservePrice: 200000, auctionStart: '2026-04-13 09:00:00', auctionEnd: '2026-04-13 11:00:00', status: 'ongoing', buyerName: undefined, bidCount: 12, commission: 0 },
+  { id: '4', orderNo: 'AO2026041304', applyNo: 'AP2026041001', dealerName: '北京华远汽车', carBrand: '奔驰', carModel: 'E300L', vin: 'W1KZF8HB2MA123456', startPrice: 320000, reservePrice: 340000, auctionStart: '2026-04-08 10:00:00', auctionEnd: '2026-04-08 12:00:00', status: 'unsold', bidCount: 5, commission: 0 },
+  { id: '5', orderNo: 'AO2026041305', applyNo: 'AP2026040901', dealerName: '广州粤宝汽车', carBrand: '奥迪', carModel: 'Q5L 2.0T', vin: 'WAUZZZ80XMD123456', startPrice: 260000, finalPrice: 275000, reservePrice: 250000, auctionStart: '2026-04-09 14:00:00', auctionEnd: '2026-04-09 16:00:00', status: 'sold', buyerName: '上海卓越汽车', bidCount: 9, commission: 8250 },
+  { id: '6', orderNo: 'AO2026041306', applyNo: 'AP2026041004', dealerName: '深圳鹏程二手车', carBrand: '丰田', carModel: '汉兰达2.0T', vin: 'LGTKB8EH4N3456789', startPrice: 240000, reservePrice: 250000, auctionStart: '2026-04-16 10:00:00', auctionEnd: '2026-04-16 12:00:00', status: 'scheduled', bidCount: 0, commission: 0 },
 ]
 
 // ===== 经销商数据 =====

@@ -24,7 +24,6 @@ export interface AuctionApply {
   carBrand: string
   carSeries: string
   carModel: string
-  carYear: number
   engineCapacity: string   // 排量
   transmission: string     // 变速箱
   fuelType: string         // 燃料类型

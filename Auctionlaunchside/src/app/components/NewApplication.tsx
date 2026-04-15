@@ -405,12 +405,10 @@ export function NewApplication() {
               }} 
             />
             <PickerRow 
-              label="年款" 
               required 
               value={form.carYear || '请选择'} 
               placeholder={!form.carYear} 
               last
-              onClick={() => setShowPicker({ type: '年款', options: YEARS, field: 'carYear' })} 
             />
           </Section>
 
