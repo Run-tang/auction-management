@@ -130,7 +130,8 @@ export interface Account {
   phone: string               // 手机号码（登录账号）
   realName: string            // 用户姓名
   accountType: AccountType    // 账号类型
-  groupName?: string          // 所属集团（门店账号时显示）
+  groupName?: string          // 所属集团（集团/门店账号时显示）
+  storeName?: string          // 所属门店（门店账号时显示）
   status: AccountStatus       // 账号状态
   createTime: string          // 创建时间
   lastLogin?: string          // 最近登录时间
