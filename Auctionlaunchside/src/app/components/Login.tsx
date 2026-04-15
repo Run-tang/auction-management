@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Check } from 'lucide-react';
 import { login } from '../lib/store';
 import { toast } from 'sonner';
+import { AgreementModal } from './AgreementModal';
 
 export function Login() {
   const navigate = useNavigate();
@@ -10,6 +11,11 @@ export function Login() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  
+  // 协议勾选状态
+  const [agreed, setAgreed] = useState(false);
+  const [showAgreement, setShowAgreement] = useState(false);
+  const [agreementType, setAgreementType] = useState<'user' | 'privacy'>('user');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,6 +27,12 @@ export function Login() {
 
     if (!password.trim()) {
       toast.error('请输入密码');
+      return;
+    }
+
+    // 协议勾选校验（小程序规范要求）
+    if (!agreed) {
+      toast.error('请先阅读并同意用户协议和隐私政策');
       return;
     }
 
@@ -46,6 +58,12 @@ export function Login() {
   };
 
   const handleWechatLogin = () => {
+    // 协议勾选校验（小程序规范要求）
+    if (!agreed) {
+      toast.error('请先阅读并同意用户协议和隐私政策');
+      return;
+    }
+    
     // 模拟微信小程序登录
     toast.info('正在唤起微信小程序...', { duration: 2000 });
     
@@ -63,6 +81,21 @@ export function Login() {
         toast.error('该手机号暂无权限，请联系管理员');
       }
     }, 2000);
+  };
+
+  // 打开协议弹窗
+  const openAgreement = (type: 'user' | 'privacy') => {
+    setAgreementType(type);
+    setShowAgreement(true);
+  };
+
+  // 切换协议勾选状态
+  const toggleAgreement = () => {
+    if (!agreed) {
+      // 首次勾选前提示用户阅读协议
+      toast.info('请先阅读用户协议和隐私政策', { duration: 1500 });
+    }
+    setAgreed(!agreed);
   };
 
   return (
@@ -126,6 +159,39 @@ export function Login() {
           >
             {loading ? '登录中...' : '登录'}
           </button>
+
+          {/* 协议勾选区域 */}
+          <div className="flex items-start gap-2.5 mt-4 px-1">
+            <button
+              type="button"
+              onClick={toggleAgreement}
+              className={`mt-0.5 w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all ${
+                agreed 
+                  ? 'bg-[#FF6B00] border-[#FF6B00]' 
+                  : 'border-[#D1D5DB] hover:border-[#9CA3AF]'
+              }`}
+            >
+              {agreed && <Check size={12} color="white" strokeWidth={3} />}
+            </button>
+            <div className="text-[13px] text-[#6B7280] leading-5">
+              <span>我已阅读并同意</span>
+              <button 
+                type="button"
+                onClick={() => openAgreement('user')}
+                className="text-[#FF6B00] hover:underline"
+              >
+                《用户协议》
+              </button>
+              <span>和</span>
+              <button 
+                type="button"
+                onClick={() => openAgreement('privacy')}
+                className="text-[#FF6B00] hover:underline"
+              >
+                《隐私政策》
+              </button>
+            </div>
+          </div>
         </form>
 
         {/* 分割线 */}
@@ -166,6 +232,13 @@ export function Login() {
           </div>
         </div>
       </div>
+
+      {/* 用户协议和隐私政策弹窗 */}
+      <AgreementModal 
+        isOpen={showAgreement}
+        type={agreementType}
+        onClose={() => setShowAgreement(false)}
+      />
     </div>
   );
 }

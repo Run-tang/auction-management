@@ -1,228 +1,331 @@
-import { useState, type FormEvent } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
-import { Car, Eye, EyeOff, AlertCircle, ShieldCheck } from 'lucide-react'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Eye, EyeOff, Car, AlertCircle, CheckCircle, XCircle } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Checkbox } from '@/components/ui/checkbox'
 
-const MOCK_USERS = [
-  { username: '13800138001', password: '123456', name: '陈建国', role: 'admin', dealerId: 'd1', dealerName: '北京华远汽车' },
-  { username: '13900139002', password: '123456', name: '李明轩', role: 'admin', dealerId: 'd2', dealerName: '上海骏马汽贸' },
-  { username: 'admin', password: 'admin', name: '超级管理员', role: 'super_admin', dealerId: '', dealerName: '平台运营' },
-]
-
-interface LoginUser {
-  username: string
-  name: string
-  role: string
-  dealerId: string
-  dealerName: string
-  token: string
-}
-
-export function getStoredUser(): LoginUser | null {
-  try {
-    const raw = sessionStorage.getItem('auction_user')
-    return raw ? JSON.parse(raw) : null
-  } catch {
-    return null
-  }
-}
-
-export function logout() {
-  sessionStorage.removeItem('auction_user')
-}
-
-export default function LoginPage() {
+export default function Login() {
   const navigate = useNavigate()
-  const location = useLocation()
-  const from = (location.state as { from?: string })?.from || '/'
-
-  const [username, setUsername] = useState('')
+  const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
-  const [showPwd, setShowPwd] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [remember, setRemember] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
 
-  function handleSubmit(e: FormEvent) {
-    e.preventDefault()
-    setError('')
-    if (!username.trim()) { setError('请输入登录账号'); return }
-    if (!password.trim()) { setError('请输入登录密码'); return }
+  // 校验状态：null=未校验, 'error'=错误, 'success'=成功, 'warning'=警告
+  const [phoneStatus, setPhoneStatus] = useState<'error' | 'success' | 'warning' | null>(null)
+  const [phoneError, setPhoneError] = useState('')
+  const [passwordStatus, setPasswordStatus] = useState<'error' | 'success' | null>(null)
+  const [passwordError, setPasswordError] = useState('')
+  const [globalError, setGlobalError] = useState('')
+
+  // 模拟登录验证
+  const mockAccounts = [
+    { phone: '13800138001', password: '800138', name: '张三' },
+    { phone: '13800138002', password: '800138', name: '李四' },
+    { phone: '13800138003', password: '800138', name: '王五' },
+  ]
+
+  // 手机号实时校验
+  const validatePhone = (value: string) => {
+    if (!value) {
+      setPhoneStatus(null)
+      setPhoneError('')
+      return false
+    }
+    if (value.length < 11) {
+      setPhoneStatus('warning')
+      setPhoneError('手机号不足11位')
+      return false
+    }
+    if (!/^1[3-9]\d{9}$/.test(value)) {
+      setPhoneStatus('error')
+      setPhoneError('手机号格式不正确')
+      return false
+    }
+    setPhoneStatus('success')
+    setPhoneError('')
+    return true
+  }
+
+  // 密码实时校验
+  const validatePassword = (value: string) => {
+    if (!value) {
+      setPasswordStatus(null)
+      setPasswordError('')
+      return false
+    }
+    if (value.length < 6) {
+      setPasswordStatus('error')
+      setPasswordError('密码至少6位')
+      return false
+    }
+    setPasswordStatus('success')
+    setPasswordError('')
+    return true
+  }
+
+  // 处理登录
+  const handleLogin = async () => {
+    setGlobalError('')
+
+    // 表单校验
+    const phoneValid = validatePhone(phone)
+    const passwordValid = validatePassword(password)
+
+    if (!phone || !password) {
+      setGlobalError(phone ? '请输入密码' : '请输入手机号')
+      return
+    }
+
+    if (!phoneValid || !passwordValid) {
+      return
+    }
 
     setLoading(true)
-    setTimeout(() => {
-      const user = MOCK_USERS.find(u => u.username === username.trim() && u.password === password)
-      if (!user) {
-        setError('账号或密码错误，请重试')
-        setLoading(false)
-        return
+
+    // 模拟登录请求
+    await new Promise(resolve => setTimeout(resolve, 800))
+
+    // 验证账号密码
+    const account = mockAccounts.find(a => a.phone === phone && a.password === password)
+
+    if (account) {
+      // 保存登录状态
+      localStorage.setItem('admin_token', 'mock_token_' + Date.now())
+      localStorage.setItem('admin_user', JSON.stringify({
+        phone: account.phone,
+        name: account.name,
+        loginTime: new Date().toISOString()
+      }))
+      if (remember) {
+        localStorage.setItem('remember_phone', phone)
       }
-      const loginUser: LoginUser = {
-        username: user.username,
-        name: user.name,
-        role: user.role,
-        dealerId: user.dealerId,
-        dealerName: user.dealerName,
-        token: `tok_${Date.now()}`,
-      }
-      sessionStorage.setItem('auction_user', JSON.stringify(loginUser))
-      setLoading(false)
-      navigate(from, { replace: true })
-    }, 800)
+
+      navigate('/applies')
+    } else {
+      setGlobalError('手机号或密码错误')
+      setPasswordStatus('error')
+    }
+
+    setLoading(false)
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleLogin()
+    }
+  }
+
+  // 获取输入框状态类名
+  const getInputClassName = (status: 'error' | 'success' | 'warning' | null) => {
+    const baseClass = 'h-12 pl-4 pr-12 text-base transition-all duration-200'
+    if (status === 'error') {
+      return `${baseClass} border-red-500 focus:border-red-500 focus:ring-red-500/20 ring-2 ring-red-500/10`
+    }
+    if (status === 'success') {
+      return `${baseClass} border-green-500 focus:border-green-500 focus:ring-green-500/20 ring-2 ring-green-500/10`
+    }
+    if (status === 'warning') {
+      return `${baseClass} border-amber-500 focus:border-amber-500 focus:ring-amber-500/20 ring-2 ring-amber-500/10`
+    }
+    return `${baseClass}`
   }
 
   return (
-    <div className="min-h-screen flex">
-      {/* Left panel - branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
-        {/* Decorative grid */}
-        <div className="absolute inset-0 opacity-5"
-          style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,.3) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.3) 1px,transparent 1px)', backgroundSize: '40px 40px' }}
-        />
-        {/* Glow orbs */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600 rounded-full opacity-10 blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-cyan-500 rounded-full opacity-10 blur-3xl" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center p-4 relative overflow-hidden">
+      {/* 背景装饰 */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* 动态渐变背景 */}
+        <div className="absolute top-0 -left-4 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-0 -right-4 w-96 h-96 bg-indigo-400/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-400/10 rounded-full blur-3xl" />
 
-        <div className="relative z-10 flex flex-col justify-center px-16 py-12">
-          {/* Logo */}
-          <div className="flex items-center gap-4 mb-16">
-            <div className="w-14 h-14 rounded-2xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-600/30">
-              <Car size={26} className="text-white" />
-            </div>
-            <div>
-              <div className="text-white font-bold text-2xl leading-tight">发拍管理平台</div>
-              <div className="text-slate-400 text-sm">Used Car Auction Management</div>
-            </div>
-          </div>
-
-          {/* Tagline */}
-          <h1 className="text-white text-4xl font-bold leading-snug mb-6">
-            让二手车发拍<br />
-            <span className="text-blue-400">更高效、更透明</span>
-          </h1>
-          <p className="text-slate-400 text-lg leading-relaxed mb-16 max-w-md">
-            整合经销商资源，优化拍卖流程，全链路数据追踪，助力二手车交易市场数字化升级。
-          </p>
-
-          {/* Feature highlights */}
-          <div className="space-y-4">
-            {[
-              { icon: '🚗', title: '智能发拍申请', desc: '标准化的车辆信息采集与审核流程' },
-              { icon: '⚡', title: '实时拍卖管理', desc: '多维度数据看板，掌控拍卖全局' },
-              { icon: '🔐', title: '分级权限体系', desc: '经销商独立账号，数据隔离安全可控' },
-            ].map(f => (
-              <div key={f.title} className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/10 transition-colors">
-                <span className="text-2xl mt-0.5">{f.icon}</span>
-                <div>
-                  <div className="text-white font-semibold text-sm">{f.title}</div>
-                  <div className="text-slate-400 text-xs mt-0.5">{f.desc}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        {/* 网格背景 */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#e5e7eb_1px,transparent_1px),linear-gradient(to_bottom,#e5e7eb_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_40%,transparent_100%)]" />
       </div>
 
-      {/* Right panel - login form */}
-      <div className="flex-1 flex items-center justify-center px-6 py-12 bg-slate-50">
-        <div className="w-full max-w-md">
-          {/* Mobile logo */}
-          <div className="lg:hidden flex items-center gap-3 mb-10 justify-center">
-            <div className="w-11 h-11 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-600/30">
-              <Car size={20} className="text-white" />
+      {/* 登录卡片 */}
+      <div className="relative w-full max-w-md">
+        {/* 卡片外发光效果 */}
+        <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-[28px] blur opacity-30" />
+
+        <div className="relative bg-white rounded-2xl shadow-xl overflow-hidden">
+          {/* 顶部装饰 - TDesign 风格渐变 */}
+          <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700 px-8 py-10 text-center relative overflow-hidden">
+            {/* 装饰性背景图案 */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute top-0 right-0 w-40 h-40 border-[40px] border-white rounded-full -translate-y-1/2 translate-x-1/2" />
+              <div className="absolute bottom-0 left-0 w-32 h-32 border-[30px] border-white rounded-full translate-y-1/2 -translate-x-1/2" />
             </div>
-            <div>
-              <div className="text-slate-900 font-bold text-lg leading-tight">发拍管理平台</div>
-              <div className="text-slate-400 text-xs">Used Car Auction</div>
+
+            <div className="relative">
+              <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <Car size={32} className="text-white" />
+              </div>
+              <h1 className="text-2xl font-bold text-white mb-1 tracking-tight">发拍管理后台</h1>
+              <p className="text-blue-100 text-sm">二手车拍卖管理系统</p>
             </div>
           </div>
 
-          {/* Form card */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
-            <div className="mb-8">
-              <h2 className="text-slate-900 font-bold text-2xl">欢迎回来</h2>
-              <p className="text-slate-500 text-sm mt-2">请输入您的账号信息登录系统</p>
-            </div>
-
-            {/* Error alert */}
-            {error && (
-              <div className="flex items-center gap-2.5 bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 mb-5 text-sm">
-                <AlertCircle size={16} className="flex-shrink-0" />
-                {error}
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-5">
-              {/* Username */}
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">登录账号</label>
-                <input
-                  type="text"
-                  value={username}
-                  onChange={e => { setUsername(e.target.value); setError('') }}
-                  placeholder="请输入手机号或用户名"
-                  maxLength={20}
-                  className="w-full h-11 px-4 rounded-xl border border-slate-200 text-sm text-slate-800 placeholder:text-slate-400
-                    focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-slate-50 focus:bg-white"
-                />
-              </div>
-
-              {/* Password */}
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">登录密码</label>
+          {/* 表单区域 */}
+          <div className="px-8 py-8">
+            <div className="space-y-6">
+              {/* 手机号 - 带实时校验 */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="phone" className="text-sm font-medium text-slate-700">
+                    手机号码
+                  </Label>
+                  {phoneStatus === 'success' && (
+                    <span className="text-xs text-green-600 flex items-center gap-1 animate-in fade-in slide-in-from-right-2">
+                      <CheckCircle size={12} />
+                      格式正确
+                    </span>
+                  )}
+                </div>
                 <div className="relative">
-                  <input
-                    type={showPwd ? 'text' : 'password'}
+                  <Input
+                    id="phone"
+                    type="tel"
+                    placeholder="请输入11位手机号"
+                    value={phone}
+                    onChange={e => {
+                      const val = e.target.value.replace(/\D/g, '').slice(0, 11)
+                      setPhone(val)
+                      validatePhone(val)
+                      setGlobalError('')
+                    }}
+                    onBlur={() => phone && validatePhone(phone)}
+                    onKeyDown={handleKeyDown}
+                    className={getInputClassName(phoneStatus)}
+                    maxLength={11}
+                  />
+                  {/* 状态图标 */}
+                  <div className="absolute right-10 top-1/2 -translate-y-1/2">
+                    {phoneStatus === 'success' && <CheckCircle size={18} className="text-green-500" />}
+                    {phoneStatus === 'error' && <XCircle size={18} className="text-red-500" />}
+                    {phoneStatus === 'warning' && <AlertCircle size={18} className="text-amber-500" />}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                  >
+                    {/* 眼睛图标位置 */}
+                  </button>
+                </div>
+                {/* 错误/警告提示 - TDesign 风格 */}
+                {phoneError && (
+                  <div className="flex items-center gap-1.5 text-xs text-red-600 bg-red-50 px-3 py-2 rounded-lg animate-in fade-in slide-in-from-top-2">
+                    <AlertCircle size={12} className="flex-shrink-0" />
+                    <span>{phoneError}</span>
+                  </div>
+                )}
+              </div>
+
+              {/* 密码 - 带实时校验 */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password" className="text-sm font-medium text-slate-700">
+                    登录密码
+                  </Label>
+                  {passwordStatus === 'success' && (
+                    <span className="text-xs text-green-600 flex items-center gap-1 animate-in fade-in slide-in-from-right-2">
+                      <CheckCircle size={12} />
+                      密码可用
+                    </span>
+                  )}
+                </div>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="请输入密码"
                     value={password}
-                    onChange={e => { setPassword(e.target.value); setError('') }}
-                    placeholder="请输入密码（6-16位）"
-                    minLength={6}
-                    maxLength={16}
-                    className="w-full h-11 px-4 pr-12 rounded-xl border border-slate-200 text-sm text-slate-800 placeholder:text-slate-400
-                      focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-slate-50 focus:bg-white"
+                    onChange={e => {
+                      setPassword(e.target.value)
+                      validatePassword(e.target.value)
+                      setGlobalError('')
+                    }}
+                    onBlur={() => password && validatePassword(password)}
+                    onKeyDown={handleKeyDown}
+                    className={getInputClassName(passwordStatus)}
                   />
                   <button
                     type="button"
-                    onClick={() => setShowPwd(!showPwd)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
                   >
-                    {showPwd ? <EyeOff size={18} /> : <Eye size={18} />}
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
+                {passwordError && (
+                  <div className="flex items-center gap-1.5 text-xs text-red-600 bg-red-50 px-3 py-2 rounded-lg animate-in fade-in slide-in-from-top-2">
+                    <AlertCircle size={12} className="flex-shrink-0" />
+                    <span>{passwordError}</span>
+                  </div>
+                )}
               </div>
 
-              {/* Submit */}
-              <button
-                type="submit"
+              {/* 记住登录 */}
+              <div className="flex items-center justify-between">
+                <label className="flex items-center gap-2 cursor-pointer group">
+                  <div className="relative">
+                    <Checkbox
+                      id="remember"
+                      checked={remember}
+                      onCheckedChange={(checked) => setRemember(checked as boolean)}
+                      className="peer"
+                    />
+                  </div>
+                  <span className="text-sm text-slate-600 group-hover:text-slate-800 transition-colors">记住手机号</span>
+                </label>
+                <a href="#" className="text-xs text-blue-600 hover:text-blue-700 hover:underline transition-colors">
+                  忘记密码？
+                </a>
+              </div>
+
+              {/* 全局错误提示 - 居中醒目展示 */}
+              {globalError && (
+                <div className="flex items-center justify-center gap-2 text-sm text-red-600 bg-red-50 border border-red-100 px-4 py-3 rounded-xl animate-in fade-in zoom-in-95">
+                  <AlertCircle size={16} className="flex-shrink-0" />
+                  <span className="font-medium">{globalError}</span>
+                </div>
+              )}
+
+              {/* 登录按钮 - TDesign 主按钮风格 */}
+              <Button
+                onClick={handleLogin}
                 disabled={loading}
-                className="w-full h-12 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-semibold text-sm
-                  transition-all shadow-sm shadow-blue-600/20 active:scale-[.98] flex items-center justify-center gap-2 mt-2"
+                className="w-full h-12 text-base font-medium bg-blue-600 hover:bg-blue-700 active:bg-blue-800 transition-all duration-200 shadow-lg shadow-blue-600/30 hover:shadow-xl hover:shadow-blue-600/40 active:shadow-md disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 {loading ? (
-                  <>
-                    <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                    验证中...
-                  </>
+                  <span className="flex items-center gap-2">
+                    <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    登录中...
+                  </span>
                 ) : (
-                  '登录系统'
+                  '登录'
                 )}
-              </button>
-            </form>
+              </Button>
+            </div>
 
-            {/* Demo hint */}
-            <div className="mt-6 p-4 bg-slate-50 rounded-xl border border-slate-100">
-              <p className="text-xs text-slate-400 font-medium mb-2 flex items-center gap-1.5">
-                <ShieldCheck size={13} className="text-green-500" /> 演示账号
+            {/* 提示信息 */}
+            <div className="mt-6 pt-6 border-t border-slate-100">
+              <p className="text-xs text-slate-400 text-center">
+                测试账号：13800138001 / 800138
               </p>
-              <div className="space-y-1.5 text-xs text-slate-500 font-mono">
-                <div className="flex justify-between"><span className="text-slate-400">账号：</span><span>admin</span><span className="text-slate-400">密码：</span><span>admin</span></div>
-                <div className="flex justify-between"><span className="text-slate-400">账号：</span><span>13800138001</span><span className="text-slate-400">密码：</span><span>123456</span></div>
-              </div>
             </div>
           </div>
-
-          <p className="text-center text-xs text-slate-400 mt-8">
-            © 2026 发拍管理平台 v2.7 · 二手车拍卖系统
-          </p>
         </div>
+
+        {/* 底部版权 */}
+        <p className="text-center text-slate-400 text-xs mt-6">
+          © 2026 发拍管理系统 v2.6.0
+        </p>
       </div>
     </div>
   )

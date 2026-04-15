@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -7,6 +7,9 @@ import { Button } from '@/components/ui/button'
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
+} from '@/components/ui/dialog'
 import {
   Car, Building2, Settings, Users, ShieldCheck,
   ChevronDown, ChevronRight, Menu,
@@ -90,7 +93,24 @@ function NavItemComp({ item, collapsed }: { item: NavItem; collapsed: boolean })
 }
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const navigate = useNavigate()
   const [collapsed, setCollapsed] = useState(false)
+  const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false)
+
+  // 获取当前登录用户信息
+  const currentUser = JSON.parse(localStorage.getItem('admin_user') || '{}')
+
+  // 退出登录
+  const handleLogout = () => {
+    localStorage.removeItem('admin_token')
+    localStorage.removeItem('admin_user')
+    navigate('/login')
+  }
+
+  // 修改密码
+  const handleChangePassword = () => {
+    navigate('/change-password')
+  }
 
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden">
@@ -151,10 +171,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                       className="text-white text-xs font-medium"
                       style={{ backgroundColor: THEME.primary.DEFAULT }}
                     >
-                      超
+                      {currentUser.name ? currentUser.name.slice(0, 1) : '管'}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="text-sm font-medium text-slate-700">超级管理员</span>
+                  <span className="text-sm font-medium text-slate-700">{currentUser.name || '管理员'}</span>
                   <ChevronDown size={14} className="text-slate-400" />
                 </Button>
               </DropdownMenuTrigger>
@@ -162,11 +182,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <DropdownMenuItem className="cursor-pointer hover:bg-slate-50">
                   <User size={14} className="mr-2 text-slate-500" />个人信息
                 </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer hover:bg-slate-50">
+                <DropdownMenuItem className="cursor-pointer hover:bg-slate-50" onClick={handleChangePassword}>
                   <KeyRound size={14} className="mr-2 text-slate-500" />修改密码
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-red-600 cursor-pointer hover:bg-red-50">
+                <DropdownMenuItem className="text-red-600 cursor-pointer hover:bg-red-50" onClick={() => setLogoutConfirmOpen(true)}>
                   <LogOut size={14} className="mr-2" />退出登录
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -179,6 +199,36 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           {children}
         </main>
       </div>
+
+      {/* 退出登录确认弹窗 */}
+      <Dialog open={logoutConfirmOpen} onOpenChange={setLogoutConfirmOpen}>
+        <DialogContent className="sm:max-w-[400px]">
+          <DialogHeader>
+            <div className="mx-auto w-14 h-14 rounded-full flex items-center justify-center mb-4 bg-red-100">
+              <LogOut size={28} className="text-red-600" />
+            </div>
+            <DialogTitle className="text-center text-lg">确认退出登录</DialogTitle>
+          </DialogHeader>
+          <div className="py-4 text-center text-slate-600">
+            <p>确定要退出当前账号吗？</p>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setLogoutConfirmOpen(false)}
+              className="flex-1"
+            >
+              取消
+            </Button>
+            <Button
+              onClick={handleLogout}
+              className="flex-1 bg-red-600 hover:bg-red-700"
+            >
+              确认退出
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
