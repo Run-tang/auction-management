@@ -41,13 +41,6 @@ const REQUIRED_PHOTOS = [
   { key: 'trunk', label: '后备箱' },
 ];
 
-// 补充照片
-const OPTIONAL_PHOTOS = [
-  { key: 'defect', label: '瑕疵照片' }, 
-  { key: 'modify_photo', label: '改装照片' }, 
-  { key: 'other', label: '其他' },
-];
-
 interface FormData {
   // 车辆识别
   vin: string;
@@ -574,42 +567,6 @@ export function NewApplication() {
             </div>
             <div className={`text-[12px] px-4 pb-3 ${uploadedRequired >= 6 ? 'text-[#10B981]' : 'text-[#6B7280]'}`}>
               已上传 {uploadedRequired}/{REQUIRED_PHOTOS.length} 张必拍照片 {uploadedRequired >= 6 ? '✅' : '(至少6张)'}
-            </div>
-          </Section>
-
-          <Section title="补充照片" tip="可选，每类最多5张">
-            <div className="grid grid-cols-3 gap-3 p-4">
-              {OPTIONAL_PHOTOS.map(p => (
-                <div 
-                  key={p.key} 
-                  className={`aspect-square rounded-xl flex flex-col items-center justify-center cursor-pointer relative overflow-hidden ${
-                    form.photos[p.key] 
-                      ? 'bg-[#333]' 
-                      : 'bg-[#F5F5F5] border-2 border-dashed border-[#E5E5E5]'
-                  }`} 
-                  onClick={() => togglePhoto(p.key)}
-                >
-                  {form.photos[p.key] ? (
-                    <>
-                      <div className="w-full h-full bg-[#444] flex items-center justify-center text-white text-[12px]">{p.label}</div>
-                      <div className="absolute top-1 right-1 w-5 h-5 bg-[#10B981] rounded-full flex items-center justify-center">
-                        <Check size={12} className="text-white" />
-                      </div>
-                      <div 
-                        className="absolute top-1 left-1 w-5 h-5 bg-black/50 rounded-full flex items-center justify-center"
-                        onClick={e => { e.stopPropagation(); togglePhoto(p.key); }}
-                      >
-                        <X size={12} className="text-white" />
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <Camera size={24} className="text-[#6B7280] mb-1" />
-                      <span className="text-[11px] text-[#6B7280]">{p.label}</span>
-                    </>
-                  )}
-                </div>
-              ))}
             </div>
           </Section>
         </div>

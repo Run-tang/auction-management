@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import { User, Phone, CreditCard, LogOut, ChevronRight, ExternalLink, RefreshCw } from 'lucide-react';
+import { User, Phone, LogOut, ChevronRight, ExternalLink } from 'lucide-react';
 import { getCurrentUser, logout, subscribe, getApplications } from '../lib/store';
 import { toast } from 'sonner';
 
@@ -119,19 +119,6 @@ export function Profile() {
           <ChevronRight size={16} className="text-[#9CA3AF] shrink-0" />
         </div>
 
-        <div 
-          className="flex items-center px-4 py-3.5 cursor-pointer active:bg-[#F9FAFB] transition-colors"
-          onClick={() => toast.info('功能开发中')}
-        >
-          <div className="w-9 h-9 rounded-lg bg-[#FEF3C7] flex items-center justify-center mr-3 shrink-0">
-            <CreditCard size={18} className="text-[#D97706]" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="text-[14px] text-[#1F2937]">财务结算</div>
-            <div className="text-[12px] text-[#9CA3AF]">查看结算记录</div>
-          </div>
-          <ChevronRight size={16} className="text-[#9CA3AF] shrink-0" />
-        </div>
       </div>
 
       {/* Logout Button */}

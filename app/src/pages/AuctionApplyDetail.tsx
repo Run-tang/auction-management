@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import {
   ArrowLeft, Copy, User, Phone, Building2, Calendar, MapPin, Store, Clock,
   Car, Gauge, RefreshCcw, XCircle, AlertTriangle, Eye, ExternalLink,
-  FileText, Camera, DollarSign, Package, Wrench, Image as ImageIcon,
+  FileText, Camera, DollarSign, Package, Image as ImageIcon,
   CheckCircle2, X
 } from 'lucide-react'
 import { useState } from 'react'
@@ -353,59 +353,6 @@ export default function AuctionApplyDetail() {
               })}
             </div>
           </div>
-
-          {/* 补充照片 */}
-          {(item.images.defectImages?.length || item.images.modifiedImages?.length || item.images.otherImages?.length) && (
-            <div className="space-y-4">
-              {/* 瑕疵档案 */}
-              {item.images.defectImages && item.images.defectImages.length > 0 && (
-                <div>
-                  <label className="text-xs text-slate-400 uppercase tracking-wide mb-2 block">
-                    瑕疵档案（{item.images.defectImages.length}/5张）
-                  </label>
-                  <div className="flex gap-2 flex-wrap">
-                    {item.images.defectImages.map((img, i) => (
-                      <div key={i} className="w-20 h-20 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center">
-                        <ImageIcon size={16} className="text-slate-400" />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* 改装特写 */}
-              {item.images.modifiedImages && item.images.modifiedImages.length > 0 && (
-                <div>
-                  <label className="text-xs text-slate-400 uppercase tracking-wide mb-2 block">
-                    改装特写（{item.images.modifiedImages.length}/5张）
-                  </label>
-                  <div className="flex gap-2 flex-wrap">
-                    {item.images.modifiedImages.map((img, i) => (
-                      <div key={i} className="w-20 h-20 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center">
-                        <Wrench size={16} className="text-slate-400" />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* 其他照片 */}
-              {item.images.otherImages && item.images.otherImages.length > 0 && (
-                <div>
-                  <label className="text-xs text-slate-400 uppercase tracking-wide mb-2 block">
-                    其他照片（{item.images.otherImages.length}张）
-                  </label>
-                  <div className="flex gap-2 flex-wrap">
-                    {item.images.otherImages.map((img, i) => (
-                      <div key={i} className="w-20 h-20 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center">
-                        <ImageIcon size={16} className="text-slate-400" />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
         </div>
       </div>
 

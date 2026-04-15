@@ -68,7 +68,4 @@ export interface ApplyImages {
   dashboard?: string // 仪表盘
   engine?: string    // 发动机舱
   trunk?: string     // 后备箱
-  defectImages?: string[]  // 瑕疵照片（最多5张）
-  modifiedImages?: string[] // 改装照片（最多5张）
-  otherImages?: string[]    // 其他照片
 }
