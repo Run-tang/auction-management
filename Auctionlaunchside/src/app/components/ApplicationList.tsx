@@ -97,12 +97,27 @@ export function ApplicationList() {
           </>
         );
       case 'scheduled':
+        return (
+          <>
+            <button className={`${btnBase} border border-[#E5E5E5] text-[#6B7280] bg-white`} onClick={e => handleOffshelf(e, app.id)}>
+              下架车辆
+            </button>
+            <button className={`${btnBase} border border-[#E5E5E5] text-[#6B7280] bg-white`} onClick={e => { e.stopPropagation(); navigate(`/detail/${app.id}`); }}>
+              查看
+            </button>
+          </>
+        );
       case 'auctioning':
       case 'sold':
         return (
-          <button className={`${btnBase} border border-[#E5E5E5] text-[#6B7280] bg-white`} onClick={e => { e.stopPropagation(); navigate(`/detail/${app.id}`); }}>
-            查看
-          </button>
+          <>
+            <button className={`${btnBase} border border-[#E5E5E5] text-[#9CA3AF] bg-[#F9FAFB] cursor-not-allowed`} disabled onClick={e => e.stopPropagation()}>
+              锁定业务
+            </button>
+            <button className={`${btnBase} border border-[#E5E5E5] text-[#6B7280] bg-white`} onClick={e => { e.stopPropagation(); navigate(`/detail/${app.id}`); }}>
+              查看
+            </button>
+          </>
         );
       case 'unsold':
       case 'offshelf':
