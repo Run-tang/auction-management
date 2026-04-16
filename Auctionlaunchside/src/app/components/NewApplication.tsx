@@ -666,42 +666,29 @@ export function NewApplication() {
       {/* Footer */}
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-[390px] bg-white px-4 py-3 border-t border-[#E5E5E5] z-[100]">
         <div className="flex gap-3">
-          {/* 价格仅改模式：仅提交按钮 */}
-          {isPriceOnly ? (
+          {step > 1 && (
             <button 
-              className="flex-1 py-3 rounded-xl text-[14px] font-medium bg-[#FF6B00] text-white border-none cursor-pointer active:bg-[#E55A00] disabled:bg-[#9CA3AF]"
-              onClick={handleNext}
-              disabled={submitting}
+              className="py-3 px-4 rounded-xl text-[14px] font-medium bg-[#F5F5F5] text-[#1F2937] border-none cursor-pointer shrink-0"
+              onClick={() => setStep(step - 1)}
             >
-              确认重新发拍
+              上一步
             </button>
-          ) : (
-            <>
-              {step > 1 && (
-                <button 
-                  className="py-3 px-4 rounded-xl text-[14px] font-medium bg-[#F5F5F5] text-[#1F2937] border-none cursor-pointer shrink-0"
-                  onClick={() => setStep(step - 1)}
-                >
-                  上一步
-                </button>
-              )}
-              {!isResubmit && (
-                <button 
-                  className="py-3 px-4 rounded-xl text-[14px] font-medium bg-white border border-[#E5E5E5] text-[#6B7280] border-none cursor-pointer shrink-0"
-                  onClick={handleSaveDraft}
-                >
-                  保存草稿
-                </button>
-              )}
-              <button 
-                className="flex-1 py-3 rounded-xl text-[14px] font-medium bg-[#FF6B00] text-white border-none cursor-pointer active:bg-[#E55A00] disabled:bg-[#9CA3AF]"
-                onClick={handleNext}
-                disabled={submitting}
-              >
-                {step === 4 ? (isResubmit ? '确认重新发拍' : '提交审核') : '下一步'}
-              </button>
-            </>
           )}
+          {!isResubmit && (
+            <button 
+              className="py-3 px-4 rounded-xl text-[14px] font-medium bg-white border border-[#E5E5E5] text-[#6B7280] border-none cursor-pointer shrink-0"
+              onClick={handleSaveDraft}
+            >
+              保存草稿
+            </button>
+          )}
+          <button 
+            className="flex-1 py-3 rounded-xl text-[14px] font-medium bg-[#FF6B00] text-white border-none cursor-pointer active:bg-[#E55A00] disabled:bg-[#9CA3AF]"
+            onClick={handleNext}
+            disabled={submitting}
+          >
+            {step === 4 ? (isResubmit ? '确认重新发拍' : '提交审核') : '下一步'}
+          </button>
         </div>
       </div>
 
