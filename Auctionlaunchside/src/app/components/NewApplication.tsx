@@ -510,40 +510,7 @@ export function NewApplication() {
             />
           </Section>
 
-          <Section title="车辆配置">
-            <FormRow label="排量">
-              <input 
-                className="flex-1 text-right border-none bg-transparent text-[14px] outline-none max-w-[200px] text-[#6B7280] placeholder:text-[#9CA3AF]"
-                placeholder="输入排量" 
-                maxLength={10}
-                value={form.engineCapacity} 
-                onChange={e => set('engineCapacity', e.target.value)} 
-              />
-            </FormRow>
-            <PickerRow 
-              label="变速箱" 
-              value={form.transmission || '请选择'}
-              onClick={() => setShowPicker({ type: '变速箱', options: GEARBOX, field: 'transmission' })} 
-            />
-            <PickerRow 
-              label="燃料类型" 
-              value={form.fuelType}
-              onClick={() => setShowPicker({ type: '燃料类型', options: FUELS, field: 'fuelType' })} 
-            />
-            <PickerRow 
-              label="车身颜色" 
-              value={form.exteriorColor || '请选择'} 
-              placeholder={!form.exteriorColor}
-              onClick={() => setShowPicker({ type: '车身颜色', options: COLORS, field: 'exteriorColor' })} 
-            />
-            <PickerRow 
-              label="内饰颜色" 
-              value={form.interiorColor || '请选择'} 
-              placeholder={!form.interiorColor} 
-              last
-              onClick={() => setShowPicker({ type: '内饰颜色', options: COLORS, field: 'interiorColor' })} 
-            />
-          </Section>
+
         </div>
       )}
 
