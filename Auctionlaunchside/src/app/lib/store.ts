@@ -76,6 +76,8 @@ export interface Application {
   applyTime: string;          // 申请时间
   submitterName?: string;     // 提交人姓名
   submitterPhone?: string;    // 提交人电话
+  // 下架来源标记（记录从哪个状态下架的）
+  offshelfSource?: 'draft' | 'scheduled';
 }
 
 let applications: Application[] = [

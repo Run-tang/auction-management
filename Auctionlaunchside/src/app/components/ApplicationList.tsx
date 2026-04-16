@@ -55,7 +55,10 @@ export function ApplicationList() {
 
   const confirmOffshelf = () => {
     if (offshelfTarget) {
-      updateApplication(offshelfTarget, { status: 'offshelf' });
+      const app = apps.find(a => a.id === offshelfTarget);
+      // 记录下架来源：草稿 or 待拍卖
+      const source = app?.status === 'draft' ? 'draft' : 'scheduled';
+      updateApplication(offshelfTarget, { status: 'offshelf', offshelfSource: source });
       toast.success('已下架');
       setOffshelfTarget(null);
     }
@@ -118,7 +121,15 @@ export function ApplicationList() {
       case 'offshelf':
         return (
           <>
-            <button className={`${btnBase} bg-[#FF6B00] text-white border border-[#FF6B00]`} onClick={e => { e.stopPropagation(); navigate(`/form?edit=${app.id}&resubmit`); }}>
+            <button 
+              className={`${btnBase} bg-[#FF6B00] text-white border border-[#FF6B00]`} 
+              onClick={e => { 
+                e.stopPropagation(); 
+                // 根据下架来源决定重新发拍模式
+                const mode = app.offshelfSource === 'draft' ? 'full' : 'price';
+                navigate(`/form?edit=${app.id}&resubmit=${mode}`);
+              }}
+            >
               <RefreshCw size={12} />重新发拍
             </button>
             <button className={`${btnBase} border border-[#E5E5E5] text-[#6B7280] bg-white`} onClick={e => { e.stopPropagation(); navigate(`/detail/${app.id}`); }}>
@@ -213,9 +224,17 @@ export function ApplicationList() {
                       <span>{app.transmission}</span>
                     </div>
                   </div>
-                  <span className={`px-2.5 py-1 rounded-lg text-[12px] font-medium shrink-0 ${statusConfig.cls}`}>
-                    {statusConfig.text}
-                  </span>
+                  <div className="flex flex-col items-end gap-1">
+                    <span className={`px-2.5 py-1 rounded-lg text-[12px] font-medium shrink-0 ${statusConfig.cls}`}>
+                      {statusConfig.text}
+                    </span>
+                    {/* 下架来源标签 */}
+                    {(app.status === 'offshelf' || app.status === 'unsold') && app.offshelfSource && (
+                      <span className="px-2 py-0.5 rounded text-[10px] bg-amber-50 text-amber-600 border border-amber-200">
+                        来自{app.offshelfSource === 'draft' ? '草稿' : '待拍卖'}下架
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 {/* Card Body - 价格和里程 */}

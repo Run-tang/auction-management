@@ -137,8 +137,10 @@ export function NewApplication() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const editId = searchParams.get('edit');
-  // 重新发拍标识
-  const isResubmit = searchParams.get('resubmit') !== null;
+  // 重新发拍参数：full=完整编辑，price=仅改价格
+  const resubmitParam = searchParams.get('resubmit');
+  const isResubmit = resubmitParam !== null;
+  const isPriceOnly = resubmitParam === 'price';
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const [step, setStep] = useState<number>(() => {
@@ -259,6 +261,12 @@ export function NewApplication() {
   };
 
   const handleNext = () => {
+    // 仅价格修改模式：步骤3直接提交
+    if (isPriceOnly) {
+      if (!form.reservePrice) { toast.error('请输入保留价'); return; }
+      handleSubmit();
+      return;
+    }
     if (!validate()) return;
     if (step < 4) {
       setStep(step + 1);
@@ -320,6 +328,22 @@ export function NewApplication() {
         toast.info('已通知拍卖后台', { description: '后台已收到您的发拍申请，正在安排审核' });
       }, 1200);
       setTimeout(() => navigate('/?tab=pending_audit'), 1800);
+    }
+  };
+
+  // 返回处理
+  const handleBack = () => {
+    if (isPriceOnly) {
+      // 仅价格修改模式：直接返回
+      navigate('/');
+      return;
+    }
+    if (form.vin || form.carBrand || form.mileage || form.reservePrice) {
+      if (confirm('确定离开？当前填写的内容将保存为草稿')) {
+        handleSaveDraft();
+      }
+    } else {
+      navigate('/');
     }
   };
 
@@ -421,14 +445,18 @@ export function NewApplication() {
           <ArrowLeft size={20} />
         </div>
         <div className="text-[18px] font-semibold text-center">{isResubmit ? '重新发拍' : editId ? '编辑申请' : '新增申请'}</div>
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[13px] text-[#6B7280]">
-          {step}/4
-        </div>
+        {/* 步骤指示 - 仅非价格修改模式显示 */}
+        {!isPriceOnly && (
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[13px] text-[#6B7280]">
+            {step}/4
+          </div>
+        )}
       </div>
 
-      {/* Step Indicator */}
-      <div className="flex justify-center items-center py-4 bg-white border-b border-[#E5E5E5]">
-        {STEPS.map((s, i) => (
+      {/* Step Indicator - 仅非价格修改模式显示 */}
+      {!isPriceOnly && (
+        <div className="flex justify-center items-center py-4 bg-white border-b border-[#E5E5E5]">
+          {STEPS.map((s, i) => (
           <div key={i} className="flex items-center">
             {i > 0 && <div className={`w-8 h-0.5 mx-0.5 -mt-3.5 transition-all ${i < step ? 'bg-[#10B981]' : 'bg-[#E5E5E5]'}`} />}
             <div className="flex flex-col items-center">
@@ -574,6 +602,45 @@ export function NewApplication() {
       {/* Step 3: Price Settings */}
       {step === 3 && (
         <div>
+          {/* 仅价格修改模式：显示车辆信息只读区 */}
+          {isPriceOnly && (
+            <>
+              <Section title="车辆信息">
+                <div className="px-4 py-3 space-y-2 text-[14px]">
+                  <div className="flex justify-between">
+                    <span className="text-[#9CA3AF]">VIN码</span>
+                    <span className="text-[#374151] font-mono">{form.vin}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#9CA3AF]">车牌号</span>
+                    <span className="text-[#374151]">{form.licensePlate || '未上牌'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#9CA3AF]">品牌车型</span>
+                    <span className="text-[#374151]">{form.carBrand} {form.carSeries} {form.carModel}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#9CA3AF]">排量/变速箱</span>
+                    <span className="text-[#374151]">{form.engineCapacity} / {form.transmission}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#9CA3AF]">表显里程</span>
+                    <span className="text-[#374151]">{form.mileage}万公里</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#9CA3AF]">上牌日期</span>
+                    <span className="text-[#374151]">{form.registrationDate}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#9CA3AF]">所在城市</span>
+                    <span className="text-[#374151]">{form.province} {form.city}</span>
+                  </div>
+                </div>
+              </Section>
+              <div className="h-3 bg-[#F5F5F5]" />
+            </>
+          )}
+
           <Section title="拍卖参数">
             <FormRow label="保留价" required>
               <input 
@@ -595,7 +662,7 @@ export function NewApplication() {
           <div className="text-[12px] text-[#6B7280] px-4 py-3 bg-white">
             <div className="bg-[#FFF7ED] rounded-lg p-3 flex items-start gap-2">
               <span className="text-[#F59E0B]">💡</span>
-              <span>保留价对买家不可见，低于保留价不成交</span>
+              <span>{isPriceOnly ? '修改保留价后将重新发起拍卖' : '保留价对买家不可见，低于保留价不成交'}</span>
             </div>
           </div>
         </div>
@@ -665,8 +732,29 @@ export function NewApplication() {
 
       {/* Footer */}
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-[390px] bg-white px-4 py-3 border-t border-[#E5E5E5] z-[100]">
+        {/* 步骤指示器 - 仅非价格修改模式显示 */}
+        {!isPriceOnly && (
+          <div className="flex justify-center gap-1 mb-3">
+            {[1, 2, 3, 4].map(i => (
+              <div 
+                key={i}
+                className={`h-1 rounded-full transition-all ${i === step ? 'w-8 bg-[#FF6B00]' : i < step ? 'w-3 bg-[#FF6B00]/40' : 'w-3 bg-[#E5E5E5]'}`}
+              />
+            ))}
+          </div>
+        )}
         <div className="flex gap-3">
-          {step > 1 && (
+          {/* 仅价格修改模式：显示返回按钮 */}
+          {isPriceOnly && (
+            <button 
+              className="py-3 px-4 rounded-xl text-[14px] font-medium bg-[#F5F5F5] text-[#1F2937] border-none cursor-pointer shrink-0"
+              onClick={handleBack}
+            >
+              返回
+            </button>
+          )}
+          {/* 非价格修改模式：显示上一步 */}
+          {!isPriceOnly && step > 1 && (
             <button 
               className="py-3 px-4 rounded-xl text-[14px] font-medium bg-[#F5F5F5] text-[#1F2937] border-none cursor-pointer shrink-0"
               onClick={() => setStep(step - 1)}
@@ -674,6 +762,7 @@ export function NewApplication() {
               上一步
             </button>
           )}
+          {/* 保存草稿：仅新建模式显示 */}
           {!isResubmit && (
             <button 
               className="py-3 px-4 rounded-xl text-[14px] font-medium bg-white border border-[#E5E5E5] text-[#6B7280] border-none cursor-pointer shrink-0"
@@ -687,7 +776,7 @@ export function NewApplication() {
             onClick={handleNext}
             disabled={submitting}
           >
-            {step === 4 ? (isResubmit ? '确认重新发拍' : '提交审核') : '下一步'}
+            {isPriceOnly ? '确认重新发拍' : (step === 4 ? (isResubmit ? '确认重新发拍' : '提交审核') : '下一步')}
           </button>
         </div>
       </div>
