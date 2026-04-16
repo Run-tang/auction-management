@@ -118,7 +118,7 @@ export function ApplicationList() {
       case 'offshelf':
         return (
           <>
-            <button className={`${btnBase} bg-[#FF6B00] text-white border border-[#FF6B00]`} onClick={e => { e.stopPropagation(); navigate(`/form?edit=${app.id}&resubmit=1`); }}>
+            <button className={`${btnBase} bg-[#FF6B00] text-white border border-[#FF6B00]`} onClick={e => { e.stopPropagation(); navigate(`/form?edit=${app.id}&resubmit=price`); }}>
               <RefreshCw size={12} />重新发拍
             </button>
             <button className={`${btnBase} border border-[#E5E5E5] text-[#6B7280] bg-white`} onClick={e => { e.stopPropagation(); navigate(`/detail/${app.id}`); }}>
