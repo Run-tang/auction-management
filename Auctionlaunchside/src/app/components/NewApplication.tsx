@@ -275,7 +275,7 @@ export function NewApplication() {
     }
   };
 
-  // 提交审核 - 提交后进入「待审核」状态，等待后台审核
+  // 提交发拍 - 直接进入「待拍卖」状态
   const handleSubmit = () => {
     if (submitting) return;
     setSubmitting(true);
@@ -301,7 +301,7 @@ export function NewApplication() {
       transferCount: form.transferCount,
       vehicleNature: form.vehicleNature,
       reservePrice: parseFloat(form.reservePrice) || null,
-      status: isResubmit ? 'scheduled' as VehicleStatus : 'pending_audit' as VehicleStatus, // 重新发拍→待拍卖，新申请→待审核
+      status: 'scheduled' as VehicleStatus, // 新申请/重新发拍均直接进入待拍卖
       applyTime: new Date().toLocaleString('zh-CN', { hour12: false }),
       images: Object.fromEntries(Object.keys(form.photos).filter(k => form.photos[k]).map(k => [k, k])),
     };
@@ -312,22 +312,19 @@ export function NewApplication() {
       addApplication(app); 
     }
 
-    // ★ 提交成功：清除草稿缓存
+    // 提交成功：清除草稿缓存
     try {
       localStorage.removeItem(DRAFT_STORAGE_KEY);
       localStorage.removeItem(DRAFT_STEP_KEY);
     } catch { /* ignore */ }
     
-    // ★ 全局 Toast
+    // Toast 提示
     if (isResubmit) {
       toast.success('重新发拍成功', { description: '发拍单已进入待拍卖状态' });
       setTimeout(() => navigate('/?tab=scheduled'), 1000);
     } else {
-      toast.success('提交成功', { description: '审核结果将通过企业微信通知您' });
-      setTimeout(() => {
-        toast.info('已通知拍卖后台', { description: '后台已收到您的发拍申请，正在安排审核' });
-      }, 1200);
-      setTimeout(() => navigate('/?tab=pending_audit'), 1800);
+      toast.success('提交成功', { description: '发拍单已进入待拍卖状态' });
+      setTimeout(() => navigate('/?tab=scheduled'), 1000);
     }
   };
 
@@ -776,7 +773,7 @@ export function NewApplication() {
             onClick={handleNext}
             disabled={submitting}
           >
-            {isPriceOnly ? '确认重新发拍' : (step === 4 ? (isResubmit ? '确认重新发拍' : '提交审核') : '下一步')}
+            {isPriceOnly ? '确认重新发拍' : (step === 4 ? (isResubmit ? '确认重新发拍' : '提交发拍') : '下一步')}
           </button>
         </div>
       </div>

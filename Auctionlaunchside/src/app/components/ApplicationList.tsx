@@ -5,11 +5,10 @@ import { getApplications, updateApplication, subscribe, STATUS_CONFIG, type Vehi
 import type { Application } from '../lib/store';
 import { toast } from 'sonner';
 
-// Tab 配置（含待审核）
+// Tab 配置（无审核流程）
 const TABS: { key: VehicleStatus | 'all'; label: string }[] = [
   { key: 'all', label: '全部' },
   { key: 'draft', label: '草稿' },
-  { key: 'pending_audit', label: '待审核' },
   { key: 'scheduled', label: '待拍卖' },
   { key: 'auctioning', label: '拍卖中' },
   { key: 'sold', label: '交易成功' },
@@ -20,7 +19,7 @@ const TABS: { key: VehicleStatus | 'all'; label: string }[] = [
 export function ApplicationList() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  // ★ 支持从 URL ?tab=pending_audit 跳转到指定 Tab
+  // 支持从 URL ?tab=xxx 跳转到指定 Tab
   const initialTab = (searchParams.get('tab') as VehicleStatus | 'all') || 'all';
   const [filter, setFilter] = useState<VehicleStatus | 'all'>(initialTab);
   const [keyword, setKeyword] = useState('');
