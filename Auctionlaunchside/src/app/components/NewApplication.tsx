@@ -264,12 +264,7 @@ export function NewApplication() {
   };
 
   const handleNext = () => {
-    // 仅价格修改模式：步骤3直接提交
-    if (isPriceOnly) {
-      if (!form.reservePrice) { toast.error('请输入保留价'); return; }
-      handleSubmit();
-      return;
-    }
+    // 所有模式统一走4步流程
     if (!validate()) return;
     if (step < 4) {
       setStep(step + 1);
@@ -722,7 +717,7 @@ export function NewApplication() {
             onClick={handleNext}
             disabled={submitting}
           >
-            {isPriceOnly ? '确认重新发拍' : (step === 4 ? (isResubmit ? '确认重新发拍' : '提交发拍') : '下一步')}
+            {step === 4 ? (isResubmit ? '确认重新发拍' : '提交发拍') : '下一步'}
           </button>
         </div>
       </div>

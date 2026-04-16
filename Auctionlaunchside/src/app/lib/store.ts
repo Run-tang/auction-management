@@ -173,7 +173,8 @@ let applications: Application[] = [
     images: { front: 'p1', frontLeft: 'p2', rearRight: 'p3', interior: 'p4', dashboard: 'p5', engine: 'p6' },
     province: '上海', city: '上海', storeName: 'ABC二手车总店',
     status: 'offshelf', applyTime: '2026-04-09 10:00',
-    submitterName: '张三', submitterPhone: '138****8000'
+    submitterName: '张三', submitterPhone: '138****8000',
+    offshelfSource: 'scheduled'  // 来自待拍卖下架
   },
   {
     id: '7', applyNo: 'FP20260408001',
@@ -189,6 +190,22 @@ let applications: Application[] = [
     province: '北京', city: '北京', storeName: 'XYZ车行总店',
     status: 'scheduled', applyTime: '2026-04-08 09:00',
     submitterName: '李四', submitterPhone: '139****9000'
+  },
+  {
+    id: '8', applyNo: 'FP20260407001',
+    dealerName: '上海ABC二手车', dealerId: 'DLR001',
+    vin: 'LJC3Z3C59NC345678',
+    licensePlate: '沪D55555',
+    carBrand: '奔驰', carSeries: 'GLC', carModel: '2023款 GLC 300 L 4MATIC',
+    engineCapacity: '2.0T', transmission: '自动', fuelType: '汽油',
+    exteriorColor: '黑色', interiorColor: '棕色',
+    mileage: 2.0, registrationDate: '2023-04', transferCount: 0, vehicleNature: '非营运',
+    reservePrice: 38.0,
+    images: { front: 'p1', frontLeft: 'p2', rearRight: 'p3', interior: 'p4', dashboard: 'p5', engine: 'p6' },
+    province: '上海', city: '上海', storeName: 'ABC二手车总店',
+    status: 'offshelf', applyTime: '2026-04-07 10:00',
+    submitterName: '张三', submitterPhone: '138****8000',
+    offshelfSource: 'draft'  // 来自草稿下架
   },
 ];
 
