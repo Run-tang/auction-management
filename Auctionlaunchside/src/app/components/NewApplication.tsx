@@ -440,27 +440,19 @@ export function NewApplication() {
         <div>
           <Section title="车辆识别">
             <FormRow label="VIN码" required>
-              <div className="flex items-center gap-2">
-                <input 
-                  className="flex-1 text-right border-none bg-transparent text-[14px] outline-none max-w-[180px] placeholder:text-[#9CA3AF]"
-                  placeholder="请输入17位VIN码" 
-                  maxLength={17} 
-                  value={form.vin} 
-                  onChange={e => handleVinInput(e.target.value)} 
-                />
-                <div 
-                  className="w-9 h-9 bg-[#FFF3E6] rounded-lg flex items-center justify-center text-[#FF6B00] cursor-pointer shrink-0"
-                  onClick={() => toast.info('扫描功能在实际设备上使用')}
-                >
-                  <Camera size={18} />
-                </div>
-              </div>
+              <input 
+                className="flex-1 text-right border-none bg-transparent text-[14px] outline-none max-w-full placeholder:text-[#9CA3AF]"
+                placeholder="请输入17位VIN码" 
+                maxLength={17} 
+                value={form.vin} 
+                onChange={e => handleVinInput(e.target.value)} 
+              />
             </FormRow>
             <FormRow label="车牌号" last>
               <input 
-                className="flex-1 text-right border-none bg-transparent text-[14px] outline-none max-w-[200px] placeholder:text-[#9CA3AF]"
-                placeholder="非必填，7位数" 
-                maxLength={7}
+                className="flex-1 text-right border-none bg-transparent text-[14px] outline-none max-w-full placeholder:text-[#9CA3AF]"
+                placeholder="非必填，7位/8位新能源" 
+                maxLength={8}
                 value={form.licensePlate} 
                 onChange={e => set('licensePlate', e.target.value)} 
               />
