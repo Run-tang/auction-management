@@ -271,7 +271,7 @@ export default function Login() {
               </div>
 
               {/* 记住登录 */}
-              <div className="flex items-center justify-between">
+              <div className="flex items-center">
                 <label className="flex items-center gap-2 cursor-pointer group">
                   <div className="relative">
                     <Checkbox
@@ -283,9 +283,6 @@ export default function Login() {
                   </div>
                   <span className="text-sm text-slate-600 group-hover:text-slate-800 transition-colors">记住手机号</span>
                 </label>
-                <a href="#" className="text-xs text-blue-600 hover:text-blue-700 hover:underline transition-colors">
-                  忘记密码？
-                </a>
               </div>
 
               {/* 全局错误提示 - 居中醒目展示 */}
