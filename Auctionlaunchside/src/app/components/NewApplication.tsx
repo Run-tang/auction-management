@@ -67,7 +67,11 @@ const CITIES_MAP: Record<string, string[]> = {
   '新疆区': ['乌鲁木齐市', '克拉玛依市', '吐鲁番市', '哈密市', '阿克苏地区', '喀什地区', '和田地区', '伊犁州', '塔城地区', '阿勒泰地区', '石河子市', '阿拉尔市', '图木舒克市', '五家渠市', '北屯市', '铁门关市', '双河市', '可克达拉市', '昆玉市']
 };
 
-// 必拍位置
+// 草稿自动持久化 key
+const DRAFT_STORAGE_KEY = 'fapai_draft_form';
+const DRAFT_STEP_KEY = 'fapai_draft_step';
+
+// 必拍位置（7个全部必填）
 const REQUIRED_PHOTOS = [
   { key: 'front', label: '前脸' }, 
   { key: 'frontLeft', label: '左前45°' },
@@ -135,7 +139,15 @@ export function NewApplication() {
   const editId = searchParams.get('edit');
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState<number>(() => {
+    // 非编辑模式时，从草稿恢复步骤
+    if (!editId) {
+      const saved = localStorage.getItem(DRAFT_STEP_KEY);
+      if (saved) return parseInt(saved) || 1;
+    }
+    return 1;
+  });
+
   const [form, setForm] = useState<FormData>(() => {
     if (editId) {
       const app = getApplication(editId);
@@ -168,6 +180,11 @@ export function NewApplication() {
         };
       }
     }
+    // 非编辑模式：尝试从 localStorage 恢复草稿
+    try {
+      const saved = localStorage.getItem(DRAFT_STORAGE_KEY);
+      if (saved) return { ...defaultForm, ...JSON.parse(saved) };
+    } catch { /* ignore */ }
     return defaultForm;
   });
   const [showPicker, setShowPicker] = useState<{ type: string; options: string[]; field: keyof FormData } | null>(null);
@@ -178,6 +195,15 @@ export function NewApplication() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [step]);
+
+  // ★ 草稿防护：实时持久化到 localStorage（仅新建模式）
+  useEffect(() => {
+    if (editId) return; // 编辑模式不自动存草稿
+    try {
+      localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(form));
+      localStorage.setItem(DRAFT_STEP_KEY, String(step));
+    } catch { /* ignore storage errors */ }
+  }, [form, step, editId]);
 
   const set = useCallback((field: keyof FormData, value: any) => {
     setForm(f => ({ ...f, [field]: value }));
@@ -221,7 +247,10 @@ export function NewApplication() {
         return true;
       case 4:
         const cnt = REQUIRED_PHOTOS.filter(p => form.photos[p.key]).length;
-        if (cnt < 6) { toast.error('请至少上传6张必拍照片'); return false; }
+        if (cnt < REQUIRED_PHOTOS.length) { 
+          toast.error(`请上传全部 ${REQUIRED_PHOTOS.length} 张必拍照片（当前 ${cnt} 张）`); 
+          return false; 
+        }
         return true;
     }
     return true;
@@ -236,7 +265,7 @@ export function NewApplication() {
     }
   };
 
-  // 提交审核 - 提交后直接进入"待拍卖"状态（已移除待发拍状态）
+  // 提交审核 - 提交后进入「待审核」状态，等待后台审核
   const handleSubmit = () => {
     if (submitting) return;
     setSubmitting(true);
@@ -262,7 +291,7 @@ export function NewApplication() {
       transferCount: form.transferCount,
       vehicleNature: form.vehicleNature,
       reservePrice: parseFloat(form.reservePrice) || null,
-      status: 'scheduled' as VehicleStatus, // 提交后直接进入"待拍卖"状态
+      status: 'pending_audit' as VehicleStatus, // 提交后进入「待审核」状态
       applyTime: new Date().toLocaleString('zh-CN', { hour12: false }),
       images: Object.fromEntries(Object.keys(form.photos).filter(k => form.photos[k]).map(k => [k, k])),
     };
@@ -272,13 +301,21 @@ export function NewApplication() {
     } else { 
       addApplication(app); 
     }
+
+    // ★ 提交成功：清除草稿缓存
+    try {
+      localStorage.removeItem(DRAFT_STORAGE_KEY);
+      localStorage.removeItem(DRAFT_STEP_KEY);
+    } catch { /* ignore */ }
     
-    toast.success('提交成功');
-    // 模拟发送企微消息通知
+    // ★ 全局 Toast：提交成功
+    toast.success('提交成功', { description: '审核结果将通过企业微信通知您' });
+    // 模拟异步企微 Hook 推送
     setTimeout(() => {
-      toast.info('拍卖后台已收到您的发拍申请');
-    }, 1000);
-    setTimeout(() => navigate('/'), 1500);
+      toast.info('已通知拍卖后台', { description: '后台已收到您的发拍申请，正在安排审核' });
+    }, 1200);
+    // ★ 导航到「待审核」列表（通过 filter 参数定位）
+    setTimeout(() => navigate('/?tab=pending_audit'), 1800);
   };
 
   // 保存草稿
@@ -313,6 +350,12 @@ export function NewApplication() {
     } else { 
       addApplication(app); 
     }
+
+    // 清除临时草稿缓存（已持久化到 store）
+    try {
+      localStorage.removeItem(DRAFT_STORAGE_KEY);
+      localStorage.removeItem(DRAFT_STEP_KEY);
+    } catch { /* ignore */ }
     
     toast.success('草稿已保存');
     setTimeout(() => navigate('/'), 800);
@@ -324,6 +367,7 @@ export function NewApplication() {
   };
 
   const uploadedRequired = REQUIRED_PHOTOS.filter(p => form.photos[p.key]).length;
+  const allRequiredDone = uploadedRequired === REQUIRED_PHOTOS.length;
 
   // 实时价格校验
   useEffect(() => {
@@ -591,42 +635,60 @@ export function NewApplication() {
       {/* Step 4: Photos */}
       {step === 4 && (
         <div>
-          <Section title="必拍位置" tip="至少上传6张">
+          <Section title="必拍位置" tip="7个锚位全部必填">
             <div className="grid grid-cols-3 gap-3 p-4">
               {REQUIRED_PHOTOS.map(p => (
                 <div 
                   key={p.key} 
                   className={`aspect-square rounded-xl flex flex-col items-center justify-center cursor-pointer relative overflow-hidden transition-all ${
                     form.photos[p.key] 
-                      ? 'bg-[#333] border-none' 
-                      : 'bg-[#F5F5F5] border-2 border-dashed border-[#E5E5E5]'
+                      ? 'bg-[#1F2937] border-none shadow-sm' 
+                      : 'bg-[#F9FAFB] border-2 border-dashed border-[#D1D5DB]'
                   }`} 
                   onClick={() => togglePhoto(p.key)}
                 >
                   {form.photos[p.key] ? (
                     <>
-                      <div className="w-full h-full bg-[#444] flex items-center justify-center text-white text-[12px]">{p.label}</div>
-                      <div className="absolute top-1 right-1 w-5 h-5 bg-[#10B981] rounded-full flex items-center justify-center">
-                        <Check size={12} className="text-white" />
+                      {/* 已上传：深色背景 + 中央水印标签 */}
+                      <div className="w-full h-full flex items-center justify-center relative">
+                        <span className="text-[11px] text-white/70 font-medium tracking-wide select-none">{p.label}</span>
                       </div>
+                      {/* 右上角已完成标记 */}
+                      <div className="absolute top-1.5 right-1.5 w-5 h-5 bg-[#10B981] rounded-full flex items-center justify-center shadow">
+                        <Check size={11} className="text-white" />
+                      </div>
+                      {/* 左上角删除 */}
                       <div 
-                        className="absolute top-1 left-1 w-5 h-5 bg-black/50 rounded-full flex items-center justify-center"
+                        className="absolute top-1.5 left-1.5 w-5 h-5 bg-black/40 rounded-full flex items-center justify-center"
                         onClick={e => { e.stopPropagation(); togglePhoto(p.key); }}
                       >
-                        <X size={12} className="text-white" />
+                        <X size={11} className="text-white" />
                       </div>
                     </>
                   ) : (
                     <>
-                      <Camera size={24} className="text-[#6B7280] mb-1" />
-                      <span className="text-[11px] text-[#6B7280]">{p.label}</span>
+                      {/* 未上传：虚线框 + Camera + 部位水印文字 */}
+                      <Camera size={22} className="text-[#9CA3AF] mb-1.5" />
+                      <span className="text-[11px] text-[#6B7280] font-medium">{p.label}</span>
+                      <span className="text-[9px] text-[#D1D5DB] mt-0.5">点击上传</span>
                     </>
                   )}
                 </div>
               ))}
             </div>
-            <div className={`text-[12px] px-4 pb-3 ${uploadedRequired >= 6 ? 'text-[#10B981]' : 'text-[#6B7280]'}`}>
-              已上传 {uploadedRequired}/{REQUIRED_PHOTOS.length} 张必拍照片 {uploadedRequired >= 6 ? '✅' : '(至少6张)'}
+            {/* 进度提示 */}
+            <div className={`text-[12px] px-4 pb-4 flex items-center gap-1.5 ${allRequiredDone ? 'text-[#10B981]' : 'text-[#6B7280]'}`}>
+              {allRequiredDone ? (
+                <>
+                  <Check size={13} className="text-[#10B981]" />
+                  <span>7 / 7 张必拍照片已全部上传 ✅</span>
+                </>
+              ) : (
+                <>
+                  <Camera size={13} />
+                  <span>已上传 {uploadedRequired} / {REQUIRED_PHOTOS.length} 张，还差 {REQUIRED_PHOTOS.length - uploadedRequired} 张（全部必填）</span>
+                </>
+              )}
             </div>
           </Section>
         </div>

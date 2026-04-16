@@ -1,14 +1,15 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 import { Search, Plus, RefreshCw } from 'lucide-react';
 import { getApplications, updateApplication, subscribe, STATUS_CONFIG, type VehicleStatus } from '../lib/store';
 import type { Application } from '../lib/store';
 import { toast } from 'sonner';
 
-// Tab 配置
+// Tab 配置（含待审核）
 const TABS: { key: VehicleStatus | 'all'; label: string }[] = [
   { key: 'all', label: '全部' },
   { key: 'draft', label: '草稿' },
+  { key: 'pending_audit', label: '待审核' },
   { key: 'scheduled', label: '待拍卖' },
   { key: 'auctioning', label: '拍卖中' },
   { key: 'sold', label: '交易成功' },
@@ -18,7 +19,10 @@ const TABS: { key: VehicleStatus | 'all'; label: string }[] = [
 
 export function ApplicationList() {
   const navigate = useNavigate();
-  const [filter, setFilter] = useState<VehicleStatus | 'all'>('all');
+  const [searchParams] = useSearchParams();
+  // ★ 支持从 URL ?tab=pending_audit 跳转到指定 Tab
+  const initialTab = (searchParams.get('tab') as VehicleStatus | 'all') || 'all';
+  const [filter, setFilter] = useState<VehicleStatus | 'all'>(initialTab);
   const [keyword, setKeyword] = useState('');
   const [, setTick] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
