@@ -1,0 +1,130 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 构建小程序端（经销商端）
+      - name: Install dependencies - Dealer App
+        working-directory: ./Auctionlaunchside
+        run: npm install
+
+      - name: Build Dealer App
+        working-directory: ./Auctionlaunchside
+        env:
+          GITHUB_PAGES: true
+        run: npm run build
+
+      # 构建后台管理端
+      - name: Install dependencies - Admin App
+        working-directory: ./app
+        run: npm install
+
+      - name: Build Admin App
+        working-directory: ./app
+        env:
+          GITHUB_PAGES: true
+        run: npm run build
+
+      # 合并构建结果
+      - name: Merge builds
+        run: |
+          mkdir -p _site/dealer
+          mkdir -p _site/admin
+          cp -r Auctionlaunchside/dist/* _site/dealer/
+          cp -r app/dist/* _site/admin/
+
+      # 创建首页重定向
+      - name: Create index.html
+        run: |
+          cat > _site/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="UTF-8">
+            <title>广联二手车发拍管理系统</title>
+            <style>
+              body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background: #f5f5f5; }
+              h1 { color: #1f2937; margin-bottom: 2rem; }
+              .links { display: flex; gap: 2rem; }
+              a { padding: 1rem 2rem; background: #ff6b00; color: white; text-decoration: none; border-radius: 8px; font-weight: 500; }
+              a:hover { background: #e55a00; }
+              a.admin { background: #3b82f6; }
+              a.admin:hover { background: #2563eb; }
+            </style>
+          </head>
+          <body>
+            <h1>🚗 广联二手车发拍管理系统</h1>
+            <div class="links">
+              <a href="./dealer/">经销商端</a>
+              <a href="./admin/" class="admin">后台管理端</a>
+            </div>
+          </body>
+          </html>
+          EOF
+
+      # 为 SPA 应用添加 404 重定向（直接复制，路径已硬编码在文件中）
+      - name: Create 404.html files
+        run: |
+          cp Auctionlaunchside/public/404.html _site/dealer/404.html
+          cp app/public/404.html _site/admin/404.html
+
+          cat > _site/404.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="UTF-8">
+            <title>页面未找到</title>
+            <style>
+              body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background: #f5f5f5; }
+              h1 { color: #1f2937; margin-bottom: 1rem; }
+              p { color: #6b7280; margin-bottom: 2rem; }
+              a { padding: 0.75rem 1.5rem; background: #3b82f6; color: white; text-decoration: none; border-radius: 8px; }
+              a:hover { background: #2563eb; }
+            </style>
+          </head>
+          <body>
+            <h1>404 - 页面未找到</h1>
+            <p>您访问的页面不存在</p>
+            <a href="/auction-management/">返回首页</a>
+          </body>
+          </html>
+          EOF
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

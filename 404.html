@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>广联二手车 - 经销商端</title>
+    <script>
+      // GitHub Pages SPA 路由兼容方案（sessionStorage）
+      sessionStorage.setItem('spa_redirect', JSON.stringify({
+        pathname: location.pathname,
+        search: location.search,
+        hash: location.hash
+      }));
+      location.replace('/auction-management/dealer/');
+    </script>
+  </head>
+  <body></body>
+</html>

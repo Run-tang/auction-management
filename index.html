@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>广联二手车 - 经销商端</title>
+    <style>html, body { height: 100%; margin: 0; } #root { height: 100%; }</style>
+    <script>
+      // GitHub Pages SPA 路由恢复
+      (function () {
+        var redirect = sessionStorage.getItem('spa_redirect');
+        if (redirect) {
+          sessionStorage.removeItem('spa_redirect');
+          try {
+            var info = JSON.parse(redirect);
+            var base = '/auction-management/dealer';
+            var target = info.pathname;
+            var sub = target.startsWith(base) ? target.slice(base.length) : target;
+            if (sub && sub !== '/') {
+              history.replaceState(null, '', sub + (info.search || '') + (info.hash || ''));
+            }
+          } catch (e) {}
+        }
+      })();
+    </script>
+    <script type="module" crossorigin src="/assets/index-BauQsIgP.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-Dr77firE.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
