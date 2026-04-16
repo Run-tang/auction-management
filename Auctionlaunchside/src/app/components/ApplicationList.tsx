@@ -71,8 +71,8 @@ export function ApplicationList() {
   const [resubmitTarget, setResubmitTarget] = useState<string | null>(null);
   const confirmResubmit = () => {
     if (resubmitTarget) {
-      updateApplication(resubmitTarget, { status: 'ready' });
-      toast.success('已重新发拍，状态调整为待发拍');
+      updateApplication(resubmitTarget, { status: 'scheduled' });
+      toast.success('已重新发拍，请修改保留价后重新提交');
       setResubmitTarget(null);
     }
   };
@@ -118,7 +118,7 @@ export function ApplicationList() {
       case 'offshelf':
         return (
           <>
-            <button className={`${btnBase} bg-[#FF6B00] text-white border border-[#FF6B00]`} onClick={e => { e.stopPropagation(); setResubmitTarget(app.id); }}>
+            <button className={`${btnBase} bg-[#FF6B00] text-white border border-[#FF6B00]`} onClick={e => { e.stopPropagation(); navigate(`/form?edit=${app.id}&resubmit=1`); }}>
               <RefreshCw size={12} />重新发拍
             </button>
             <button className={`${btnBase} border border-[#E5E5E5] text-[#6B7280] bg-white`} onClick={e => { e.stopPropagation(); navigate(`/detail/${app.id}`); }}>

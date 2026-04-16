@@ -6,6 +6,7 @@ import type { VehicleStatus } from '../lib/store';
 import { toast } from 'sonner';
 
 const STEPS = ['基本信息', '车辆详情', '价格设置', '照片上传'];
+const RESUBMIT_STEPS = ['基本信息', '价格设置'];
 
 // 品牌列表
 const BRANDS = ['宝马', '奔驰', '奥迪', '保时捷', '丰田', '本田', '大众', '特斯拉', '蔚来', '理想', '比亚迪', '小鹏', '吉利'];
@@ -137,6 +138,7 @@ export function NewApplication() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const editId = searchParams.get('edit');
+  const isResubmit = searchParams.get('resubmit') === '1'; // 重新发拍模式
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const [step, setStep] = useState<number>(() => {
@@ -258,7 +260,8 @@ export function NewApplication() {
 
   const handleNext = () => {
     if (!validate()) return;
-    if (step < 4) {
+    const maxStep = isResubmit ? 2 : 4;
+    if (step < maxStep) {
       setStep(step + 1);
     } else {
       handleSubmit();
@@ -291,7 +294,7 @@ export function NewApplication() {
       transferCount: form.transferCount,
       vehicleNature: form.vehicleNature,
       reservePrice: parseFloat(form.reservePrice) || null,
-      status: 'pending_audit' as VehicleStatus, // 提交后进入「待审核」状态
+      status: isResubmit ? 'scheduled' as VehicleStatus : 'pending_audit' as VehicleStatus, // 重新发拍→待拍卖，新申请→待审核
       applyTime: new Date().toLocaleString('zh-CN', { hour12: false }),
       images: Object.fromEntries(Object.keys(form.photos).filter(k => form.photos[k]).map(k => [k, k])),
     };
@@ -308,14 +311,17 @@ export function NewApplication() {
       localStorage.removeItem(DRAFT_STEP_KEY);
     } catch { /* ignore */ }
     
-    // ★ 全局 Toast：提交成功
-    toast.success('提交成功', { description: '审核结果将通过企业微信通知您' });
-    // 模拟异步企微 Hook 推送
-    setTimeout(() => {
-      toast.info('已通知拍卖后台', { description: '后台已收到您的发拍申请，正在安排审核' });
-    }, 1200);
-    // ★ 导航到「待审核」列表（通过 filter 参数定位）
-    setTimeout(() => navigate('/?tab=pending_audit'), 1800);
+    // ★ 全局 Toast
+    if (isResubmit) {
+      toast.success('重新发拍成功', { description: '发拍单已进入待拍卖状态' });
+      setTimeout(() => navigate('/?tab=scheduled'), 1000);
+    } else {
+      toast.success('提交成功', { description: '审核结果将通过企业微信通知您' });
+      setTimeout(() => {
+        toast.info('已通知拍卖后台', { description: '后台已收到您的发拍申请，正在安排审核' });
+      }, 1200);
+      setTimeout(() => navigate('/?tab=pending_audit'), 1800);
+    }
   };
 
   // 保存草稿
@@ -410,15 +416,15 @@ export function NewApplication() {
         >
           <ArrowLeft size={20} />
         </div>
-        <div className="text-[18px] font-semibold text-center">{editId ? '编辑申请' : '新增申请'}</div>
+        <div className="text-[18px] font-semibold text-center">{isResubmit ? '重新发拍' : editId ? '编辑申请' : '新增申请'}</div>
         <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[13px] text-[#6B7280]">
-          {step}/4
+          {step}/{isResubmit ? 2 : 4}
         </div>
       </div>
 
       {/* Step Indicator */}
       <div className="flex justify-center items-center py-4 bg-white border-b border-[#E5E5E5]">
-        {STEPS.map((s, i) => (
+        {(isResubmit ? RESUBMIT_STEPS : STEPS).map((s, i) => (
           <div key={i} className="flex items-center">
             {i > 0 && <div className={`w-8 h-0.5 mx-0.5 -mt-3.5 transition-all ${i < step ? 'bg-[#10B981]' : 'bg-[#E5E5E5]'}`} />}
             <div className="flex flex-col items-center">
