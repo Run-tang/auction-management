@@ -6,7 +6,6 @@ import type { VehicleStatus } from '../lib/store';
 import { toast } from 'sonner';
 
 const STEPS = ['基本信息', '车辆详情', '价格设置', '照片上传'];
-const RESUBMIT_STEPS = ['基本信息', '价格设置'];
 
 // 品牌列表
 const BRANDS = ['宝马', '奔驰', '奥迪', '保时捷', '丰田', '本田', '大众', '特斯拉', '蔚来', '理想', '比亚迪', '小鹏', '吉利'];
@@ -138,10 +137,8 @@ export function NewApplication() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const editId = searchParams.get('edit');
-  // resubmit类型：full=草稿来源完整编辑，price=流拍/下架来源仅改保留价
-  const resubmitMode = searchParams.get('resubmit') as 'full' | 'price' | null;
-  const isResubmit = resubmitMode !== null;
-  const isPriceOnly = resubmitMode === 'price'; // 仅修改保留价模式
+  // 重新发拍标识
+  const isResubmit = searchParams.get('resubmit') !== null;
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const [step, setStep] = useState<number>(() => {
@@ -262,15 +259,8 @@ export function NewApplication() {
   };
 
   const handleNext = () => {
-    // 价格仅改模式：直接提交
-    if (isPriceOnly) {
-      if (!form.reservePrice) { toast.error('请输入保留价'); return; }
-      handleSubmit();
-      return;
-    }
     if (!validate()) return;
-    const maxStep = isResubmit ? 2 : 4;
-    if (step < maxStep) {
+    if (step < 4) {
       setStep(step + 1);
     } else {
       handleSubmit();
@@ -406,8 +396,8 @@ export function NewApplication() {
 
   // 返回
   const handleBack = () => {
-    // 价格仅改模式：直接返回
-    if (isPriceOnly) {
+    // 重新发拍模式：直接返回
+    if (isResubmit) {
       navigate('/');
       return;
     }
@@ -432,96 +422,31 @@ export function NewApplication() {
         </div>
         <div className="text-[18px] font-semibold text-center">{isResubmit ? '重新发拍' : editId ? '编辑申请' : '新增申请'}</div>
         <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[13px] text-[#6B7280]">
-          {isPriceOnly ? '1/1' : `${step}/${isResubmit ? 2 : 4}`}
+          {step}/4
         </div>
       </div>
 
-      {/* Step Indicator - 仅非价格仅改模式显示 */}
-      {!isPriceOnly && (
-        <div className="flex justify-center items-center py-4 bg-white border-b border-[#E5E5E5]">
-          {(isResubmit ? RESUBMIT_STEPS : STEPS).map((s, i) => (
-            <div key={i} className="flex items-center">
-              {i > 0 && <div className={`w-8 h-0.5 mx-0.5 -mt-3.5 transition-all ${i < step ? 'bg-[#10B981]' : 'bg-[#E5E5E5]'}`} />}
-              <div className="flex flex-col items-center">
-                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[12px] font-medium transition-all ${
-                  i + 1 < step ? 'bg-[#10B981] text-white' : i + 1 === step ? 'bg-[#FF6B00] text-white' : 'bg-[#E5E5E5] text-[#6B7280]'
-                }`}>
-                  {i + 1 < step ? <Check size={14} /> : i + 1}
-                </div>
-                <div className={`text-[10px] mt-1.5 transition-all ${i + 1 === step ? 'text-[#FF6B00] font-medium' : 'text-[#6B7280]'}`}>
-                  {s}
-                </div>
+      {/* Step Indicator */}
+      <div className="flex justify-center items-center py-4 bg-white border-b border-[#E5E5E5]">
+        {STEPS.map((s, i) => (
+          <div key={i} className="flex items-center">
+            {i > 0 && <div className={`w-8 h-0.5 mx-0.5 -mt-3.5 transition-all ${i < step ? 'bg-[#10B981]' : 'bg-[#E5E5E5]'}`} />}
+            <div className="flex flex-col items-center">
+              <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[12px] font-medium transition-all ${
+                i + 1 < step ? 'bg-[#10B981] text-white' : i + 1 === step ? 'bg-[#FF6B00] text-white' : 'bg-[#E5E5E5] text-[#6B7280]'
+              }`}>
+                {i + 1 < step ? <Check size={14} /> : i + 1}
+              </div>
+              <div className={`text-[10px] mt-1.5 transition-all ${i + 1 === step ? 'text-[#FF6B00] font-medium' : 'text-[#6B7280]'}`}>
+                {s}
               </div>
             </div>
-          ))}
-        </div>
-      )}
-
-      {/* 价格仅改模式 - 流拍/已下架来源 */}
-      {isPriceOnly && (
-        <div>
-          {/* 车辆基本信息（只读展示） */}
-          <Section title="车辆基本信息">
-            <FormRow label="VIN码">
-              <span className="text-[14px] text-[#6B7280] font-mono">{form.vin || '-'}</span>
-            </FormRow>
-            <FormRow label="车牌号">
-              <span className="text-[14px] text-[#6B7280]">{form.licensePlate || '-'}</span>
-            </FormRow>
-            <FormRow label="品牌/车系">
-              <span className="text-[14px] text-[#6B7280]">{form.carBrand} {form.carSeries}</span>
-            </FormRow>
-            <FormRow label="车型名称">
-              <span className="text-[14px] text-[#6B7280]">{form.carModel || '-'}</span>
-            </FormRow>
-            <FormRow label="所在城市">
-              <span className="text-[14px] text-[#6B7280]">{form.province} {form.city}</span>
-            </FormRow>
-            <FormRow label="排量/变速箱">
-              <span className="text-[14px] text-[#6B7280]">{form.engineCapacity} / {form.transmission}</span>
-            </FormRow>
-            <FormRow label="表显里程">
-              <span className="text-[14px] text-[#6B7280]">{form.mileage}万公里</span>
-            </FormRow>
-            <FormRow label="上牌日期">
-              <span className="text-[14px] text-[#6B7280]">{form.registrationDate}</span>
-            </FormRow>
-            <FormRow label="过户次数">
-              <span className="text-[14px] text-[#6B7280]">{form.transferCount}次</span>
-            </FormRow>
-            <FormRow label="车辆性质">
-              <span className="text-[14px] text-[#6B7280]">{form.vehicleNature}</span>
-            </FormRow>
-            <FormRow label="外饰/内饰" last>
-              <span className="text-[14px] text-[#6B7280]">{form.exteriorColor || '-'} / {form.interiorColor || '-'}</span>
-            </FormRow>
-          </Section>
-
-          {/* 价格设置（可编辑） */}
-          <Section title="价格设置">
-            <div className="px-4 py-3.5 border-b border-[#F3F4F6]">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-[14px] text-[#1F2937]">保留价 <span className="text-[#EF4444]">*</span></span>
-                <span className="text-[12px] text-[#9CA3AF]">单位：万元</span>
-              </div>
-              <div className="flex items-center bg-[#F9FAFB] rounded-lg px-3 py-2.5">
-                <span className="text-[16px] text-[#FF6B00] mr-1">¥</span>
-                <input 
-                  className="flex-1 bg-transparent text-[16px] font-semibold text-[#FF6B00] outline-none"
-                  placeholder="请输入保留价"
-                  value={form.reservePrice}
-                  onChange={e => set('reservePrice', e.target.value)}
-                />
-                <span className="text-[14px] text-[#6B7280]">万元</span>
-              </div>
-              {priceError && <div className="text-[12px] text-[#EF4444] mt-1.5">{priceError}</div>}
-            </div>
-          </Section>
-        </div>
-      )}
+          </div>
+        ))}
+      </div>
 
       {/* Step 1: Basic Info */}
-      {!isPriceOnly && step === 1 && (
+      {step === 1 && (
         <div>
           <Section title="车辆识别">
             <FormRow label="VIN码" required>
@@ -773,7 +698,7 @@ export function NewApplication() {
                 onClick={handleNext}
                 disabled={submitting}
               >
-                {step === 4 ? '提交审核' : '下一步'}
+                {step === 4 ? (isResubmit ? '确认重新发拍' : '提交审核') : '下一步'}
               </button>
             </>
           )}
