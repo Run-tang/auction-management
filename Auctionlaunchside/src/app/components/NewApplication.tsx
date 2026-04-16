@@ -137,10 +137,13 @@ export function NewApplication() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const editId = searchParams.get('edit');
-  // 重新发拍参数：full=完整编辑，price=仅改价格
+// 重新发拍参数：full=草稿下架完整编辑，price=待拍卖下架仅改价格
   const resubmitParam = searchParams.get('resubmit');
   const isResubmit = resubmitParam !== null;
+  // 待拍卖下架：仅改保留价（所有字段只读）
   const isPriceOnly = resubmitParam === 'price';
+  // 所有输入框只读（仅价格可编辑）
+  const readOnly = isPriceOnly;
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const [step, setStep] = useState<number>(() => {
@@ -462,20 +465,22 @@ export function NewApplication() {
           <Section title="车辆识别">
             <FormRow label="VIN码" required>
               <input 
-                className="flex-1 text-right border-none bg-transparent text-[14px] outline-none max-w-full placeholder:text-[#9CA3AF]"
+                className={`flex-1 text-right border-none bg-transparent text-[14px] outline-none max-w-full ${readOnly ? 'text-[#6B7280]' : 'placeholder:text-[#9CA3AF]'}`}
                 placeholder="请输入17位VIN码" 
                 maxLength={17} 
                 value={form.vin} 
-                onChange={e => handleVinInput(e.target.value)} 
+                onChange={readOnly ? undefined : e => handleVinInput(e.target.value)}
+                readOnly={readOnly}
               />
             </FormRow>
             <FormRow label="车牌号" last>
               <input 
-                className="flex-1 text-right border-none bg-transparent text-[14px] outline-none max-w-full placeholder:text-[#9CA3AF]"
+                className={`flex-1 text-right border-none bg-transparent text-[14px] outline-none max-w-full ${readOnly ? 'text-[#6B7280]' : 'placeholder:text-[#9CA3AF]'}`}
                 placeholder="非必填，7位/8位新能源" 
                 maxLength={8}
                 value={form.licensePlate} 
-                onChange={e => set('licensePlate', e.target.value)} 
+                onChange={readOnly ? undefined : e => set('licensePlate', e.target.value)}
+                readOnly={readOnly}
               />
             </FormRow>
           </Section>
@@ -486,17 +491,19 @@ export function NewApplication() {
               required
               value={form.province || '请选择'}
               placeholder={!form.province}
-              onClick={() => setShowPicker({ type: '省份', options: PROVINCES, field: 'province' })}
+              onClick={readOnly ? undefined : () => setShowPicker({ type: '省份', options: PROVINCES, field: 'province' })}
+              readOnly={readOnly}
             />
             <PickerRow
               label="城市"
               required
               value={form.city || (form.province ? '请选择' : '请先选择省份')}
               placeholder={!form.city}
-              onClick={() => {
+              onClick={readOnly ? undefined : () => {
                 if (!form.province) { toast.warning('请先选择省份'); return; }
                 setShowPicker({ type: '城市', options: CITIES_MAP[form.province] || [], field: 'city' });
               }}
+              readOnly={readOnly}
               last
             />
           </Section>
@@ -507,27 +514,30 @@ export function NewApplication() {
               required
               value={form.carBrand || '请选择'}
               placeholder={!form.carBrand}
-              onClick={() => setShowPicker({ type: '品牌', options: BRANDS, field: 'carBrand' })}
+              onClick={readOnly ? undefined : () => setShowPicker({ type: '品牌', options: BRANDS, field: 'carBrand' })}
+              readOnly={readOnly}
             />
             <PickerRow 
               label="车系" 
               required 
               value={form.carSeries || (form.carBrand ? '请选择' : '请先选择品牌')}
               placeholder={!form.carSeries} 
-              onClick={() => {
+              onClick={readOnly ? undefined : () => {
                 if (!form.carBrand) { toast.warning('请先选择品牌'); return; }
                 setShowPicker({ type: '车系', options: SERIES_MAP[form.carBrand] || [], field: 'carSeries' });
-              }} 
+              }}
+              readOnly={readOnly}
             />
             <PickerRow 
               label="车型" 
               required 
               value={form.carModel || (form.carSeries ? '请选择' : '请先选择车系')}
               placeholder={!form.carModel} 
-              onClick={() => {
+              onClick={readOnly ? undefined : () => {
                 if (!form.carSeries) { toast.warning('请先选择车系'); return; }
                 setShowPicker({ type: '车型', options: [`${new Date().getFullYear()}款 ${form.carSeries}`, `${new Date().getFullYear() - 1}款 ${form.carSeries}`, `${new Date().getFullYear() - 2}款 ${form.carSeries}`], field: 'carModel' });
-              }} 
+              }}
+              readOnly={readOnly}
             />
           </Section>
 
@@ -544,31 +554,34 @@ export function NewApplication() {
               required 
               value={form.registrationDate || '请选择'} 
               placeholder={!form.registrationDate}
-              onClick={() => {
+              onClick={readOnly ? undefined : () => {
                 const months: string[] = [];
                 for (let y = 2026; y >= 2000; y--) for (let m = 12; m >= 1; m--) months.push(`${y}-${String(m).padStart(2, '0')}`);
                 setShowPicker({ type: '上牌日期', options: months, field: 'registrationDate' });
-              }} 
+              }}
+              readOnly={readOnly}
             />
             <FormRow label="表显里程" required>
               <input 
-                className="flex-1 text-right border-none bg-transparent text-[14px] outline-none max-w-[100px] placeholder:text-[#9CA3AF]"
+                className={`flex-1 text-right border-none bg-transparent text-[14px] outline-none max-w-[100px] ${readOnly ? 'text-[#6B7280]' : 'placeholder:text-[#9CA3AF]'}`}
                 type="number" 
                 step="0.01"
                 placeholder="请输入" 
                 value={form.mileage} 
-                onChange={e => set('mileage', e.target.value)} 
+                onChange={readOnly ? undefined : e => set('mileage', e.target.value)}
+                readOnly={readOnly}
               />
               <span className="text-[14px] text-[#6B7280] ml-1 shrink-0">万公里</span>
             </FormRow>
             <FormRow label="过户次数">
               <input 
-                className="flex-1 text-right border-none bg-transparent text-[14px] outline-none max-w-[80px] placeholder:text-[#9CA3AF]"
+                className={`flex-1 text-right border-none bg-transparent text-[14px] outline-none max-w-[80px] ${readOnly ? 'text-[#6B7280]' : 'placeholder:text-[#9CA3AF]'}`}
                 type="number"
                 maxLength={1}
                 placeholder="0" 
                 value={form.transferCount || ''} 
-                onChange={e => set('transferCount', parseInt(e.target.value) || 0)} 
+                onChange={readOnly ? undefined : e => set('transferCount', parseInt(e.target.value) || 0)}
+                readOnly={readOnly}
               />
               <span className="text-[14px] text-[#6B7280] ml-1 shrink-0">次</span>
             </FormRow>
@@ -576,7 +589,8 @@ export function NewApplication() {
               label="车辆性质" 
               value={form.vehicleNature}
               last
-              onClick={() => setShowPicker({ type: '车辆性质', options: NATURE_OPTIONS, field: 'vehicleNature' })} 
+              onClick={readOnly ? undefined : () => setShowPicker({ type: '车辆性质', options: NATURE_OPTIONS, field: 'vehicleNature' })}
+              readOnly={readOnly}
             />
           </Section>
         </div>
@@ -585,45 +599,6 @@ export function NewApplication() {
       {/* Step 3: Price Settings */}
       {step === 3 && (
         <div>
-          {/* 仅价格修改模式：显示车辆信息只读区 */}
-          {isPriceOnly && (
-            <>
-              <Section title="车辆信息">
-                <div className="px-4 py-3 space-y-2 text-[14px]">
-                  <div className="flex justify-between">
-                    <span className="text-[#9CA3AF]">VIN码</span>
-                    <span className="text-[#374151] font-mono">{form.vin}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#9CA3AF]">车牌号</span>
-                    <span className="text-[#374151]">{form.licensePlate || '未上牌'}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#9CA3AF]">品牌车型</span>
-                    <span className="text-[#374151]">{form.carBrand} {form.carSeries} {form.carModel}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#9CA3AF]">排量/变速箱</span>
-                    <span className="text-[#374151]">{form.engineCapacity} / {form.transmission}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#9CA3AF]">表显里程</span>
-                    <span className="text-[#374151]">{form.mileage}万公里</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#9CA3AF]">上牌日期</span>
-                    <span className="text-[#374151]">{form.registrationDate}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#9CA3AF]">所在城市</span>
-                    <span className="text-[#374151]">{form.province} {form.city}</span>
-                  </div>
-                </div>
-              </Section>
-              <div className="h-3 bg-[#F5F5F5]" />
-            </>
-          )}
-
           <Section title="拍卖参数">
             <FormRow label="保留价" required>
               <input 
@@ -645,7 +620,7 @@ export function NewApplication() {
           <div className="text-[12px] text-[#6B7280] px-4 py-3 bg-white">
             <div className="bg-[#FFF7ED] rounded-lg p-3 flex items-start gap-2">
               <span className="text-[#F59E0B]">💡</span>
-              <span>{isPriceOnly ? '修改保留价后将重新发起拍卖' : '保留价对买家不可见，低于保留价不成交'}</span>
+              <span>{isResubmit ? '修改保留价后将重新发起拍卖' : '保留价对买家不可见，低于保留价不成交'}</span>
             </div>
           </div>
         </div>
@@ -659,30 +634,29 @@ export function NewApplication() {
               {REQUIRED_PHOTOS.map(p => (
                 <div 
                   key={p.key} 
-                  className={`aspect-square rounded-xl flex flex-col items-center justify-center cursor-pointer relative overflow-hidden transition-all ${
+                  className={`aspect-square rounded-xl flex flex-col items-center justify-center relative overflow-hidden transition-all ${
                     form.photos[p.key] 
                       ? 'bg-[#1F2937] border-none shadow-sm' 
-                      : 'bg-[#F9FAFB] border-2 border-dashed border-[#D1D5DB]'
-                  }`} 
-                  onClick={() => togglePhoto(p.key)}
+                      : `bg-[#F9FAFB] border-2 border-dashed ${readOnly ? 'border-[#E5E5E5]' : 'border-[#D1D5DB]'}`
+                  } ${readOnly ? '' : 'cursor-pointer'}`} 
+                  onClick={readOnly ? undefined : () => togglePhoto(p.key)}
                 >
                   {form.photos[p.key] ? (
                     <>
-                      {/* 已上传：深色背景 + 中央水印标签 */}
                       <div className="w-full h-full flex items-center justify-center relative">
                         <span className="text-[11px] text-white/70 font-medium tracking-wide select-none">{p.label}</span>
                       </div>
-                      {/* 右上角已完成标记 */}
                       <div className="absolute top-1.5 right-1.5 w-5 h-5 bg-[#10B981] rounded-full flex items-center justify-center shadow">
                         <Check size={11} className="text-white" />
                       </div>
-                      {/* 左上角删除 */}
-                      <div 
-                        className="absolute top-1.5 left-1.5 w-5 h-5 bg-black/40 rounded-full flex items-center justify-center"
-                        onClick={e => { e.stopPropagation(); togglePhoto(p.key); }}
-                      >
-                        <X size={11} className="text-white" />
-                      </div>
+                      {!readOnly && (
+                        <div 
+                          className="absolute top-1.5 left-1.5 w-5 h-5 bg-black/40 rounded-full flex items-center justify-center"
+                          onClick={e => { e.stopPropagation(); togglePhoto(p.key); }}
+                        >
+                          <X size={11} className="text-white" />
+                        </div>
+                      )}
                     </>
                   ) : (
                     <>
@@ -715,29 +689,18 @@ export function NewApplication() {
 
       {/* Footer */}
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-[390px] bg-white px-4 py-3 border-t border-[#E5E5E5] z-[100]">
-        {/* 步骤指示器 - 仅非价格修改模式显示 */}
-        {!isPriceOnly && (
-          <div className="flex justify-center gap-1 mb-3">
-            {[1, 2, 3, 4].map(i => (
-              <div 
-                key={i}
-                className={`h-1 rounded-full transition-all ${i === step ? 'w-8 bg-[#FF6B00]' : i < step ? 'w-3 bg-[#FF6B00]/40' : 'w-3 bg-[#E5E5E5]'}`}
-              />
-            ))}
-          </div>
-        )}
+        {/* 步骤指示器 */}
+        <div className="flex justify-center gap-1 mb-3">
+          {[1, 2, 3, 4].map(i => (
+            <div 
+              key={i}
+              className={`h-1 rounded-full transition-all ${i === step ? 'w-8 bg-[#FF6B00]' : i < step ? 'w-3 bg-[#FF6B00]/40' : 'w-3 bg-[#E5E5E5]'}`}
+            />
+          ))}
+        </div>
         <div className="flex gap-3">
-          {/* 仅价格修改模式：显示返回按钮 */}
-          {isPriceOnly && (
-            <button 
-              className="py-3 px-4 rounded-xl text-[14px] font-medium bg-[#F5F5F5] text-[#1F2937] border-none cursor-pointer shrink-0"
-              onClick={handleBack}
-            >
-              返回
-            </button>
-          )}
-          {/* 非价格修改模式：显示上一步 */}
-          {!isPriceOnly && step > 1 && (
+          {/* 上一步 */}
+          {step > 1 && (
             <button 
               className="py-3 px-4 rounded-xl text-[14px] font-medium bg-[#F5F5F5] text-[#1F2937] border-none cursor-pointer shrink-0"
               onClick={() => setStep(step - 1)}
@@ -820,20 +783,20 @@ function FormRow({ label, required, last, children }: { label: string; required?
 }
 
 // PickerRow component
-function PickerRow({ label, required, value, placeholder, last, onClick }: {
-  label: string; required?: boolean; value: string; placeholder?: boolean; last?: boolean; onClick: () => void;
+function PickerRow({ label, required, value, placeholder, last, onClick, readOnly }: {
+  label: string; required?: boolean; value: string; placeholder?: boolean; last?: boolean; onClick?: () => void; readOnly?: boolean;
 }) {
   return (
     <div 
-      className={`flex justify-between items-center px-4 py-3.5 min-h-[52px] cursor-pointer active:bg-[#F9FAFB] ${!last ? 'border-b border-[#F3F4F6]' : ''}`}
-      onClick={onClick}
+      className={`flex justify-between items-center px-4 py-3.5 min-h-[52px] ${readOnly ? '' : 'cursor-pointer active:bg-[#F9FAFB]'} ${!last ? 'border-b border-[#F3F4F6]' : ''}`}
+      onClick={readOnly ? undefined : onClick}
     >
       <div className="text-[14px] text-[#1F2937] shrink-0">
         {label}{required && <span className="text-[#EF4444] ml-1">*</span>}
       </div>
       <div className="flex items-center">
-        <span className={`text-[14px] ${placeholder ? 'text-[#9CA3AF]' : 'text-[#1F2937]'}`}>{value}</span>
-        <span className="text-[14px] text-[#9CA3AF] ml-1">›</span>
+        <span className={`text-[14px] ${placeholder ? 'text-[#9CA3AF]' : readOnly ? 'text-[#6B7280]' : 'text-[#1F2937]'}`}>{value}</span>
+        {!readOnly && <span className="text-[14px] text-[#9CA3AF] ml-1">›</span>}
       </div>
     </div>
   );
