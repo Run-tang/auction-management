@@ -330,8 +330,9 @@ export function NewApplication() {
 
   // 返回处理
   const handleBack = () => {
-    if (isPriceOnly) {
-      // 仅价格修改模式：直接返回
+    // 仅价格修改模式或重新发拍模式：直接返回
+    if (isPriceOnly || isResubmit) {
+      // 直接返回
       navigate('/');
       return;
     }
@@ -415,22 +416,6 @@ export function NewApplication() {
     setShowPicker(null);
   };
 
-  // 返回
-  const handleBack = () => {
-    // 重新发拍模式：直接返回
-    if (isResubmit) {
-      navigate('/');
-      return;
-    }
-    if (form.vin || form.carBrand || form.mileage || form.reservePrice) {
-      if (confirm('确定离开？当前填写的内容将保存为草稿')) {
-        handleSaveDraft();
-      }
-    } else {
-      navigate('/');
-    }
-  };
-
   return (
     <div className="pb-[100px]" ref={scrollRef}>
       {/* Header */}
@@ -469,6 +454,7 @@ export function NewApplication() {
           </div>
         ))}
       </div>
+      )}
 
       {/* Step 1: Basic Info */}
       {step === 1 && (
